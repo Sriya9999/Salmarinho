@@ -31,7 +31,7 @@
     {
       "binding": "DB",
       "database_name": "salmarinho-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "5be3f5ff-76bd-46f3-9d85-a145461ea480",
       "migrations_dir": "migrations"
     }
   ],
