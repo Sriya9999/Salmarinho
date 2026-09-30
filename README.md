@@ -20,6 +20,22 @@ The same code that runs the live site: every page, the scroll film, the admin pa
 
 To run it on your computer: install [Bun](https://bun.sh), then inside `source/app` run `bun install` and `bun run dev`, and open the local address it prints. Without a database attached, the menu and journal show their starter content and the admin panel cannot sign in.
 
+#### Hosting on your own Cloudflare account
+
+The site runs on Cloudflare's free plan with no code changes: pages, film, database (menu, journal, reservations, admin) and photo uploads.
+
+1. In Cloudflare, create an API token from the **Edit Cloudflare Workers** template and add **D1: Edit** and **Workers R2 Storage: Edit**.
+2. Open **Workers & Pages** in the dashboard once, so the account has a workers.dev address.
+3. With `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID` and `ADMIN_PASSWORD` set, run from `source/app`:
+
+   ```
+   bash scripts/deploy-cloudflare.sh
+   ```
+
+   It creates the database and photo storage, loads the tables and starter content, builds the site and deploys it to `https://salmarinho.<your-subdomain>.workers.dev`. Set `SITE_URL` to use your own domain instead. It is safe to re-run; existing content is kept.
+
+The settings live in `source/app/wrangler.cloudflare.jsonc`.
+
 ### `website/`: the files the live site uses, web-optimised
 
 | Folder | What's inside |

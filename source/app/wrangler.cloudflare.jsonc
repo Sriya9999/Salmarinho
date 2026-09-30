@@ -1,0 +1,41 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Deploy config for hosting Sal Marinho on your own Cloudflare account.
+  // (wrangler.jsonc is the Higgsfield build config; this file is separate so
+  // the two never interfere.)
+  //
+  //   bun run build
+  //   npx wrangler d1 migrations apply salmarinho-db --remote -c wrangler.cloudflare.jsonc
+  //   npx wrangler deploy -c wrangler.cloudflare.jsonc
+  //   npx wrangler secret put ADMIN_PASSWORD -c wrangler.cloudflare.jsonc
+  "name": "salmarinho",
+  "main": "dist/server/server.js",
+  "compatibility_date": "2025-05-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+
+  // Static files in dist/client are served directly; every other path falls
+  // through to the SSR Worker.
+  "assets": {
+    "directory": "./dist/client",
+    "binding": "ASSETS",
+    "not_found_handling": "none"
+  },
+
+  "vars": { "HF_ENV": "production", "APP_SLUG": "salmarinho" },
+
+  // Menu, journal, events, settings, reservations and admin sessions.
+  // database_id is filled in after `wrangler d1 create salmarinho-db`.
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "salmarinho-db",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations"
+    }
+  ],
+
+  // Photos uploaded from the admin panel, served at /media/...
+  "r2_buckets": [{ "binding": "STORAGE", "bucket_name": "salmarinho-media" }]
+}
