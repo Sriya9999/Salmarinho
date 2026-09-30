@@ -252,43 +252,72 @@ function FireLetters({ text }: { text: string }) {
     const ctx = cv.getContext("2d");
     if (!ctx) return;
     const poster = new Image();
-    poster.src = "/assets/world/leg-3-mobile-poster.jpg";
+    poster.src = "/assets/world/leg-4-mobile-poster.jpg"; // flames around the claypot
     let raf = 0;
     let running = false;
     const reduced = prefersReducedMotion();
+
+    // Offscreen layer: the video clipped to the letters.
+    const layer = document.createElement("canvas");
+    const lctx = layer.getContext("2d");
 
     const draw = () => {
       const w = cv.clientWidth;
       const h = cv.clientHeight;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) {
-        cv.width = Math.round(w * dpr);
-        cv.height = Math.round(h * dpr);
+      const pw = Math.round(w * dpr);
+      const ph = Math.round(h * dpr);
+      if (cv.width !== pw || cv.height !== ph) {
+        cv.width = layer.width = pw;
+        cv.height = layer.height = ph;
       }
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.clearRect(0, 0, w, h);
       let size = h * 0.86;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.font = `400 ${size}px Cinzel, serif`;
       const measured = ctx.measureText(text).width;
-      if (measured > w * 0.96) {
-        size *= (w * 0.96) / measured;
-        ctx.font = `400 ${size}px Cinzel, serif`;
-      }
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.fillStyle = "#efe7da";
-      ctx.fillText(text, w / 2, h / 2 + size * 0.04);
-      ctx.globalCompositeOperation = "source-in";
+      if (measured > w * 0.96) size *= (w * 0.96) / measured;
+      const font = `400 ${size}px Cinzel, serif`;
+      const writeText = (c: CanvasRenderingContext2D) => {
+        c.font = font;
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillText(text, w / 2, h / 2 + size * 0.04);
+      };
+
+      // Ember letters, so the words read even on a dark frame.
+      ctx.globalCompositeOperation = "source-over";
+      ctx.clearRect(0, 0, w, h);
+      const ember = ctx.createLinearGradient(0, h * 0.15, 0, h * 0.85);
+      ember.addColorStop(0, "#d98a5f");
+      ember.addColorStop(0.55, "#a8502f");
+      ember.addColorStop(1, "#6e2f19");
+      ctx.fillStyle = ember;
+      writeText(ctx);
+
+      // Flames on top, screened in so they brighten the letters.
       const source: CanvasImageSource | null = !reduced && vid.readyState >= 2 ? vid : poster.complete && poster.naturalWidth > 0 ? poster : null;
-      if (source) {
+      if (source && lctx) {
         const sw = source instanceof HTMLVideoElement ? source.videoWidth : poster.naturalWidth;
         const sh = source instanceof HTMLVideoElement ? source.videoHeight : poster.naturalHeight;
+        lctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        lctx.globalCompositeOperation = "source-over";
+        lctx.clearRect(0, 0, w, h);
+        lctx.fillStyle = "#000";
+        writeText(lctx);
+        lctx.globalCompositeOperation = "source-in";
         const scale = Math.max(w / sw, h / sh);
-        ctx.drawImage(source, (w - sw * scale) / 2, (h - sh * scale) / 2, sw * scale, sh * scale);
+        lctx.drawImage(source, (w - sw * scale) / 2, (h - sh * scale) / 2, sw * scale, sh * scale);
+        ctx.globalCompositeOperation = "screen";
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.drawImage(layer, 0, 0);
+        ctx.globalCompositeOperation = "source-over";
       }
-      ctx.globalCompositeOperation = "source-over";
     };
+    // Loop only the stretch of the fire clip where flames fill the frame.
+    const LOOP_START = 3.6;
+    const LOOP_END = 5.9;
     const loop = () => {
+      if (vid.readyState >= 1 && !vid.seeking && (vid.currentTime < LOOP_START || vid.currentTime > LOOP_END)) vid.currentTime = LOOP_START;
       draw();
       if (running) raf = requestAnimationFrame(loop);
     };
@@ -328,7 +357,8 @@ function FireLetters({ text }: { text: string }) {
         playsInline
         preload="none"
         aria-hidden="true"
-        className="hidden"
+        tabIndex={-1}
+        className="sm-source-video"
       />
     </div>
   );

@@ -223,7 +223,8 @@ html.lenis body {
   .scroll-scrub::after {
     content: "";
     display: block;
-    height: 100dvh;
+    /* lvh: at least the stage's height whether or not a phone toolbar shows. */
+    height: 100lvh;
   }
 }
 .scroll-scrub .scroll-scrub__title {
@@ -1039,6 +1040,18 @@ select.sm-input option {
   .sm-steam {
     display: none;
   }
+}
+
+/* A video that only feeds a canvas. iPhones will not play or decode a video
+   with display: none, so it stays rendered, tiny and transparent. */
+.sm-source-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2px;
+  height: 2px;
+  opacity: 0.01;
+  pointer-events: none;
 }
 
 /* ---------------------------------------------------------------- icons */

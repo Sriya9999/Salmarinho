@@ -56,7 +56,8 @@ let lenisInstance: Lenis | null = null;
 export function SmoothScroll() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => {
-    if (prefersReducedMotion()) return;
+    // Phones keep their native momentum scrolling; Lenis would fight it.
+    if (prefersReducedMotion() || window.matchMedia("(hover: none), (pointer: coarse)").matches) return;
     let cancelled = false;
     void import("lenis").then(({ default: LenisCtor }) => {
       if (cancelled) return;

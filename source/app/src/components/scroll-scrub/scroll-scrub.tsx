@@ -651,7 +651,9 @@ export function ScrollScrub({
       <div className="scroll-scrub__story">
         {segments.map((segment) => {
           const bandStyle: CSSProperties = {
-            minHeight: `${Math.max(segment.weight, 0.2) * 100}dvh`,
+            // svh, not dvh: phone toolbars resizing dvh mid-scroll would shift every
+            // band and throw the film out of step with the finger.
+            minHeight: `${Math.max(segment.weight, 0.2) * 100}svh`,
           };
 
           if (segment.kind === "connector") {
