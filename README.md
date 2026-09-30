@@ -1,9 +1,24 @@
-# Sal Marinho: website assets
+# Sal Marinho: website source and assets
 
-All of the visual and audio assets created for the Sal Marinho website (Anjuna, Goa).
+The full source code of the Sal Marinho website (Anjuna, Goa), plus every visual and audio asset created for it.
 Live site: https://salmarinho.higgsfield.app
 
 ## Folders
+
+### `source/`: the complete website source code
+
+The same code that runs the live site: every page, the scroll film, the admin panel, the menu and journal database, reservations, and all the media in `app/public/`.
+
+| Path | What's inside |
+| --- | --- |
+| `app/src/routes/` | One file per page (home, who we are, menu, the crab, journal, visit, reserve, admin and the rest). |
+| `app/src/components/` | The building blocks: header, reservation form, scroll film, motion effects, homepage sections. |
+| `app/src/lib/` | Site settings, database access, admin sign-in, reservations and search-engine tags. |
+| `app/migrations/` | Database tables and the starter menu chapters and journal articles. |
+| `app/public/` | Images, film, fonts, icons and sound, as served to visitors. |
+| `app/design-brief.md` | The design brief: concept, palette, typography and section plan. |
+
+To run it on your computer: install [Bun](https://bun.sh), then inside `source/app` run `bun install` and `bun run dev`, and open the local address it prints. Without a database attached, the menu and journal show their starter content and the admin panel cannot sign in.
 
 ### `website/`: the files the live site uses, web-optimised
 

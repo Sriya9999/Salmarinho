@@ -1,0 +1,4 @@
+node_modules
+
+# Working files (reference boards, film sources); not part of the site
+refs/
