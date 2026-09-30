@@ -2,7 +2,9 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { serveStaticFromKv } from "./lib/kv-static.server";
 import { applySecurityHeaders } from "./lib/security-headers.server";
+import type { KVNamespace } from "@cloudflare/workers-types";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -45,6 +47,12 @@ export default {
     if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
       url.pathname = url.pathname.replace(/\/+$/, "");
       return applySecurityHeaders(Response.redirect(url.toString(), 301));
+    }
+    // Self-hosted Cloudflare deploys keep static files in KV (see wrangler.cloudflare.jsonc).
+    const kv = (env as { STATIC?: KVNamespace } | undefined)?.STATIC;
+    if (kv) {
+      const file = await serveStaticFromKv(request, kv);
+      if (file) return file;
     }
     try {
       const handler = await getServerEntry();

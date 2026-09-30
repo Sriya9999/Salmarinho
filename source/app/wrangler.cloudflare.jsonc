@@ -3,30 +3,20 @@
 
   // Deploy config for hosting Sal Marinho on your own Cloudflare account.
   // (wrangler.jsonc is the Higgsfield build config; this file is separate so
-  // the two never interfere.)
-  //
-  //   bun run build
-  //   npx wrangler d1 migrations apply salmarinho-db --remote -c wrangler.cloudflare.jsonc
-  //   npx wrangler deploy -c wrangler.cloudflare.jsonc
-  //   npx wrangler secret put ADMIN_PASSWORD -c wrangler.cloudflare.jsonc
+  // the two never interfere.) Deploy with: bash scripts/deploy-cloudflare.sh
   "name": "salmarinho",
   "main": "dist/server/server.js",
   "compatibility_date": "2025-05-01",
   "compatibility_flags": ["nodejs_compat"],
   "observability": { "enabled": true },
 
-  // Static files in dist/client are served directly; every other path falls
-  // through to the SSR Worker.
-  "assets": {
-    "directory": "./dist/client",
-    "binding": "ASSETS",
-    "not_found_handling": "none"
-  },
-
   "vars": { "HF_ENV": "production", "APP_SLUG": "salmarinho" },
 
+  // Static files (dist/client: built JS and CSS, images, film, fonts). The
+  // deploy script uploads them here and src/lib/kv-static.server.ts serves them.
+  "kv_namespaces": [{ "binding": "STATIC", "id": "68c74c23092f46db942e4f4e03679364" }],
+
   // Menu, journal, events, settings, reservations and admin sessions.
-  // database_id is filled in after `wrangler d1 create salmarinho-db`.
   "d1_databases": [
     {
       "binding": "DB",
@@ -36,6 +26,7 @@
     }
   ],
 
-  // Photos uploaded from the admin panel, served at /media/...
+  // Photos uploaded from the admin panel, served at /media/... The deploy
+  // script leaves this out while R2 is not turned on for the account.
   "r2_buckets": [{ "binding": "STORAGE", "bucket_name": "salmarinho-media" }]
 }
