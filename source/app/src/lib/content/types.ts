@@ -43,7 +43,12 @@ export interface Dish {
   gallery: string[];
   dietary: string[];
   spiceLevel: number;
+  /** Chef's special. */
   chefRecommendation: boolean;
+  /** Recently added to the menu. */
+  isNew: boolean;
+  /** Not available today; stays listed, marked as sold out. */
+  soldOut: boolean;
   pairing: string;
   featured: boolean;
   published: boolean;
@@ -81,6 +86,17 @@ export interface OpeningHours {
   close: string;
 }
 
+/** One step of the crab journey, from cultivation to the table. */
+export interface CrabStage {
+  title: string;
+  note: string;
+  body: string;
+  image: string;
+  imageAlt: string;
+  /** "now": happening now. "soon": part of the experience still to come. */
+  status: "now" | "soon";
+}
+
 export interface SiteSettings {
   address: string;
   locality: string;
@@ -95,6 +111,9 @@ export interface SiteSettings {
   hours: OpeningHours[];
   parking: string;
   reservationUrl: string;
+  /** Switch to "now-serving" when the crab experience launches. */
+  crabStatus: "coming-soon" | "now-serving";
+  crabStages: CrabStage[];
   gallery: string[];
 }
 

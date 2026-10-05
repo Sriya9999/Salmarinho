@@ -9,19 +9,18 @@ export const SITE_DESCRIPTION =
 
 export type NavItem = { to: string; hash?: string; title: string; subtitle: string };
 
-/** Primary navigation. */
+/** Primary navigation: plain names, with a line of character beneath each. */
 export const NAV_ITEMS: NavItem[] = [
-  { to: "/menu", title: "Menu", subtitle: "What's cooking?" },
+  { to: "/menu", title: "What's cooking?", subtitle: "Today's table" },
+  { to: "/our-story", title: "Our story", subtitle: "The story behind the spice" },
+  { to: "/the-coast", title: "The coast", subtitle: "Where it all begins" },
+  { to: "/the-crab-journey", title: "The journey", subtitle: "Something is growing" },
   { to: "/journal", title: "Journal", subtitle: "From our kitchen journal" },
   { to: "/visit", title: "Visit", subtitle: "Come to the table" },
 ];
 
-/** Secondary links, in the navigation aside and the footer. */
-export const MORE_ITEMS: NavItem[] = [
-  { to: "/", hash: "from-the-south", title: "From the South", subtitle: "Coconut, curry leaf, pepper, rice" },
-  { to: "/", hash: "a-little-portuguese", title: "A little Portuguese", subtitle: "Poi, choris and the coast" },
-  { to: "/the-crab-journey", title: "Something is growing", subtitle: "Coming soon" },
-];
+/** Secondary links, in the footer. */
+export const MORE_ITEMS: NavItem[] = [{ to: "/reserve", title: "Reserve a table", subtitle: "We will keep a table for you" }];
 
 export const JOURNAL_CATEGORIES = [
   "The coast",

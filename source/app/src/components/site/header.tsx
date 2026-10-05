@@ -4,9 +4,9 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { BrandMark, BrandWordmark } from "@/components/site/Brand";
 import { useReserve } from "@/components/site/reserve";
 import { Magnetic } from "@/components/motion/primitives";
-import { MORE_ITEMS, NAV_ITEMS } from "@/lib/site";
+import { NAV_ITEMS } from "@/lib/site";
 
-/** Persistent "Reserve your table" ember pill. The only pill on the site. */
+/** Persistent "Reserve your table" ember pill. */
 export function ReservePill() {
   const { open } = useReserve();
   const ref = useRef<HTMLButtonElement>(null);
@@ -26,13 +26,17 @@ export function ReservePill() {
         }}
       >
         <span className="sm-ember-pill__coal" aria-hidden="true" />
-        <span className="relative sm:hidden">Reserve</span>
-        <span className="relative hidden sm:inline">Reserve your table</span>
+        <span className="relative">Reserve</span>
       </button>
     </Magnetic>
   );
 }
 
+/**
+ * A floating bar: the mark on the left, the six places in the middle (each with
+ * its line of character on hover), Reserve on the right. Below wide screens the
+ * places move into a full-screen menu.
+ */
 export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -64,16 +68,33 @@ export function SiteHeader() {
       <a href="#main" className="sm-skip-link">
         Skip to content
       </a>
-      <header className="sm-header" data-scrolled={scrolled || menuOpen}>
-        <Link to="/" className="flex items-center gap-3" aria-label="Sal Marinho, home">
-          <BrandMark decorative className="h-9 w-9 md:h-10 md:w-10" />
-          <BrandWordmark decorative className="hidden h-7 w-auto sm:block md:h-8" />
+      <header className="v-nav" data-scrolled={scrolled || menuOpen}>
+        <Link to="/" className="v-nav__brand" aria-label="Sal Marinho, home">
+          <BrandMark decorative className="h-9 w-9" />
+          <BrandWordmark decorative className="hidden h-6 w-auto sm:block" />
         </Link>
-        <div className="flex items-center gap-2 md:gap-6">
+        <nav aria-label="Main" className="v-nav__places">
+          <ul>
+            {NAV_ITEMS.map((item) => (
+              <li key={item.to}>
+                <Link to={item.to} className="v-nav__link" activeProps={{ "aria-current": "page" }}>
+                  <span className="v-nav__title">{item.title}</span>
+                  <span className="v-nav__sub" aria-hidden="true">
+                    {item.subtitle}
+                  </span>
+                  <svg className="v-nav__wave" viewBox="0 0 60 6" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0 3 C 7 0, 13 6, 20 3 S 33 0, 40 3 S 53 6, 60 3" />
+                  </svg>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+        <div className="v-nav__actions">
           <button
             ref={toggleRef}
             type="button"
-            className="sm-menu-toggle"
+            className="sm-menu-toggle v-nav__toggle"
             aria-expanded={menuOpen}
             aria-controls="sm-journey-nav"
             onClick={() => setMenuOpen((v) => !v)}
@@ -82,7 +103,7 @@ export function SiteHeader() {
               <span />
               <span />
             </span>
-            <span>{menuOpen ? "Close" : "Explore"}</span>
+            <span>{menuOpen ? "Close" : "Menu"}</span>
           </button>
           <ReservePill />
         </div>
@@ -91,8 +112,8 @@ export function SiteHeader() {
         <div className="sm-journey-nav__inner">
           <ol className="sm-journey-nav__list">
             {NAV_ITEMS.map((item, i) => (
-              <li key={`${item.to}#${item.hash ?? ""}`} style={{ transitionDelay: menuOpen ? `${120 + i * 55}ms` : "0ms" }}>
-                <Link to={item.to} hash={item.hash} className="sm-journey-link" activeProps={{ "aria-current": "page" }}>
+              <li key={item.to} style={{ transitionDelay: menuOpen ? `${120 + i * 55}ms` : "0ms" }}>
+                <Link to={item.to} className="sm-journey-link" activeProps={{ "aria-current": "page" }}>
                   <span className="sm-journey-link__title">{item.title}</span>
                   <span className="sm-journey-link__sub">{item.subtitle}</span>
                 </Link>
@@ -100,16 +121,11 @@ export function SiteHeader() {
             ))}
           </ol>
           <div className="sm-journey-nav__aside">
-            <p className="sm-label">Along the way</p>
-            <ul className="mt-5 space-y-3">
-              {MORE_ITEMS.map((item) => (
-                <li key={`${item.to}#${item.hash ?? ""}`}>
-                  <Link to={item.to} hash={item.hash} className="sm-journey-minor" onClick={() => setMenuOpen(false)}>
-                    {item.title}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            <p className="sm-label">Sal Marinho, Anjuna</p>
+            <p className="mt-4 text-sand">South Indian flavours, all-day breakfast and a table inspired by the coast.</p>
+            <Link to="/" className="sm-journey-minor mt-6 inline-block">
+              Home
+            </Link>
           </div>
         </div>
       </nav>

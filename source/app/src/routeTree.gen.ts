@@ -11,9 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitRouteImport } from './routes/visit'
 import { Route as TheCrabJourneyRouteImport } from './routes/the-crab-journey'
+import { Route as TheCoastRouteImport } from './routes/the-coast'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReserveRouteImport } from './routes/reserve'
+import { Route as OurStoryRouteImport } from './routes/our-story'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -33,6 +35,11 @@ const TheCrabJourneyRoute = TheCrabJourneyRouteImport.update({
   path: '/the-crab-journey',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TheCoastRoute = TheCoastRouteImport.update({
+  id: '/the-coast',
+  path: '/the-coast',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -46,6 +53,11 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
 const ReserveRoute = ReserveRouteImport.update({
   id: '/reserve',
   path: '/reserve',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurStoryRoute = OurStoryRouteImport.update({
+  id: '/our-story',
+  path: '/our-story',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -93,9 +105,11 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-coast': typeof TheCoastRoute
   '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -108,9 +122,11 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-coast': typeof TheCoastRoute
   '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -124,9 +140,11 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/the-coast': typeof TheCoastRoute
   '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
@@ -141,9 +159,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/the-coast'
     | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
@@ -156,9 +176,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/the-coast'
     | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
@@ -171,9 +193,11 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/the-coast'
     | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
@@ -187,9 +211,11 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AppRoute: typeof AppRoute
+  OurStoryRoute: typeof OurStoryRoute
   ReserveRoute: typeof ReserveRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TheCoastRoute: typeof TheCoastRoute
   TheCrabJourneyRoute: typeof TheCrabJourneyRoute
   VisitRoute: typeof VisitRoute
   JournalSlugRoute: typeof JournalSlugRoute
@@ -215,6 +241,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TheCrabJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/the-coast': {
+      id: '/the-coast'
+      path: '/the-coast'
+      fullPath: '/the-coast'
+      preLoaderRoute: typeof TheCoastRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -234,6 +267,13 @@ declare module '@tanstack/react-router' {
       path: '/reserve'
       fullPath: '/reserve'
       preLoaderRoute: typeof ReserveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/our-story': {
+      id: '/our-story'
+      path: '/our-story'
+      fullPath: '/our-story'
+      preLoaderRoute: typeof OurStoryRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -299,9 +339,11 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AppRoute: AppRoute,
+  OurStoryRoute: OurStoryRoute,
   ReserveRoute: ReserveRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TheCoastRoute: TheCoastRoute,
   TheCrabJourneyRoute: TheCrabJourneyRoute,
   VisitRoute: VisitRoute,
   JournalSlugRoute: JournalSlugRoute,

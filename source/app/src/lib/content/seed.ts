@@ -7,7 +7,7 @@
 
 import { OPENING_HOURS } from "@/lib/site";
 
-import type { Dish, JournalPost, MenuCategory, SiteSettings } from "./types";
+import type { CrabStage, Dish, JournalPost, MenuCategory, SiteSettings } from "./types";
 
 export const SEED_CATEGORIES: MenuCategory[] = [
   {
@@ -145,6 +145,33 @@ const slugify = (value: string) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 
+/**
+ * Marked vegetarian from the ingredients each menu entry lists (the printed
+ * menus carry no veg marks). Staff can change any of these in /admin.
+ */
+const VEGETARIAN = new Set([
+  "Benne Dosa",
+  "Mushroom / Paneer Ghee Roast Benne Dosa",
+  "Mushroom / Paneer Chettinad Benne Dosa",
+  "Ulundu Bonda",
+  "Clay Pot Tatte Idli",
+  "Butter Podi Clay Pot Tatte Idli",
+  "Herbed Garlic Butter Clay Pot Tatte Idli",
+  "Ghee Shallow Fried",
+  "Appe Masala",
+  "South Indian Breakfast",
+  "Udupi Uppit",
+  "Sheera",
+  "Chimichurri Bowl",
+  "Sweet Potato Chickpeas Buddha Bowl",
+  "Fajita Buddha Bowl",
+  "Miso Mushroom Buddha Bowl",
+  "Mixed Sprouts Buddha Bowl",
+  "Yogurt Muesli Bowl",
+  "Paneer",
+  "Tofu",
+]);
+
 function dishes(category: string, items: DishSeed[]): Dish[] {
   return items.map((item, i) => {
     const slug = slugify(item.name);
@@ -164,9 +191,11 @@ function dishes(category: string, items: DishSeed[]): Dish[] {
       image: hasPhoto ? `/assets/v2/dishes/${item.photoName ?? slug}.webp` : "",
       imageAlt: hasPhoto ? (item.imageAlt ?? item.name) : "",
       gallery: [],
-      dietary: item.dietary ?? [],
+      dietary: item.dietary ?? (VEGETARIAN.has(item.name) ? ["Vegetarian"] : []),
       spiceLevel: 0,
       chefRecommendation: Boolean(item.lead),
+      isNew: false,
+      soldOut: false,
       pairing: "",
       featured: Boolean(item.featured),
       published: true,
@@ -466,6 +495,49 @@ export const SEED_POSTS: JournalPost[] = [
     ].join("\n\n"),
   },
   {
+    id: "post-crab-boxes",
+    slug: "field-notes-the-boxes-beside-the-restaurant",
+    title: "Field notes: the boxes beside the restaurant",
+    category: "The crab",
+    excerpt: "Our crab project lives a few steps from the kitchen, one crab to a box. How it works while it grows.",
+    cover: "/assets/v2/journal/crab-boxes.webp",
+    coverAlt: "Rows of blue crab boxes along a wall beside the restaurant",
+    author: AUTHOR,
+    publishedAt: "2026-10-05",
+    published: true,
+    body: [
+      "Our crab cultivation project is underway, and it is closer to the kitchen than you might think: the farm sits right beside the restaurant.",
+      "## One crab, one box",
+      "The crabs are brought in from where we source them and settled into rows of boxes, one crab to each.",
+      "## The same fish, for up to three months",
+      "We feed them the same fish for up to three months. It is slow, careful work, and it is what builds the meat inside the shell.",
+      "## Coming soon",
+      "None of this is on the menu yet. When it is, you will be able to choose your crab and tell the chef how you would like it cooked. Until then, we will keep posting notes here as the project grows.",
+    ].join("\n\n"),
+  },
+  {
+    id: "post-why-fattened",
+    slug: "why-crab-tastes-different-when-its-fattened",
+    title: "Why crab tastes different when it's fattened",
+    category: "The crab",
+    excerpt: "A freshly moulted crab is mostly water and promise. Patience is what turns it into something worth waiting for.",
+    cover: "/assets/v2/journal/crab-salt.webp",
+    coverAlt: "A mud crab on dark slate scattered with coarse salt",
+    author: AUTHOR,
+    publishedAt: "2026-10-04",
+    published: true,
+    body: [
+      "Every mud crab grows by leaving its shell behind. It swells, splits the old armour and walks out soft. For a while after that moult the new shell is roomy, and the crab inside it is light and thin on meat.",
+      "Fattening is the answer the coast arrived at long ago. Instead of rushing a light crab to the pot, it is kept, fed well and left to fill out its new shell.",
+      "## What changes",
+      "A fattened crab has dense, sweet meat that comes away from the shell in whole pieces. The claws are packed tight, and the juices that run when it meets the fire are richer.",
+      "## How you can tell",
+      "Weight is the first clue: a good crab feels heavier than it looks. Press the underside and it should feel firm, not hollow.",
+      "> It is slower, and it asks more of everyone involved.",
+      "It is also why our crab is still in its boxes and not yet on the menu. Coming soon.",
+    ].join("\n\n"),
+  },
+  {
     id: "post-crab-journey",
     slug: "the-crab-journey-coming-soon",
     title: "The crab journey: coming soon",
@@ -485,6 +557,58 @@ export const SEED_POSTS: JournalPost[] = [
   },
 ];
 
+/** The crab journey, from cultivation to the table. Editable in /admin. */
+export const DEFAULT_CRAB_STAGES: CrabStage[] = [
+  {
+    title: "Cultivate",
+    note: "Where it begins",
+    body: "The crabs are sourced with care and brought to their new home: a row of boxes beside the restaurant.",
+    image: "/assets/v2/crab/stage-cultivate.webp",
+    imageAlt: "A mud crab resting among palm fronds",
+    status: "now",
+  },
+  {
+    title: "Grow",
+    note: "One crab, one box",
+    body: "Each crab settles into a box of its own. It is slow, careful work, with a lot of attention to detail.",
+    image: "/assets/v2/crab/stage-grow.webp",
+    imageAlt: "A man tending rows of blue boxes beside the restaurant",
+    status: "now",
+  },
+  {
+    title: "Fatten",
+    note: "Up to three months",
+    body: "We feed each crab the same fish for up to three months. That is what builds the meat inside the shell.",
+    image: "/assets/v2/crab/stage-fatten.webp",
+    imageAlt: "White bowls of cut fish, ready to feed the crabs",
+    status: "now",
+  },
+  {
+    title: "Harvest",
+    note: "When it is ready",
+    body: "When a crab is full and heavy, it will be lifted from its box by hand, on the day it is cooked.",
+    image: "/assets/v2/crab/stage-harvest.webp",
+    imageAlt: "A gloved hand holding up a mud crab",
+    status: "soon",
+  },
+  {
+    title: "Fire",
+    note: "Coals, flame, clay and cast iron",
+    body: "Cooked the way you would like it. The chef will ask before the crab meets the fire.",
+    image: "/assets/v2/crab/stage-fire.webp",
+    imageAlt: "A cook working at a grill through rising smoke",
+    status: "soon",
+  },
+  {
+    title: "Table",
+    note: "From the farm beside the restaurant",
+    body: "Choose your crab, tell us how you would like it, and it comes from the boxes outside straight to your table.",
+    image: "/assets/v2/crab/stage-table.webp",
+    imageAlt: "A cooked crab in a rich sauce on a white plate",
+    status: "soon",
+  },
+];
+
 export const DEFAULT_SETTINGS: SiteSettings = {
   address: "",
   locality: "Anjuna, Goa",
@@ -500,6 +624,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   parking: "",
   reservationUrl: "",
   gallery: [],
+  crabStatus: "coming-soon",
+  crabStages: DEFAULT_CRAB_STAGES,
 };
 
 /** Retired by migrations/0003 (the crab-centric concept). */

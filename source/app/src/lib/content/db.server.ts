@@ -82,6 +82,8 @@ function toDish(r: Row): Dish {
     dietary: parseList(r.dietary),
     spiceLevel: num(r.spice_level),
     chefRecommendation: num(r.chef_recommendation) === 1,
+    isNew: num(r.is_new) === 1,
+    soldOut: num(r.sold_out) === 1,
     pairing: str(r.pairing),
     featured: num(r.featured) === 1,
     published: num(r.published) === 1,
@@ -215,12 +217,12 @@ export async function upsertDish(dish: Dish): Promise<void> {
   const db = await requireDb();
   await db
     .prepare(
-      `INSERT INTO dishes (id, slug, name, description, price, category, origin, influence, ingredients, technique, story, image, image_alt, gallery, dietary, spice_level, chef_recommendation, pairing, featured, published, sort, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+      `INSERT INTO dishes (id, slug, name, description, price, category, origin, influence, ingredients, technique, story, image, image_alt, gallery, dietary, spice_level, chef_recommendation, is_new, sold_out, pairing, featured, published, sort, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
        ON CONFLICT(id) DO UPDATE SET slug = excluded.slug, name = excluded.name, description = excluded.description, price = excluded.price,
          category = excluded.category, origin = excluded.origin, influence = excluded.influence, ingredients = excluded.ingredients,
          technique = excluded.technique, story = excluded.story, image = excluded.image, image_alt = excluded.image_alt, gallery = excluded.gallery,
-         dietary = excluded.dietary, spice_level = excluded.spice_level, chef_recommendation = excluded.chef_recommendation, pairing = excluded.pairing,
+         dietary = excluded.dietary, spice_level = excluded.spice_level, chef_recommendation = excluded.chef_recommendation, is_new = excluded.is_new, sold_out = excluded.sold_out, pairing = excluded.pairing,
          featured = excluded.featured, published = excluded.published, sort = excluded.sort, updated_at = datetime('now')`,
     )
     .bind(
@@ -241,6 +243,8 @@ export async function upsertDish(dish: Dish): Promise<void> {
       JSON.stringify(dish.dietary),
       dish.spiceLevel,
       dish.chefRecommendation ? 1 : 0,
+      dish.isNew ? 1 : 0,
+      dish.soldOut ? 1 : 0,
       dish.pairing,
       dish.featured ? 1 : 0,
       dish.published ? 1 : 0,

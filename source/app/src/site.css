@@ -294,6 +294,114 @@ html.lenis body {
   -webkit-backdrop-filter: blur(14px);
 }
 
+/* Floating navigation */
+.v-nav {
+  position: fixed;
+  z-index: 50;
+  top: 12px;
+  left: clamp(0.6rem, 2vw, 1.5rem);
+  right: clamp(0.6rem, 2vw, 1.5rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  height: 60px;
+  padding: 0 0.45rem 0 1rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  transition: background-color 0.5s var(--ease-tide), border-color 0.5s var(--ease-tide), box-shadow 0.5s var(--ease-tide);
+}
+.v-nav[data-scrolled="true"] {
+  border-color: var(--color-hairline);
+  background: color-mix(in srgb, var(--color-volcanic) 80%, transparent);
+  box-shadow: 0 18px 40px -24px rgb(0 0 0 / 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.v-nav__brand {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.7rem;
+}
+.v-nav__places {
+  display: none;
+}
+.v-nav__places ul {
+  display: flex;
+  gap: clamp(0.8rem, 1.5vw, 1.7rem);
+}
+.v-nav__link {
+  position: relative;
+  display: flex;
+  min-height: 44px;
+  align-items: center;
+  padding: 0 0.15rem;
+  color: var(--color-bone);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.v-nav__sub {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 50%;
+  color: var(--color-ember);
+  font-family: var(--font-accent);
+  font-size: 0.95rem;
+  font-weight: 300;
+  letter-spacing: 0;
+  text-transform: none;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 0.9);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -4px);
+  transition: opacity 0.4s var(--ease-tide), transform 0.4s var(--ease-tide);
+}
+.v-nav__link:hover .v-nav__sub,
+.v-nav__link:focus-visible .v-nav__sub {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+.v-nav__wave {
+  position: absolute;
+  left: 0;
+  bottom: 8px;
+  width: 100%;
+  height: 5px;
+  overflow: visible;
+}
+.v-nav__wave path {
+  fill: none;
+  stroke: var(--color-ember);
+  stroke-width: 1.2;
+  stroke-dasharray: 70;
+  stroke-dashoffset: 70;
+  vector-effect: non-scaling-stroke;
+  transition: stroke-dashoffset 0.6s var(--ease-tide);
+}
+.v-nav__link:hover .v-nav__wave path,
+.v-nav__link:focus-visible .v-nav__wave path,
+.v-nav__link[aria-current="page"] .v-nav__wave path {
+  stroke-dashoffset: 0;
+}
+.v-nav__actions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.4rem;
+}
+@media (min-width: 1180px) {
+  .v-nav__places {
+    display: block;
+  }
+  .v-nav .v-nav__toggle {
+    display: none;
+  }
+}
+
 .sm-menu-toggle {
   display: inline-flex;
   align-items: center;
@@ -364,7 +472,8 @@ html.lenis body {
   max-width: 80rem;
   min-height: 100dvh;
   margin: 0 auto;
-  padding: 7.5rem clamp(1.25rem, 5vw, 4rem) 3rem;
+  /* The bottom clears the floating sound control. */
+  padding: 7.5rem clamp(1.25rem, 5vw, 4rem) 6rem;
   align-content: center;
 }
 @media (min-width: 1024px) {
@@ -403,11 +512,17 @@ html.lenis body {
   font-weight: 200;
   font-size: clamp(1.2rem, 2vw, 1.7rem);
   color: var(--color-clay);
-  transform: translateX(-12px);
   transition: transform 0.5s var(--ease-tide), color 0.35s;
+}
+/* Touch screens: the line of character always shows, on its own line. */
+@media not ((hover: hover) and (pointer: fine)) {
+  .sm-journey-link__sub {
+    flex-basis: 100%;
+  }
 }
 @media (hover: hover) and (pointer: fine) {
   .sm-journey-link__sub {
+    transform: translateX(-12px);
     clip-path: inset(0 100% 0 0);
     transition: clip-path 0.6s var(--ease-tide), transform 0.6s var(--ease-tide);
   }
@@ -926,14 +1041,35 @@ select.sm-input option {
     transform: scaleY(0.55) translateX(-2px);
   }
 }
-@media (max-width: 639px) {
-  .v-sound__btn {
-    justify-content: center;
-    min-width: 44px;
-    padding: 0;
+.v-sound {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.v-sound__btn {
+  border: 1px solid rgb(241 232 216 / 0.16);
+}
+.v-sound__btn[aria-pressed="true"] {
+  border-color: rgb(216 138 100 / 0.45);
+}
+.v-sound__hint {
+  color: var(--color-sand);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: v-hint 2.4s ease-in-out infinite;
+}
+/* The opening's Enter, or the open menu, already asks for the tap. */
+.sm-locked .v-sound__hint {
+  display: none;
+}
+@keyframes v-hint {
+  0%,
+  100% {
+    opacity: 0.45;
   }
-  .v-sound__label {
-    display: none;
+  50% {
+    opacity: 1;
   }
 }
 
@@ -952,7 +1088,7 @@ select.sm-input option {
   pointer-events: none;
 }
 /* Without JavaScript the opening clears itself; returning visitors never see it. */
-.v-opening:not([data-state]) {
+.v-opening:not([data-live]) {
   animation: v-opening-failsafe 1.4s var(--ease-tide) 6s forwards;
 }
 @keyframes v-opening-failsafe {
@@ -1023,6 +1159,91 @@ html[data-sm-seen="1"] .v-opening {
 }
 .v-opening[data-phase="fire"] .v-opening__brand {
   opacity: 1;
+}
+/* Enter: the tap that lets the sound begin. */
+.v-opening__gate {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1rem;
+  text-align: center;
+  transition: opacity 1.2s var(--ease-tide), visibility 0s 1.2s;
+}
+.v-opening:not([data-state="gate"]) .v-opening__gate {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.v-opening__hint {
+  color: var(--color-sand);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+}
+.v-opening__enter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+  min-height: 52px;
+  padding: 0 1.8rem;
+  border: 1px solid rgb(241 232 216 / 0.35);
+  border-radius: 999px;
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-size: 1.35rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.4s, background-color 0.4s, box-shadow 0.6s var(--ease-tide);
+}
+.v-opening__enter:hover,
+.v-opening__enter:focus-visible {
+  border-color: var(--color-ember);
+  background: rgb(156 74 46 / 0.18);
+  box-shadow: 0 0 44px -8px rgb(216 138 100 / 0.55);
+}
+.v-opening__enter svg {
+  width: 26px;
+  height: 14px;
+  overflow: visible;
+}
+.v-opening__enter path {
+  fill: none;
+  stroke: var(--color-ember);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  animation: v-wave 2.4s ease-in-out infinite;
+  transform-origin: 50% 50%;
+}
+.v-opening__note {
+  color: rgb(216 199 169 / 0.75);
+  font-size: 0.82rem;
+}
+.v-opening__quiet {
+  min-height: 44px;
+  padding: 0 0.6rem;
+  color: rgb(216 199 169 / 0.8);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-decoration-color: rgb(216 199 169 / 0.35);
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+.v-opening__quiet:hover {
+  color: var(--color-bone);
+}
+.v-opening__place {
+  color: var(--color-sand);
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
 }
 .v-opening__skip {
   position: absolute;
@@ -1547,53 +1768,170 @@ html[data-sm-seen="1"] .v-opening {
 .v-clock__copy .v-lede {
   max-width: 30rem;
 }
-.v-clock__time {
+.v-clock__row {
   display: flex;
-  align-items: flex-start;
-  gap: 1.4rem;
-  margin-top: 2rem;
+  align-items: center;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  margin-top: clamp(1.25rem, 3vh, 2rem);
 }
-.v-clock__time .v-ruler {
-  margin-top: 1.4rem;
-  width: min(22rem, 100%);
+.v-clock__lines {
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 1.9vw, 1.7rem);
+  font-weight: 300;
+  line-height: 1.3;
 }
-.v-clock__dial {
+.v-clock__note {
+  max-width: 28rem;
+  margin-top: clamp(1rem, 2.5vh, 1.5rem);
+  color: var(--color-sand);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.v-clock .v-ruler {
+  margin-top: clamp(1.25rem, 3vh, 2rem);
+  width: min(24rem, 100%);
+}
+
+/* The clock that becomes a plate. --ss-progress runs from morning (0) to evening (1). */
+.v-plate {
+  --p: var(--ss-progress, 0);
   flex: none;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: clamp(6.5rem, 18vh, 12.5rem);
+  height: auto;
   overflow: visible;
 }
-.v-clock__dial circle:first-child,
-.v-clock__dial line {
+.v-plate * {
+  transform-box: view-box;
+  transform-origin: 60px 60px;
+}
+.v-plate__rim,
+.v-plate__well,
+.v-plate__ticks line,
+.v-plate__hands line {
   fill: none;
-  stroke: rgb(241 232 216 / 0.45);
-  stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
-/* From 8 in the morning to 10 at night: the hour hand turns 420 degrees,
-   the minute hand fourteen times. */
-.v-clock__dial .v-clock__hour,
-.v-clock__dial .v-clock__minute {
+.v-plate__rim {
+  stroke: rgb(241 232 216 / 0.55);
+  stroke-width: 1.2;
+}
+.v-plate__well {
+  stroke: rgb(241 232 216 / 0.4);
+  stroke-width: 1;
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 * (1 - clamp(0, (var(--p) - 0.2) * 2, 1)));
+}
+.v-plate__ticks {
+  opacity: calc(1 - var(--p) * 1.7);
+  transform: scale(calc(1 + var(--p) * 0.35)) rotate(calc(var(--p) * 25deg));
+}
+.v-plate__ticks line {
+  stroke: rgb(241 232 216 / 0.6);
+  stroke-width: 1;
+}
+.v-plate__hands {
+  opacity: calc(1 - clamp(0, (var(--p) - 0.55) * 3, 1));
+}
+.v-plate__hands line {
   stroke: var(--color-bone);
   stroke-linecap: round;
-  transform-box: view-box;
-  transform-origin: 32px 32px;
 }
-.v-clock__dial .v-clock__hour {
-  stroke-width: 2;
-  transform: rotate(calc(240deg + var(--ss-progress, 0) * 420deg));
+.v-plate__hour {
+  stroke-width: 2.2;
+  transform: rotate(calc(240deg + var(--p) * 420deg));
 }
-.v-clock__dial .v-clock__minute {
-  stroke: var(--color-ember);
+.v-plate__minute {
   stroke-width: 1.4;
-  transform: rotate(calc(var(--ss-progress, 0) * 5040deg));
+  transform: rotate(calc(var(--p) * 5040deg));
 }
-.v-clock__pin {
+/* The hands melt into two streams of coffee that keep flowing on their own. */
+.v-plate__coffee {
+  opacity: clamp(0, (var(--p) - 0.45) * 2.5, 1);
+}
+.v-plate__coffee path {
+  fill: none;
+  stroke: #d4955e;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 5 7;
+  animation: v-coffee 1.1s linear infinite;
+}
+.v-plate__coffee path:last-child {
+  stroke: #a8683c;
+  animation-duration: 1.4s;
+}
+@keyframes v-coffee {
+  to {
+    stroke-dashoffset: -24;
+  }
+}
+.v-plate__sun {
+  transform: translateX(calc(-46px + var(--p) * 92px));
+  mix-blend-mode: screen;
+}
+.v-plate__pin {
   fill: var(--color-ember);
+}
+
+/* Dish marks: vegetarian, chef's special, new, sold out */
+.v-marks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+}
+.v-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.12rem 0.55rem;
+  border: 1px solid rgb(241 232 216 / 0.2);
+  border-radius: 999px;
+  color: var(--color-sand);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.v-mark__veg {
+  position: relative;
+  width: 0.7rem;
+  height: 0.7rem;
+  border: 1.5px solid #6fa36a;
+  border-radius: 2px;
+}
+.v-mark__veg::after {
+  position: absolute;
+  inset: 2px;
+  content: "";
+  border-radius: 50%;
+  background: #6fa36a;
+}
+.v-mark--chef {
+  border-color: rgb(216 138 100 / 0.55);
+  color: var(--color-ember);
+}
+.v-mark--new {
+  border-color: transparent;
+  background: rgb(156 74 46 / 0.9);
+  color: var(--color-bone);
+}
+.v-mark--out {
+  border-color: rgb(241 232 216 / 0.45);
+  color: var(--color-bone);
 }
 /* Phones: the pour fills whatever the words leave at the top; the words sit on
    the dark below, so they never cover the bowl. */
 @media (max-width: 767px) {
+  .v-plate {
+    width: 5.6rem;
+  }
+  .v-clock__lines {
+    font-size: 1.15rem;
+  }
+  .v-clock__note {
+    display: none;
+  }
   .v-clock__stage {
     display: flex;
     flex-direction: column;
@@ -1702,15 +2040,22 @@ html[data-sm-seen="1"] .v-opening {
   animation: v-float var(--dur, 14s) ease-in-out infinite alternate;
   animation-delay: var(--delay, 0s);
 }
+.v-spice__item {
+  --near: 0;
+  --tilt: 0deg;
+}
 .v-spice__item img {
   width: 100%;
-  filter: blur(var(--blur, 1.2px)) brightness(0.72) drop-shadow(0 18px 30px rgb(0 0 0 / 0.6));
-  transition: transform 1s var(--ease-tide), filter 0.8s var(--ease-tide);
+  transform: perspective(700px) translateZ(calc(var(--near) * 70px)) rotateY(var(--tilt)) rotate(calc(var(--near) * 6deg))
+    scale(calc(1 + var(--near) * 0.3));
+  filter: blur(calc(var(--blur, 1.2px) * (1 - var(--near)))) brightness(calc(0.72 + var(--near) * 0.3))
+    drop-shadow(0 18px 30px rgb(0 0 0 / 0.6));
+  transition: transform 0.7s var(--ease-tide), filter 0.6s var(--ease-tide);
 }
 .v-spice__item:hover img,
 .v-spice__item:focus-visible img,
 .v-spice__item[data-active="true"] img {
-  transform: scale(1.45);
+  transform: perspective(700px) translateZ(90px) rotateY(var(--tilt)) rotate(4deg) scale(1.45);
   filter: blur(0) brightness(1.04) drop-shadow(0 30px 40px rgb(0 0 0 / 0.75));
 }
 .v-spice__item[data-active="true"] {
@@ -2259,7 +2604,7 @@ html[data-sm-seen="1"] .v-opening {
 @media (min-width: 900px) {
   .v-menu-nav {
     position: sticky;
-    top: 76px;
+    top: 82px;
   }
   .v-menu-cat {
     scroll-margin-top: 11rem;
@@ -2286,11 +2631,33 @@ html[data-sm-seen="1"] .v-opening {
 .v-menu-item--photo {
   grid-template-columns: 4rem 1fr auto;
 }
+.v-menu-item .v-marks {
+  grid-column: 1 / -1;
+  margin-block: 0.2rem;
+}
+.v-menu-item--photo .v-marks {
+  grid-column: 2 / -1;
+}
+.v-menu-item--out .v-menu-item__name,
+.v-menu-item--out .v-menu-item__price,
+.v-menu-item--out .v-menu-item__desc,
+.v-menu-item--out .v-menu-item__photo {
+  opacity: 0.5;
+}
+.v-menu-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 0.6rem;
+}
 .v-menu-item--photo .v-menu-item__desc {
   grid-column: 2 / -1;
 }
 .v-menu-item__photo {
-  grid-row: span 2;
+  position: relative;
+  z-index: 1;
+  grid-row: span 3;
+  transition: transform 0.5s var(--ease-tide), box-shadow 0.5s var(--ease-tide);
   width: 4rem;
   height: 4rem;
   object-fit: cover;
@@ -2302,6 +2669,13 @@ html[data-sm-seen="1"] .v-opening {
   color: var(--color-sand);
   font-size: 0.9rem;
   line-height: 1.55;
+}
+@media (hover: hover) and (pointer: fine) {
+  .v-menu-item--photo:hover .v-menu-item__photo {
+    z-index: 5;
+    transform: scale(2.1);
+    box-shadow: 0 18px 40px -10px rgb(0 0 0 / 0.85);
+  }
 }
 .v-menu-tag {
   display: inline-block;
@@ -2471,6 +2845,339 @@ html[data-sm-seen="1"] .v-opening {
   background:
     linear-gradient(0deg, rgb(14 12 11 / 0.88) 0%, rgb(14 12 11 / 0.2) 55%, rgb(14 12 11 / 0.35) 100%),
     linear-gradient(90deg, rgb(14 12 11 / 0.5), transparent 60%);
+}
+
+/* Story chapters (Our story, The coast) */
+.v-chapter {
+  padding-block: clamp(4rem, 9vw, 8rem);
+}
+.v-chapter__grid {
+  display: grid;
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: center;
+}
+@media (min-width: 900px) {
+  .v-chapter__grid {
+    grid-template-columns: 5fr 6fr;
+  }
+  .v-chapter[data-flip="true"] .v-chapter__media {
+    order: 2;
+  }
+}
+.v-chapter__media {
+  aspect-ratio: 4 / 5;
+}
+.v-chapter__copy {
+  max-width: 34rem;
+}
+.v-closing {
+  padding-block: clamp(6rem, 12vw, 10rem);
+  text-align: center;
+}
+
+/* The coast: five shores */
+.v-shores {
+  display: grid;
+  gap: clamp(3rem, 6vw, 5rem) clamp(1.5rem, 3vw, 3rem);
+}
+@media (min-width: 900px) {
+  .v-shores {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v-shores > :nth-child(even) {
+    transform: translateY(6rem);
+  }
+}
+.v-shore {
+  display: grid;
+  gap: 1.4rem;
+}
+.v-shore__media {
+  aspect-ratio: 4 / 5;
+}
+
+/* Crab: Something is growing (home) and the journey page */
+.v-grow {
+  position: relative;
+  overflow: hidden;
+  background: #0b1311;
+}
+.v-grow__film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+}
+.v-grow .v-accent-title {
+  font-size: clamp(2.8rem, 5.4vw, 5.6rem);
+}
+.v-grow__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(8 12 11 / 0.9) 0%, rgb(8 12 11 / 0.55) 45%, rgb(8 12 11 / 0.35) 100%),
+    linear-gradient(0deg, rgb(8 12 11 / 0.8) 0%, transparent 40%);
+}
+.v-steps {
+  position: relative;
+  display: grid;
+  gap: 0.2rem;
+  padding-left: 0.2rem;
+}
+.v-steps::before {
+  position: absolute;
+  top: 1.4rem;
+  bottom: 1.4rem;
+  left: 0.65rem;
+  width: 1px;
+  content: "";
+  background: rgb(241 232 216 / 0.22);
+}
+.v-steps__item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.6rem 2.6rem 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 3.4rem;
+  border-bottom: 1px solid rgb(241 232 216 / 0.08);
+}
+.v-steps__dot {
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 1px solid var(--color-ember);
+  border-radius: 50%;
+  background: #0b1311;
+}
+.v-steps__item[data-status="now"] .v-steps__dot {
+  background: var(--color-ember);
+  box-shadow: 0 0 0 0 rgb(216 138 100 / 0.6);
+  animation: v-pulse 2.6s ease-out infinite;
+}
+.v-steps__num {
+  color: var(--color-sand);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+}
+.v-steps__title {
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-size: clamp(1.35rem, 2.2vw, 1.9rem);
+  font-weight: 300;
+}
+.v-steps__state {
+  color: var(--color-sand);
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.v-steps__item[data-status="now"] .v-steps__state {
+  color: var(--color-ember);
+}
+.v-steps__item[data-status="soon"] .v-steps__title {
+  color: rgb(241 232 216 / 0.7);
+  font-style: italic;
+}
+
+/* The journey page: more elemental, a documentary grade. */
+.v-crab img {
+  filter: saturate(0.82) contrast(1.06);
+}
+.v-crab__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.6rem;
+  color: var(--color-sand);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.v-crab__legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.v-crab__legend li::before {
+  width: 0.8rem;
+  height: 0.8rem;
+  content: "";
+  border: 1px solid var(--color-ember);
+  border-radius: 50%;
+}
+.v-crab__legend li[data-status="now"]::before {
+  background: var(--color-ember);
+}
+.v-journey {
+  --journey: 0;
+  position: relative;
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+.v-journey::before,
+.v-journey::after {
+  position: absolute;
+  top: 0;
+  left: 1.1rem;
+  width: 1px;
+  content: "";
+}
+.v-journey::before {
+  bottom: 0;
+  background: rgb(241 232 216 / 0.16);
+}
+.v-journey::after {
+  height: calc(var(--journey) * 100%);
+  background: linear-gradient(180deg, rgb(120 170 180 / 0.9), var(--color-ember));
+}
+.v-journey__step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  gap: 1.2rem 1.4rem;
+  padding-block: clamp(2.5rem, 5vw, 4rem);
+}
+.v-journey__step > :not(.v-journey__marker) {
+  grid-column: 2;
+}
+.v-journey__marker {
+  grid-row: 1 / span 3;
+  padding-top: 0.7rem;
+}
+.v-journey__marker span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.6rem;
+  border: 1px solid var(--color-ember);
+  border-radius: 50%;
+  background: var(--color-volcanic);
+  transition: transform 0.6s var(--ease-tide), box-shadow 0.6s var(--ease-tide);
+}
+.v-journey__step[data-status="now"] .v-journey__marker span {
+  background: var(--color-ember);
+}
+.v-journey__step[data-active="true"] .v-journey__marker span {
+  transform: scale(1.5);
+  box-shadow: 0 0 22px rgb(216 138 100 / 0.7);
+}
+.v-journey__num {
+  color: var(--color-ember);
+  font-family: var(--font-accent);
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-weight: 200;
+  line-height: 1;
+}
+.v-journey__title {
+  margin-top: 0.4rem;
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.6vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1;
+}
+.v-journey__note {
+  margin-top: 0.6rem;
+  color: var(--color-sand);
+}
+.v-journey__state {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid rgb(216 138 100 / 0.5);
+  border-radius: 999px;
+  color: var(--color-ember);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+.v-journey__step[data-status="now"] .v-journey__state {
+  border-color: transparent;
+  background: rgb(156 74 46 / 0.85);
+  color: var(--color-bone);
+}
+.v-journey__media {
+  aspect-ratio: 4 / 5;
+  max-width: 30rem;
+  background: #0b1311;
+}
+.v-journey__step[data-status="soon"] .v-journey__media img {
+  filter: saturate(0.55) contrast(1.05) brightness(0.85);
+}
+@media (hover: hover) and (pointer: fine) {
+  .v-journey__media:hover img {
+    filter: url(#v-ripple) saturate(0.85);
+  }
+}
+.v-journey__media--empty {
+  border: 1px dashed rgb(241 232 216 / 0.2);
+}
+.v-journey__body {
+  max-width: 26rem;
+  color: var(--color-sand);
+  font-size: 1.05rem;
+  line-height: 1.65;
+}
+.v-journey__here {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 0 1.5rem 3.6rem;
+  color: var(--color-ember);
+  font-family: var(--font-accent);
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  font-weight: 200;
+}
+.v-journey__here::after {
+  flex: 1;
+  height: 1px;
+  content: "";
+  background: repeating-linear-gradient(90deg, rgb(216 138 100 / 0.6) 0 6px, transparent 6px 12px);
+}
+@media (min-width: 900px) {
+  .v-journey__step {
+    grid-template-columns: 3rem minmax(0, 17rem) minmax(0, 1fr) minmax(0, 18rem);
+    align-items: center;
+    gap: 2.5rem;
+  }
+  .v-journey__step > :not(.v-journey__marker) {
+    grid-column: auto;
+  }
+  .v-journey__marker {
+    grid-row: auto;
+    align-self: start;
+    padding-top: 1.4rem;
+  }
+  .v-journey__step:nth-child(even) .v-journey__media {
+    justify-self: end;
+  }
+}
+.v-crab__doc {
+  display: grid;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.v-crab__doc > * {
+  aspect-ratio: 4 / 5;
+}
+.v-crab__doc-wide {
+  grid-column: 1 / -1;
+  aspect-ratio: 16 / 10 !important;
+}
+@media (min-width: 900px) {
+  .v-crab__doc {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  .v-crab__doc-wide {
+    grid-column: auto;
+    aspect-ratio: auto !important;
+  }
 }
 
 /* Inner pages */

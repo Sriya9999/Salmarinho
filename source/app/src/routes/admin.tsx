@@ -15,7 +15,7 @@ import {
   adminSetReservation,
   adminStatus,
 } from "@/lib/admin/admin.functions";
-import type { Dish, EventItem, JournalPost, MenuCategory, Reservation, SiteSettings } from "@/lib/content/types";
+import type { CrabStage, Dish, EventItem, JournalPost, MenuCategory, Reservation, SiteSettings } from "@/lib/content/types";
 import { DIETARY, JOURNAL_CATEGORIES, MOODS, formatPrice } from "@/lib/site";
 
 export const Route = createFileRoute("/admin")({
@@ -32,12 +32,13 @@ type Data = {
   settings: SiteSettings;
   reservations: Reservation[];
 };
-type Tab = "reservations" | "dishes" | "courses" | "journal" | "events" | "settings" | "password";
+type Tab = "reservations" | "dishes" | "courses" | "journal" | "crab" | "events" | "settings" | "password";
 const TABS: { id: Tab; label: string }[] = [
   { id: "reservations", label: "Reservations" },
   { id: "dishes", label: "Dishes" },
   { id: "courses", label: "Courses" },
   { id: "journal", label: "Journal" },
+  { id: "crab", label: "Crab journey" },
   { id: "events", label: "Events" },
   { id: "settings", label: "Restaurant details" },
   { id: "password", label: "Password" },
@@ -161,6 +162,8 @@ function Dashboard({ onSignedOut }: { onSignedOut: () => void }) {
           <Courses categories={data.categories} reload={reload} />
         ) : tab === "journal" ? (
           <Journal posts={data.posts} reload={reload} />
+        ) : tab === "crab" ? (
+          <CrabJourney settings={data.settings} reload={reload} />
         ) : tab === "events" ? (
           <Events events={data.events} reload={reload} />
         ) : tab === "settings" ? (
@@ -314,6 +317,8 @@ const emptyDish = (category: string): Dish => ({
   dietary: [],
   spiceLevel: 0,
   chefRecommendation: false,
+  isNew: false,
+  soldOut: false,
   pairing: "",
   featured: false,
   published: true,
@@ -392,6 +397,8 @@ function DishForm({ initial, categories, onClose, reload }: { initial: Dish; cat
         dietary: d.dietary as (typeof DIETARY)[number][],
         spiceLevel: d.spiceLevel,
         chefRecommendation: d.chefRecommendation,
+        isNew: d.isNew,
+        soldOut: d.soldOut,
         pairing: d.pairing,
         featured: d.featured,
         published: d.published,
@@ -499,7 +506,15 @@ function DishForm({ initial, categories, onClose, reload }: { initial: Dish; cat
         </Field>
         <label className="flex items-center gap-2 text-sm md:pt-7">
           <input type="checkbox" checked={d.chefRecommendation} onChange={(e) => set("chefRecommendation", e.target.checked)} />
-          Chef recommends
+          Chef&rsquo;s special
+        </label>
+        <label className="flex items-center gap-2 text-sm md:pt-7">
+          <input type="checkbox" checked={d.isNew} onChange={(e) => set("isNew", e.target.checked)} />
+          New on the menu
+        </label>
+        <label className="flex items-center gap-2 text-sm md:pt-7">
+          <input type="checkbox" checked={d.soldOut} onChange={(e) => set("soldOut", e.target.checked)} />
+          Sold out today
         </label>
         <label className="flex items-center gap-2 text-sm md:pt-7">
           <input type="checkbox" checked={d.featured} onChange={(e) => set("featured", e.target.checked)} />
@@ -869,6 +884,85 @@ function Events({ events, reload }: { events: EventItem[]; reload: () => Promise
 }
 
 /* ---------------------------------------------------------------- settings */
+
+/* ---------------------------------------------------------------- crab journey */
+
+function CrabJourney({ settings, reload }: { settings: SiteSettings; reload: () => Promise<void> }) {
+  const [status, setStatus] = useState(settings.crabStatus);
+  const [stages, setStages] = useState<CrabStage[]>(settings.crabStages);
+  const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const setStage = <K extends keyof CrabStage>(i: number, key: K, value: CrabStage[K]) =>
+    setStages((prev) => prev.map((s, j) => (j === i ? { ...s, [key]: value } : s)));
+  return (
+    <form
+      className="space-y-8"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const res = await adminSaveSettings({ data: { ...settings, crabStatus: status, crabStages: stages } });
+        if (res.ok) {
+          setMsg({ kind: "ok", text: "Saved. The crab journey is updated." });
+          await reload();
+        } else setMsg({ kind: "error", text: res.message });
+      }}
+    >
+      <div>
+        <h1 className="font-display text-2xl">Crab journey</h1>
+        <p className="mt-2 text-sm text-sand">
+          The story on the crab journey page and the Something is growing section of the home page. Post progress updates in the
+          Journal under &ldquo;The crab&rdquo;; they appear on the crab journey page as field notes.
+        </p>
+      </div>
+      <fieldset className="space-y-3 border border-hairline p-4">
+        <legend className="sm-label px-2">Status</legend>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="radio" name="crab-status" checked={status === "coming-soon"} onChange={() => setStatus("coming-soon")} />
+          Coming soon: the crab is not on the menu yet
+        </label>
+        <label className="flex items-center gap-2 text-sm">
+          <input type="radio" name="crab-status" checked={status === "now-serving"} onChange={() => setStatus("now-serving")} />
+          Now serving: the crab experience has launched
+        </label>
+      </fieldset>
+      <ol className="space-y-6">
+        {stages.map((s, i) => (
+          <li key={i} className="space-y-4 border border-hairline p-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="sm-label">Step {String(i + 1).padStart(2, "0")}</p>
+              <label className="flex items-center gap-2 text-sm">
+                Shown as
+                <select className="sm-input w-auto" value={s.status} onChange={(e) => setStage(i, "status", e.target.value as CrabStage["status"])}>
+                  <option value="now">Happening now</option>
+                  <option value="soon">Coming soon</option>
+                </select>
+              </label>
+            </div>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Name">
+                <input className="sm-input" required value={s.title} onChange={(e) => setStage(i, "title", e.target.value)} />
+              </Field>
+              <Field label="Short line">
+                <input className="sm-input" value={s.note} onChange={(e) => setStage(i, "note", e.target.value)} />
+              </Field>
+            </div>
+            <Field label="Text">
+              <textarea className="sm-input" rows={3} value={s.body} onChange={(e) => setStage(i, "body", e.target.value)} />
+            </Field>
+            <div className="grid gap-4 md:grid-cols-2">
+              <PhotoField label="Photo" value={s.image} onChange={(v) => setStage(i, "image", v)} />
+              <Field label="Photo description" hint="Read aloud by screen readers.">
+                <input className="sm-input" value={s.imageAlt} onChange={(e) => setStage(i, "imageAlt", e.target.value)} />
+              </Field>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <Notice message={msg} />
+      <button type="submit" className="adm-btn">
+        Save the crab journey
+      </button>
+    </form>
+  );
+}
 
 function Settings({ settings, reload }: { settings: SiteSettings; reload: () => Promise<void> }) {
   const [s, setS] = useState<SiteSettings>(settings);

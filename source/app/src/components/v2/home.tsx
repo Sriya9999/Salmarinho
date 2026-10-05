@@ -1,6 +1,15 @@
 // Homepage sections for "an imagined coast", in page order.
 import { Link } from "@tanstack/react-router";
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
+  type ReactNode,
+} from "react";
 
 import { ScrollScrub, type ScrollScrubScene } from "@/components/scroll-scrub/scroll-scrub";
 import { useReserve } from "@/components/site/reserve";
@@ -74,8 +83,7 @@ export function Hero() {
           A little coastal magic, <em>all day.</em>
         </h1>
         <p className="v-lede mt-6">
-          South Indian and Goan breakfast that keeps no clock. Dosa from the tawa, idli from the clay pot, a Ross
-          omelette with poi, and coffee whenever you would like another.
+          South Indian flavours, all-day breakfast and a table inspired by the coast.
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
           <SteamCta href="#whats-cooking">What&rsquo;s cooking?</SteamCta>
@@ -83,6 +91,34 @@ export function Hero() {
         </div>
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ dish marks */
+
+/** Vegetarian, vegan, chef's special, new and sold out, as small marks beside a dish. */
+export function DishMarks({ dish }: { dish: Dish }) {
+  const vegan = dish.dietary.includes("Vegan");
+  const veg = vegan || dish.dietary.includes("Vegetarian");
+  const others = dish.dietary.filter((d) => d !== "Vegan" && d !== "Vegetarian");
+  if (!veg && !dish.chefRecommendation && !dish.isNew && !dish.soldOut && !others.length) return null;
+  return (
+    <ul className="v-marks" aria-label="About this dish">
+      {veg ? (
+        <li className="v-mark v-mark--veg">
+          <span className="v-mark__veg" aria-hidden="true" />
+          {vegan ? "Vegan" : "Vegetarian"}
+        </li>
+      ) : null}
+      {dish.chefRecommendation ? <li className="v-mark v-mark--chef">Chef&rsquo;s special</li> : null}
+      {dish.isNew ? <li className="v-mark v-mark--new">New</li> : null}
+      {dish.soldOut ? <li className="v-mark v-mark--out">Sold out today</li> : null}
+      {others.map((d) => (
+        <li key={d} className="v-mark">
+          {d}
+        </li>
+      ))}
+    </ul>
   );
 }
 
@@ -138,7 +174,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
   };
 
   return (
-    <section id="whats-cooking" className="v-sec relative" data-sound="quiet" aria-labelledby="cooking-title">
+    <section id="whats-cooking" className="v-sec relative" data-sound="breakfast" aria-labelledby="cooking-title">
       <div className="v-wrap">
         <div className="grid items-end gap-8 md:grid-cols-12">
           <div className="md:col-span-7">
@@ -188,6 +224,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
                 <h3 className="v-dish__name">{dish.name}</h3>
                 {dish.price != null ? <span className="v-dish__price">{formatPrice(dish.price)}</span> : null}
               </div>
+              <DishMarks dish={dish} />
               {dish.description ? <p className="v-dish__desc">{dish.description}</p> : null}
             </article>
           ))}
@@ -243,6 +280,47 @@ const coastScenes: ScrollScrubScene[] = [
 ];
 
 /**
+ * A clock that turns into a breakfast plate as the day goes by: the numbers
+ * drift away, the rim and well of a plate draw in, a little sunlight crosses
+ * it, and the hands melt into two streams of coffee that keep flowing.
+ * Driven by --ss-progress on the section; the coffee flows on its own.
+ */
+function ClockPlate() {
+  return (
+    <svg className="v-plate" viewBox="0 0 120 120" aria-hidden="true">
+      <defs>
+        <radialGradient id="v-plate-sun">
+          <stop offset="0" stopColor="#ffd9ad" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#ffd9ad" stopOpacity="0" />
+        </radialGradient>
+        <clipPath id="v-plate-clip">
+          <circle cx="60" cy="60" r="55" />
+        </clipPath>
+      </defs>
+      <g clipPath="url(#v-plate-clip)">
+        <ellipse className="v-plate__sun" cx="60" cy="60" rx="34" ry="64" fill="url(#v-plate-sun)" />
+      </g>
+      <circle className="v-plate__rim" cx="60" cy="60" r="56" />
+      <circle className="v-plate__well" cx="60" cy="60" r="40" pathLength="100" />
+      <g className="v-plate__ticks">
+        {Array.from({ length: 12 }, (_, i) => (
+          <line key={i} x1="60" y1="7" x2="60" y2={i % 3 ? 12 : 15} transform={`rotate(${i * 30} 60 60)`} />
+        ))}
+      </g>
+      <g className="v-plate__hands">
+        <line className="v-plate__hour" x1="60" y1="60" x2="60" y2="34" />
+        <line className="v-plate__minute" x1="60" y1="60" x2="60" y2="18" />
+      </g>
+      <g className="v-plate__coffee">
+        <path d="M60 60 C 65 71, 55 82, 61 94 S 57 108, 61 122" />
+        <path d="M60 60 C 54 70, 66 81, 58 93 S 64 107, 59 123" />
+      </g>
+      <circle className="v-plate__pin" cx="60" cy="60" r="2.4" />
+    </svg>
+  );
+}
+
+/**
  * The sambar pours on a loop the whole time, whether or not the page moves.
  * Scrolling only moves time: the clock hands turn and the dot travels from
  * morning to evening while the frame stays pinned.
@@ -260,7 +338,7 @@ export function ClockSection() {
     });
   }, []);
   return (
-    <section ref={ref} id="breakfast-has-no-clock" className="v-clock" data-sound="waves" aria-labelledby="clock-title">
+    <section ref={ref} id="breakfast-has-no-clock" className="v-clock" data-sound="breakfast" aria-labelledby="clock-title">
       <div className="v-clock__stage">
         <LoopFilm
           className="v-clock__film"
@@ -271,25 +349,26 @@ export function ClockSection() {
         <div className="v-clock__light" aria-hidden="true" />
         <div className="v-wrap v-clock__copy">
           <p className="v-kicker">02 &middot; All day</p>
-          <h2 id="clock-title" className="v-title mt-5 max-w-[11ch]">
+          <h2 id="clock-title" className="v-title v-title--md mt-5 max-w-[12ch]">
             Breakfast doesn&rsquo;t have a clock.
           </h2>
-          <p className="v-lede mt-6">
-            Dosa at noon. Eggs at nine at night. The sambar keeps pouring from the first table of the morning to the
-            last of the evening.
-          </p>
-          <div className="v-clock__time">
-            <svg className="v-clock__dial" viewBox="0 0 64 64" aria-hidden="true">
-              <circle cx="32" cy="32" r="30" />
-              {Array.from({ length: 12 }, (_, i) => (
-                <line key={i} x1="32" y1="4" x2="32" y2={i % 3 ? 7 : 9} transform={`rotate(${i * 30} 32 32)`} />
-              ))}
-              <line className="v-clock__hour" x1="32" y1="32" x2="32" y2="17" />
-              <line className="v-clock__minute" x1="32" y1="32" x2="32" y2="9" />
-              <circle className="v-clock__pin" cx="32" cy="32" r="2" />
-            </svg>
-            <ClockRuler />
+          <div className="v-clock__row">
+            <p className="v-clock__lines">
+              Slow mornings.
+              <br />
+              Long breakfasts.
+              <br />
+              South Indian comfort.
+              <br />
+              No rush.
+            </p>
+            <ClockPlate />
           </div>
+          <p className="v-clock__note">
+            Dosa at noon. Eggs at nine at night. The sambar keeps pouring from the first table of the morning to the last of
+            the evening.
+          </p>
+          <ClockRuler />
         </div>
       </div>
     </section>
@@ -368,7 +447,7 @@ function useParallax<T extends HTMLElement>() {
 export function FromTheSouth() {
   const ref = useParallax<HTMLElement>();
   return (
-    <section ref={ref} id="from-the-south" className="v-sec relative overflow-hidden bg-smoked/40" data-sound="quiet" aria-labelledby="south-title">
+    <section ref={ref} id="from-the-south" className="v-sec relative overflow-hidden bg-smoked/40" data-sound="breakfast" aria-labelledby="south-title">
       <div className="v-particles" aria-hidden="true">
         {MOTES.map((m, i) => (
           <span
@@ -382,7 +461,7 @@ export function FromTheSouth() {
           <div className="v-collage__copy" style={{ "--c": 5, "--r": 3 } as CSSProperties}>
             <p className="v-kicker">03 &middot; Roots</p>
             <h2 id="south-title" className="v-title mt-5">
-              From the <em>South.</em>
+              From the South, <em>with a little coast.</em>
             </h2>
             <p className="v-lede mt-6">
               Coconut, curry leaf, pepper, mustard seed, tamarind and rice. Batter left overnight, a banana leaf for a
@@ -413,6 +492,7 @@ const SPICES = [
   { id: "chilli", name: "Dried red chilli", text: "Darkened in ghee for colour and a gentle, smoky heat. The heart of a ghee roast.", cut: "chilli", macro: "/assets/v2/south/chilli.webp", x: "84%", y: "40%", w: "11rem", blur: "1px", dur: "16s" },
   { id: "tamarind", name: "Tamarind", text: "Sour and fruity, the quiet backbone of a good sambhar.", cut: "tamarind", macro: "/assets/v2/south/tamarind.webp", x: "30%", y: "62%", w: "10rem", blur: "1.4px", dur: "18s" },
   { id: "coffee", name: "Coffee", text: "Roasted dark, brewed strong and poured with milk, morning and evening.", cut: "coffee", macro: "/assets/v2/south/coffee.webp", x: "54%", y: "52%", w: "8rem", blur: "2.6px", dur: "14s" },
+  { id: "coconut", name: "Coconut", text: "In the chutney, in the oil that tempers the appe, in the milk of a Goa tropical smoothie.", cut: "coconut", macro: "/assets/v2/south/coconut.webp", x: "47%", y: "84%", w: "9.5rem", blur: "1.8px", dur: "17s" },
   { id: "cardamom", name: "Cardamom", text: "Green, floral and bright. A pod or two lifts a glass of masala chai.", cut: "cardamom", macro: "", x: "12%", y: "74%", w: "7.5rem", blur: "2px", dur: "12s" },
   { id: "cinnamon", name: "Cinnamon", text: "Warm, sweet bark, used gently in masalas and in chai.", cut: "cinnamon", macro: "", x: "72%", y: "72%", w: "10.5rem", blur: "1.2px", dur: "19s" },
 ];
@@ -442,8 +522,33 @@ function SpiceRow({ spice }: { spice: (typeof SPICES)[number] }) {
 export function FollowTheSpice() {
   const [active, setActive] = useState<string | null>(null);
   const current = SPICES.find((s) => s.id === active) ?? null;
+  const field = useRef<HTMLDivElement>(null);
+  // As the cursor approaches, each ingredient drifts toward the viewer, turns a
+  // little and sharpens; the nearest one comes forward with its story.
+  const onApproach = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "mouse" || prefersReducedMotion()) return;
+    let nearest: string | null = null;
+    let best = 0.5;
+    for (const el of field.current?.querySelectorAll<HTMLElement>(".v-spice__item") ?? []) {
+      const r = el.getBoundingClientRect();
+      const dx = event.clientX - (r.left + r.width / 2);
+      const dy = event.clientY - (r.top + r.height / 2);
+      const near = Math.max(0, 1 - Math.hypot(dx, dy) / 300);
+      el.style.setProperty("--near", near.toFixed(3));
+      el.style.setProperty("--tilt", `${Math.max(-14, Math.min(14, (dx / r.width) * 14)).toFixed(1)}deg`);
+      if (near > best) {
+        best = near;
+        nearest = el.dataset.id ?? null;
+      }
+    }
+    if (nearest && nearest !== active) setActive(nearest);
+  };
+  const onLeave = () => {
+    for (const el of field.current?.querySelectorAll<HTMLElement>(".v-spice__item") ?? []) el.style.setProperty("--near", "0");
+    setActive(null);
+  };
   return (
-    <section id="follow-the-spice" className="v-spice" data-sound="quiet" data-cursor="ember" aria-labelledby="spice-title">
+    <section id="follow-the-spice" className="v-spice" data-sound="spice" data-cursor="ember" aria-labelledby="spice-title">
       <div className="v-wrap pt-[clamp(5rem,10vw,9rem)]">
         <p className="v-kicker">04 &middot; Ingredients</p>
         <h2 id="spice-title" className="v-title mt-5 max-w-3xl">
@@ -452,12 +557,13 @@ export function FollowTheSpice() {
         <p className="v-lede mt-6 v-spice__hint">Move across the dark and bring an ingredient closer.</p>
       </div>
 
-      <div className="v-spice__field" onMouseLeave={() => setActive(null)}>
+      <div ref={field} className="v-spice__field" onPointerMove={onApproach} onMouseLeave={onLeave}>
         {SPICES.map((spice) => (
           <button
             key={spice.id}
             type="button"
             className="v-spice__item"
+            data-id={spice.id}
             data-active={active === spice.id}
             aria-pressed={active === spice.id}
             aria-label={spice.name}
@@ -616,7 +722,7 @@ export function Fire() {
           film={{ src: "/assets/v2/film/fire.mp4", mobileSrc: "/assets/v2/film/fire-m.mp4", poster: "/assets/v2/film/fire.webp" }}
         />
         <div className="v-fire__shade" aria-hidden="true" />
-        <div className="v-smoke v-smoke--in" aria-hidden="true" />
+        <div className="v-smoke v-smoke--in" aria-hidden="true" data-smoke="" />
         <div className="v-wrap relative z-[3] flex min-h-[112svh] flex-col justify-center py-24">
           <p className="v-kicker">07 &middot; Fire</p>
           <h2 id="fire-title" className="v-title mt-5 max-w-[12ch]">
@@ -627,7 +733,7 @@ export function Fire() {
             pot.
           </p>
         </div>
-        <div className="v-smoke v-smoke--out" aria-hidden="true">
+        <div className="v-smoke v-smoke--out" aria-hidden="true" data-smoke="">
           <span />
           <span />
           <span />
@@ -659,7 +765,7 @@ const ROOM_DETAILS = [
 
 export function ComeIn() {
   return (
-    <section id="come-in" className="relative" data-sound="quiet" aria-labelledby="room-title">
+    <section id="come-in" className="relative" data-sound="restaurant" aria-labelledby="room-title">
       <div className="v-room">
         <ScrollFilm
           className="v-room__film"
@@ -741,33 +847,6 @@ export function StoryCard({ post }: { post: JournalPost }) {
   );
 }
 
-/* ------------------------------------------------------------------ 10 something is growing */
-
-export function SomethingIsGrowing() {
-  return (
-    <section id="something-is-growing" className="v-growing" data-sound="waves" aria-labelledby="growing-title">
-      <LoopFilm
-        className="v-growing__film"
-        film={{ src: "/assets/v2/film/mangrove.mp4", mobileSrc: "/assets/v2/film/mangrove-m.mp4", poster: "/assets/v2/film/mangrove.webp" }}
-      />
-      <div className="v-growing__shade" aria-hidden="true" />
-      <div className="v-wrap relative flex min-h-[clamp(26rem,70svh,40rem)] flex-col justify-center py-20">
-        <p className="v-soon">10 &middot; Coming soon</p>
-        <h2 id="growing-title" className="v-accent-title mt-5 max-w-[12ch]">
-          Something is growing.
-        </h2>
-        <p className="v-lede mt-6">
-          A slow project is underway in calm water. It is not on the menu yet, and we will not rush it to the table.
-        </p>
-        <Link to="/the-crab-journey" className="v-ripple-link mt-8 self-start">
-          <span className="v-ripple-link__ring" aria-hidden="true" />
-          Follow the journey
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 /* ------------------------------------------------------------------ come to the table */
 
 export function ComeToTheTable({ settings }: { settings: SiteSettings }) {
@@ -775,7 +854,7 @@ export function ComeToTheTable({ settings }: { settings: SiteSettings }) {
   const [ref, seen] = useInView<HTMLDivElement>();
   const whatsapp = settings.whatsapp.replace(/[^\d]/g, "");
   return (
-    <section id="come-to-the-table" className="v-table" data-sound="waves" aria-labelledby="table-title">
+    <section id="come-to-the-table" className="v-table" data-sound="restaurant" aria-labelledby="table-title">
       <div className="v-table__media">
         <img src="/assets/v2/table/evening.webp" alt="The terrace in the evening, tables lit by candles above the sea" loading="lazy" decoding="async" />
       </div>
@@ -842,16 +921,16 @@ export function ComeToTheTable({ settings }: { settings: SiteSettings }) {
             ) : null}
           </dl>
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <button type="button" className="sm-ember-pill" onClick={open}>
+            <Link to="/visit" className="sm-ember-pill">
               <span className="sm-ember-pill__coal" aria-hidden="true" />
-              <span className="relative">Reserve a table</span>
-            </button>
-            <Link to="/visit" className="v-contour-link">
-              Visit us
+              <span className="relative">Visit Sal Marinho</span>
+            </Link>
+            <button type="button" className="v-contour-link" onClick={open}>
+              Reserve your table
               <svg viewBox="0 0 260 8" preserveAspectRatio="none" aria-hidden="true">
                 <path d="M0 4 C 30 0, 50 8, 80 4 S 130 0, 160 4 S 220 8, 260 3" />
               </svg>
-            </Link>
+            </button>
           </div>
         </div>
       </div>

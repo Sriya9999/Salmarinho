@@ -23,7 +23,11 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
   ]);
   // What's cooking? shows dishes that have a photograph; featured ones lead.
   const pictured = dishes.filter((d) => d.image);
-  return { categories, dishes: pictured, posts: posts.slice(0, 7), settings };
+  // The journal on the home page: today's stories first, one crab note last,
+  // so the crab never leads the landing page.
+  const today = posts.filter((p) => p.category !== "The crab").slice(0, 6);
+  const crab = posts.find((p) => p.category === "The crab");
+  return { categories, dishes: pictured, posts: crab ? [...today, crab] : today, settings };
 });
 
 export const getMenuData = createServerFn({ method: "GET" }).handler(async () => {
@@ -50,6 +54,11 @@ export const getJournalPost = createServerFn({ method: "GET" })
     const more = (await listPosts()).filter((p) => p.slug !== post.slug).slice(0, 2);
     return { post, more };
   });
+
+export const getCrabJourney = createServerFn({ method: "GET" }).handler(async () => {
+  const [settings, posts] = await Promise.all([getSettings(), listPosts()]);
+  return { settings, notes: posts.filter((p) => p.category === "The crab") };
+});
 
 export const getVisitData = createServerFn({ method: "GET" }).handler(async () => {
   const [settings, events] = await Promise.all([getSettings(), listEvents({ upcomingOnly: true })]);

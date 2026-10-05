@@ -114,6 +114,8 @@ const dishInput = z.object({
   dietary: z.array(z.enum(DIETARY)).max(DIETARY.length),
   spiceLevel: z.number().int().min(0).max(3),
   chefRecommendation: z.boolean(),
+  isNew: z.boolean(),
+  soldOut: z.boolean(),
   pairing: z.string().trim().max(200).default(""),
   featured: z.boolean(),
   published: z.boolean(),
@@ -239,6 +241,20 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
       parking: z.string().trim().max(400),
       reservationUrl: url,
       gallery: z.array(mediaPath).max(10),
+      crabStatus: z.enum(["coming-soon", "now-serving"]),
+      crabStages: z
+        .array(
+          z.object({
+            title: z.string().trim().min(1).max(40),
+            note: z.string().trim().max(80),
+            body: z.string().trim().max(600),
+            image: mediaPath,
+            imageAlt: z.string().trim().max(200),
+            status: z.enum(["now", "soon"]),
+          }),
+        )
+        .min(1)
+        .max(10),
     }),
   )
   .handler(({ data }) =>

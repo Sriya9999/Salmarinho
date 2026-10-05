@@ -43,10 +43,10 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
 // Pages retired with the move to South Indian and Goan breakfast. Old
 // links land on the matching part of the new site instead of a 404.
 const RETIRED: Record<string, string> = {
-  "/who-we-are": "/#from-the-south",
+  "/who-we-are": "/our-story",
   "/our-craft": "/#fire",
   "/the-experience": "/#come-in",
-  "/coastal-journey": "/#the-coast-is-in-everything",
+  "/coastal-journey": "/the-coast",
   "/portuguese-connection": "/#a-little-portuguese",
   "/the-crab": "/the-crab-journey",
 };

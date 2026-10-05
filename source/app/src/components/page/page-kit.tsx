@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { Reveal } from "@/components/v2/kit";
+
 /** Inner-page opening: full-bleed photograph, kicker, title and one line of copy. */
 export function PageHero({
   kicker,
@@ -49,5 +51,37 @@ export function Prose({ body }: { body: string }) {
         return <p key={i}>{block}</p>;
       })}
     </div>
+  );
+}
+
+/** A story chapter: photograph and words, alternating sides as the page goes on. */
+export function StoryChapter({
+  index,
+  title,
+  children,
+  image,
+  imageAlt,
+  flip = false,
+}: {
+  index: number;
+  title: string;
+  children: ReactNode;
+  image: string;
+  imageAlt: string;
+  flip?: boolean;
+}) {
+  return (
+    <section className="v-chapter" data-flip={flip} aria-labelledby={`chapter-${index}`}>
+      <div className="v-wrap v-chapter__grid">
+        <Reveal src={image} alt={imageAlt} className="v-chapter__media" sizes="(min-width: 900px) 45vw, 100vw" />
+        <div className="v-chapter__copy">
+          <p className="v-kicker">{String(index).padStart(2, "0")}</p>
+          <h2 id={`chapter-${index}`} className="v-title v-title--md mt-5">
+            {title}
+          </h2>
+          <div className="sm-prose mt-6">{children}</div>
+        </div>
+      </div>
+    </section>
   );
 }

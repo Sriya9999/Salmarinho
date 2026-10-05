@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { StructuredData } from "@/components/StructuredData";
 import { useReserve } from "@/components/site/reserve";
+import { DishMarks } from "@/components/v2/home";
 import { Contours, Reveal } from "@/components/v2/kit";
 import { getMenuData } from "@/lib/content/content.functions";
 import type { Dish, MenuCategory } from "@/lib/content/types";
@@ -60,14 +61,23 @@ function MenuPage() {
               South Indian breakfast, Goan breakfast, morning classics, eggs on char-grilled poi, bowls, French toast, and coffee,
               juices and smoothies. Everything is on from the moment we open to the moment we close.
             </p>
-            <div className="flex flex-wrap items-start gap-3 md:col-span-5 md:col-start-8">
-              <a className="v-pdf-link" href="/menu/sal-marinho-food-menu.pdf" target="_blank" rel="noopener">
-                Food menu <span className="text-sand">PDF</span>
-              </a>
-              <a className="v-pdf-link" href="/menu/sal-marinho-beverage-menu.pdf" target="_blank" rel="noopener">
-                Breakfast and beverages <span className="text-sand">PDF</span>
-              </a>
-            </div>
+            <ul className="v-menu-key md:col-span-5 md:col-start-8" aria-label="Key">
+              <li>
+                <span className="v-mark v-mark--veg">
+                  <span className="v-mark__veg" aria-hidden="true" />
+                  Vegetarian
+                </span>
+              </li>
+              <li>
+                <span className="v-mark v-mark--chef">Chef&rsquo;s special</span>
+              </li>
+              <li>
+                <span className="v-mark v-mark--new">New</span>
+              </li>
+              <li>
+                <span className="v-mark v-mark--out">Sold out today</span>
+              </li>
+            </ul>
           </div>
         </div>
       </header>
@@ -95,7 +105,20 @@ function MenuPage() {
         ))}
 
         <div className="mt-20 flex flex-wrap items-center justify-between gap-6 border-t border-hairline pt-10">
-          <p className="text-sand">Taxes extra. We levy a 10% service charge.</p>
+          <div>
+            <p className="text-sand">Taxes extra. We levy a 10% service charge.</p>
+            <p className="mt-2 text-sm text-sand">
+              The printed menus:{" "}
+              <a className="text-bone underline decoration-ember/50 underline-offset-4" href="/menu/sal-marinho-food-menu.pdf" target="_blank" rel="noopener">
+                food
+              </a>{" "}
+              and{" "}
+              <a className="text-bone underline decoration-ember/50 underline-offset-4" href="/menu/sal-marinho-beverage-menu.pdf" target="_blank" rel="noopener">
+                breakfast and beverages
+              </a>{" "}
+              (PDF).
+            </p>
+          </div>
           <button type="button" className="sm-ember-pill" onClick={open}>
             <span className="sm-ember-pill__coal" aria-hidden="true" />
             <span className="relative">Reserve a table</span>
@@ -128,17 +151,14 @@ function MenuSection({ category, dishes, proteins }: { category: MenuCategory; d
       <div className="md:col-span-7 md:col-start-6">
         <ul>
           {dishes.map((d) => (
-            <li key={d.id} className={`v-menu-item${d.image ? " v-menu-item--photo" : ""}`}>
+            <li
+              key={d.id}
+              className={`v-menu-item${d.image ? " v-menu-item--photo" : ""}${d.soldOut ? " v-menu-item--out" : ""}`}
+            >
               {d.image ? <img className="v-menu-item__photo" src={d.image} alt="" loading="lazy" decoding="async" /> : null}
-              <h3 className="v-menu-item__name">
-                {d.name}
-                {d.dietary.map((tag) => (
-                  <span key={tag} className="v-menu-tag">
-                    {tag}
-                  </span>
-                ))}
-              </h3>
+              <h3 className="v-menu-item__name">{d.name}</h3>
               {d.price != null ? <span className="v-menu-item__price">{formatPrice(d.price)}</span> : null}
+              <DishMarks dish={d} />
               {d.description ? <p className="v-menu-item__desc">{d.description}</p> : null}
             </li>
           ))}
@@ -149,6 +169,9 @@ function MenuSection({ category, dishes, proteins }: { category: MenuCategory; d
             <ul className="v-addons mt-4">
               {proteins.map((p) => (
                 <li key={p.id}>
+                  {p.dietary.includes("Vegetarian") || p.dietary.includes("Vegan") ? (
+                    <span className="v-mark__veg mr-2 inline-block align-[-1px]" role="img" aria-label="Vegetarian" />
+                  ) : null}
                   {p.name}
                   {p.price != null ? <b>{formatPrice(p.price)}</b> : null}
                 </li>

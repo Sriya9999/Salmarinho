@@ -30,7 +30,7 @@ function Visit() {
   const whatsapp = settings.whatsapp.replace(/[^\d]/g, "");
 
   return (
-    <main id="main" data-sound="waves">
+    <main id="main" data-sound="restaurant">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
       <PageHero
         kicker="Visit"

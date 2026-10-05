@@ -12,9 +12,9 @@ import {
   Hero,
   JournalSpread,
   PortugueseMap,
-  SomethingIsGrowing,
   WhatsCooking,
 } from "@/components/v2/home";
+import { GrowingSection } from "@/components/v2/crab";
 import { Opening } from "@/components/v2/opening";
 import { getHomeData } from "@/lib/content/content.functions";
 import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
@@ -46,9 +46,9 @@ function Index() {
       <CoastFilm />
       <PortugueseMap />
       <Fire />
+      <GrowingSection settings={settings} />
       <ComeIn />
       <JournalSpread posts={posts} />
-      <SomethingIsGrowing />
       <ComeToTheTable settings={settings} />
     </main>
   );
