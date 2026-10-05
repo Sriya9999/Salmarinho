@@ -5,6 +5,8 @@
 // Menu: transcribed from the restaurant's current printed menus (food menu and
 // breakfast beverage menu). Names, descriptions and prices follow the menus.
 
+import { OPENING_HOURS } from "@/lib/site";
+
 import type { Dish, JournalPost, MenuCategory, SiteSettings } from "./types";
 
 export const SEED_CATEGORIES: MenuCategory[] = [
@@ -78,7 +80,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     slug: "coffee-and-tea",
     title: "Coffee & Tea",
     subtitle: "Poured all day",
-    story: "Coffee, chai and tea, from the first cup of the morning to the last of the afternoon.",
+    story: "Coffee, chai and tea, from the first cup of the morning to the last of the evening.",
     mood: "volcanic",
     image: "/assets/v2/menu/coffee-and-tea.webp",
     imageAlt: "A cup of milk coffee and a glass of masala chai on a stone table",
@@ -364,7 +366,7 @@ export const SEED_POSTS: JournalPost[] = [
     slug: "why-breakfast-should-never-have-a-clock",
     title: "Why breakfast should never have a clock",
     category: "The story",
-    excerpt: "Dosa at noon, eggs at four, coffee whenever. A small argument for eating breakfast on your own time.",
+    excerpt: "Dosa at noon, eggs for dinner, coffee whenever. A small argument for eating breakfast on your own time.",
     cover: "/assets/v2/journal/no-clock.webp",
     coverAlt: "Afternoon light falling across a breakfast table with coffee and idli",
     author: AUTHOR,
@@ -374,7 +376,7 @@ export const SEED_POSTS: JournalPost[] = [
       "Somewhere along the way breakfast acquired a deadline. Order before eleven, or the kitchen moves on.",
       "By the sea, days keep a different time. Some mornings start at dawn with the fishing boats; some start at noon after a late night. Neither deserves a lesser plate.",
       "## Breakfast, all day",
-      "So breakfast stays on the menu from the moment we open to the moment we close. Idli at two in the afternoon. A masala omelette at four. Coffee whenever you would like another.",
+      "So breakfast stays on the menu from the moment we open to the moment we close, morning and evening. Idli at one in the afternoon. A masala omelette at nine at night. Coffee whenever you would like another.",
       "> The best meal of the day should not depend on what time you woke up.",
     ].join("\n\n"),
   },
@@ -481,7 +483,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   email: "",
   instagram: "",
   facebook: "",
-  hours: [],
+  hours: OPENING_HOURS,
   parking: "",
   reservationUrl: "",
   gallery: [],

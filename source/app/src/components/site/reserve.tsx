@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useR
 import { useRouterState } from "@tanstack/react-router";
 
 import { submitReservation, type ReservationResult } from "@/lib/reserve.functions";
+import { RESERVATION_SITTINGS, formatTime } from "@/lib/site";
 
 type ReserveContextValue = { open: () => void; close: () => void; isOpen: boolean };
 const ReserveContext = createContext<ReserveContextValue | null>(null);
@@ -83,17 +84,6 @@ function ReserveOverlay({ open, onClose }: { open: boolean; onClose: () => void 
     </div>
   );
 }
-
-const TIMES = (() => {
-  const slots: string[] = [];
-  for (let h = 8; h <= 22; h++) {
-    for (const m of ["00", "30"]) {
-      if (h === 22 && m === "30") continue;
-      slots.push(`${String(h).padStart(2, "0")}:${m}`);
-    }
-  }
-  return slots;
-})();
 
 function todayIso(): string {
   const d = new Date();
@@ -185,10 +175,14 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
         </Field>
         <Field label="Time" htmlFor={`${id}-time`}>
           <select id={`${id}-time`} name="time" required defaultValue="20:00" className="sm-input">
-            {TIMES.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
+            {RESERVATION_SITTINGS.map((sitting) => (
+              <optgroup key={sitting.label} label={sitting.label}>
+                {sitting.times.map((t) => (
+                  <option key={t} value={t}>
+                    {formatTime(t)}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </Field>

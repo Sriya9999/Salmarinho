@@ -38,6 +38,32 @@ export type Mood = (typeof MOODS)[number];
 
 export const DIETARY = ["Vegetarian", "Vegan", "Gluten free", "Contains nuts", "Contains shellfish", "Dairy free"] as const;
 
+/** Opening hours: two sittings a day. Editable later in the admin panel. */
+export const OPENING_HOURS = [
+  { days: "Every day", open: "8:00 am", close: "1:30 pm" },
+  { days: "Every day", open: "6:00 pm", close: "10:00 pm" },
+];
+
+/** Bookable times, every half hour, with the last booking half an hour before closing. */
+function halfHours(from: number, to: number): string[] {
+  const slots: string[] = [];
+  for (let m = from * 60; m <= to * 60; m += 30) {
+    slots.push(`${String(Math.floor(m / 60)).padStart(2, "0")}:${m % 60 ? "30" : "00"}`);
+  }
+  return slots;
+}
+export const RESERVATION_SITTINGS = [
+  { label: "Morning", times: halfHours(8, 13) },
+  { label: "Evening", times: halfHours(18, 21.5) },
+];
+export const RESERVATION_TIMES = RESERVATION_SITTINGS.flatMap((s) => s.times);
+
+/** "13:30" to "1:30 pm". */
+export function formatTime(value: string): string {
+  const [h, m] = value.split(":").map(Number);
+  return `${h % 12 || 12}:${String(m).padStart(2, "0")} ${h < 12 ? "am" : "pm"}`;
+}
+
 export function absoluteUrl(path: string): string {
   if (/^https?:\/\//.test(path)) return path;
   return `${SITE_URL.replace(/\/$/, "")}${path.startsWith("/") ? path : `/${path}`}`;

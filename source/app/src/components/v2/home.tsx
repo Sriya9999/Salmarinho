@@ -209,7 +209,7 @@ function ClockRuler() {
         Noon
       </span>
       <span className="v-ruler__mark" style={{ left: "100%" }}>
-        Afternoon
+        Evening
       </span>
       <span className="v-ruler__dot" />
     </div>
@@ -230,7 +230,7 @@ const clockScenes: ScrollScrubScene[] = [
     label: "No clock",
     kicker: "02 · All day",
     title: "Breakfast doesn't have a clock.",
-    body: "Dosa at noon. Eggs at four. Coffee whenever you like. From the first cup of the morning to the last table of the afternoon, breakfast stays on.",
+    body: "Dosa at noon. Eggs at nine at night. Coffee whenever you like. From the first cup of the morning to the last table of the evening, breakfast stays on.",
     actions: <ClockRuler />,
     scroll: 2.2,
     linger: 0.15,
@@ -375,7 +375,7 @@ const SPICES = [
   { id: "mustard", name: "Mustard seed", text: "Tiny, dark and loud in the pan: the first sound of a tempering.", cut: "mustard", macro: "/assets/v2/south/mustard.webp", x: "66%", y: "26%", w: "8rem", blur: "2.2px", dur: "13s" },
   { id: "chilli", name: "Dried red chilli", text: "Darkened in ghee for colour and a gentle, smoky heat. The heart of a ghee roast.", cut: "chilli", macro: "/assets/v2/south/chilli.webp", x: "84%", y: "40%", w: "11rem", blur: "1px", dur: "16s" },
   { id: "tamarind", name: "Tamarind", text: "Sour and fruity, the quiet backbone of a good sambhar.", cut: "tamarind", macro: "/assets/v2/south/tamarind.webp", x: "30%", y: "62%", w: "10rem", blur: "1.4px", dur: "18s" },
-  { id: "coffee", name: "Coffee", text: "Roasted dark, brewed strong and poured with milk, all day long.", cut: "coffee", macro: "/assets/v2/south/coffee.webp", x: "54%", y: "52%", w: "8rem", blur: "2.6px", dur: "14s" },
+  { id: "coffee", name: "Coffee", text: "Roasted dark, brewed strong and poured with milk, morning and evening.", cut: "coffee", macro: "/assets/v2/south/coffee.webp", x: "54%", y: "52%", w: "8rem", blur: "2.6px", dur: "14s" },
   { id: "cardamom", name: "Cardamom", text: "Green, floral and bright. A pod or two lifts a glass of masala chai.", cut: "cardamom", macro: "", x: "12%", y: "74%", w: "7.5rem", blur: "2px", dur: "12s" },
   { id: "cinnamon", name: "Cinnamon", text: "Warm, sweet bark, used gently in masalas and in chai.", cut: "cinnamon", macro: "", x: "72%", y: "72%", w: "10.5rem", blur: "1.2px", dur: "19s" },
 ];

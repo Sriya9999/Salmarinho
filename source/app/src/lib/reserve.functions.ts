@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { getDb, getSettings } from "@/lib/content/db.server";
 import { hashValue } from "@/lib/crypto.server";
+import { RESERVATION_TIMES } from "@/lib/site";
 
 const reservationSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -30,6 +31,9 @@ export const submitReservation = createServerFn({ method: "POST" })
   .handler(async ({ data }): Promise<ReservationResult> => {
     const today = new Date().toISOString().slice(0, 10);
     if (data.date < today) return { ok: false, message: "Please choose a date from today onwards." };
+    if (!RESERVATION_TIMES.includes(data.time)) {
+      return { ok: false, message: "Please choose a time between 8 am and 1 pm, or 6 pm and 9:30 pm." };
+    }
 
     const settings = await getSettings();
     const db = await getDb();
