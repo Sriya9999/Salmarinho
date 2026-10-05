@@ -293,28 +293,8 @@ export function CoastFilm() {
 
 /* ------------------------------------------------------------------ 03 from the south */
 
-type SouthTile = {
-  src: string;
-  alt: string;
-  caption: string;
-  c: number;
-  r: number;
-  speed: number;
-  shape?: string;
-  /** A looping film in place of the photograph; src is then its poster. */
-  film?: { src: string; mobileSrc: string };
-};
-
-const SOUTH: SouthTile[] = [
-  {
-    src: "/assets/v2/film/sambar.webp",
-    alt: "Sambar pouring from a steel ladle into a white bowl",
-    caption: "Sambar",
-    c: 4,
-    r: 3,
-    speed: 10,
-    film: { src: "/assets/v2/film/sambar.mp4", mobileSrc: "/assets/v2/film/sambar-m.mp4" },
-  },
+const SOUTH = [
+  { src: "/assets/v2/south/batter.webp", alt: "Dosa batter poured from a ladle", caption: "Batter", c: 4, r: 3, speed: 10 },
   { src: "/assets/v2/south/banana-leaf.webp", alt: "A banana leaf in low light", caption: "Banana leaf", c: 3, r: 2, speed: -6, shape: "48% 48% 4px 4px" },
   { src: "/assets/v2/south/coconut.webp", alt: "A split coconut with white flesh", caption: "Coconut", c: 3, r: 2, speed: 12 },
   { src: "/assets/v2/south/tempering.webp", alt: "Shallots, chillies and spices tempering in hot oil", caption: "Tempering", c: 5, r: 3, speed: -8 },
@@ -382,11 +362,7 @@ export function FromTheSouth() {
               key={item.src}
               style={{ "--c": item.c, "--r": item.r, "--shape": item.shape } as CSSProperties}
             >
-              {item.film ? (
-                <LoopFilm film={{ ...item.film, poster: item.src }} label={item.alt} speed={item.speed} />
-              ) : (
-                <img src={item.src} alt={item.alt} loading="lazy" decoding="async" data-speed={item.speed} />
-              )}
+              <img src={item.src} alt={item.alt} loading="lazy" decoding="async" data-speed={item.speed} />
               <figcaption>{item.caption}</figcaption>
             </figure>
           ))}

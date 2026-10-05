@@ -1526,8 +1526,7 @@ html[data-sm-seen="1"] .v-opening {
   border-radius: var(--shape, 2px);
   background: var(--color-charcoal);
 }
-.v-collage img,
-.v-collage video {
+.v-collage img {
   position: absolute;
   inset: -8% 0;
   width: 100%;
@@ -2283,8 +2282,7 @@ html[data-sm-seen="1"] .v-opening {
     align-self: center;
   }
 }
-.v-collage img,
-.v-collage video {
+.v-collage img {
   will-change: transform;
 }
 .v-particles span {
