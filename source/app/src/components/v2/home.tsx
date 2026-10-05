@@ -265,7 +265,7 @@ export function ClockSection() {
         <LoopFilm
           className="v-clock__film"
           label="Sambar pouring from a steel ladle into a white bowl, with a brass clock behind it"
-          film={{ src: "/assets/v2/film/sambar.mp4", mobileSrc: "/assets/v2/film/sambar-m.mp4", poster: "/assets/v2/film/sambar.webp" }}
+          film={{ src: "/assets/v2/film/sambar-pour.mp4", mobileSrc: "/assets/v2/film/sambar-pour-m.mp4", poster: "/assets/v2/film/sambar-pour.webp" }}
         />
         <div className="v-clock__shade" aria-hidden="true" />
         <div className="v-clock__light" aria-hidden="true" />
