@@ -202,7 +202,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
   );
 }
 
-/* ------------------------------------------------------------------ 02 and 05: scroll films */
+/* ------------------------------------------------------------------ 02 breakfast has no clock */
 
 function ClockRuler() {
   return (
@@ -228,20 +228,6 @@ const film = (name: string) => ({
   mobilePoster: `/assets/v2/film/${name}-m.webp`,
 });
 
-const clockScenes: ScrollScrubScene[] = [
-  {
-    ...film("clock"),
-    id: "breakfast-has-no-clock",
-    label: "No clock",
-    kicker: "02 · All day",
-    title: "Breakfast doesn't have a clock.",
-    body: "Dosa at noon. Eggs at nine at night. Coffee whenever you like. From the first cup of the morning to the last table of the evening, breakfast stays on.",
-    actions: <ClockRuler />,
-    scroll: 2.2,
-    linger: 0.15,
-  },
-];
-
 const coastScenes: ScrollScrubScene[] = [
   {
     ...film("coast"),
@@ -256,11 +242,57 @@ const coastScenes: ScrollScrubScene[] = [
   },
 ];
 
-export function ClockFilm() {
+/**
+ * The sambar pours on a loop the whole time, whether or not the page moves.
+ * Scrolling only moves time: the clock hands turn and the dot travels from
+ * morning to evening while the frame stays pinned.
+ */
+export function ClockSection() {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || prefersReducedMotion()) return;
+    return watchScrollProgress(el, () => {
+      const rect = el.getBoundingClientRect();
+      const range = Math.max(1, rect.height - window.innerHeight);
+      const t = Math.min(1, Math.max(0, -rect.top / range));
+      el.style.setProperty("--ss-progress", t.toFixed(4));
+    });
+  }, []);
   return (
-    <div data-sound="waves">
-      <ScrollScrub scenes={clockScenes} theme={scrollScrubTheme} className="scroll-scrub--band v-film" firstHeading="h2" />
-    </div>
+    <section ref={ref} id="breakfast-has-no-clock" className="v-clock" data-sound="waves" aria-labelledby="clock-title">
+      <div className="v-clock__stage">
+        <LoopFilm
+          className="v-clock__film"
+          label="Sambar pouring from a steel ladle into a white bowl, with a brass clock behind it"
+          film={{ src: "/assets/v2/film/sambar.mp4", mobileSrc: "/assets/v2/film/sambar-m.mp4", poster: "/assets/v2/film/sambar.webp" }}
+        />
+        <div className="v-clock__shade" aria-hidden="true" />
+        <div className="v-clock__light" aria-hidden="true" />
+        <div className="v-wrap v-clock__copy">
+          <p className="v-kicker">02 &middot; All day</p>
+          <h2 id="clock-title" className="v-title mt-5 max-w-[11ch]">
+            Breakfast doesn&rsquo;t have a clock.
+          </h2>
+          <p className="v-lede mt-6">
+            Dosa at noon. Eggs at nine at night. The sambar keeps pouring from the first table of the morning to the
+            last of the evening.
+          </p>
+          <div className="v-clock__time">
+            <svg className="v-clock__dial" viewBox="0 0 64 64" aria-hidden="true">
+              <circle cx="32" cy="32" r="30" />
+              {Array.from({ length: 12 }, (_, i) => (
+                <line key={i} x1="32" y1="4" x2="32" y2={i % 3 ? 7 : 9} transform={`rotate(${i * 30} 32 32)`} />
+              ))}
+              <line className="v-clock__hour" x1="32" y1="32" x2="32" y2="17" />
+              <line className="v-clock__minute" x1="32" y1="32" x2="32" y2="9" />
+              <circle className="v-clock__pin" cx="32" cy="32" r="2" />
+            </svg>
+            <ClockRuler />
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 

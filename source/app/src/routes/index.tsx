@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { StructuredData } from "@/components/StructuredData";
 import {
-  ClockFilm,
+  ClockSection,
   CoastFilm,
   ComeIn,
   ComeToTheTable,
@@ -40,7 +40,7 @@ function Index() {
       <Opening />
       <Hero />
       <WhatsCooking categories={categories} dishes={dishes} />
-      <ClockFilm />
+      <ClockSection />
       <FromTheSouth />
       <FollowTheSpice />
       <CoastFilm />

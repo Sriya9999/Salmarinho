@@ -1502,6 +1502,133 @@ html[data-sm-seen="1"] .v-opening {
   box-shadow: 0 0 18px rgb(216 138 100 / 0.8);
 }
 
+/* ---------------------------------------------------------------- 02 clock section */
+
+/* Pinned while time passes on scroll; the film itself loops on its own. */
+.v-clock {
+  position: relative;
+  height: 240svh;
+  background: #0d0c0b;
+}
+.v-clock__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.v-clock__film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.v-clock__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(10 9 8 / 0.82) 0%, rgb(10 9 8 / 0.5) 34%, rgb(10 9 8 / 0) 58%);
+}
+/* Morning is a little cooler, evening a little warmer. */
+.v-clock__light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, rgb(150 180 205 / calc((1 - var(--ss-progress, 0)) * 0.1)), transparent 60%),
+    radial-gradient(70% 80% at 85% 60%, rgb(216 138 100 / calc(var(--ss-progress, 0) * 0.22)), transparent 70%);
+  mix-blend-mode: soft-light;
+}
+.v-clock__copy {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+.v-clock__copy .v-lede {
+  max-width: 30rem;
+}
+.v-clock__time {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.4rem;
+  margin-top: 2rem;
+}
+.v-clock__time .v-ruler {
+  margin-top: 1.4rem;
+  width: min(22rem, 100%);
+}
+.v-clock__dial {
+  flex: none;
+  width: 3.6rem;
+  height: 3.6rem;
+  overflow: visible;
+}
+.v-clock__dial circle:first-child,
+.v-clock__dial line {
+  fill: none;
+  stroke: rgb(241 232 216 / 0.45);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+/* From 8 in the morning to 10 at night: the hour hand turns 420 degrees,
+   the minute hand fourteen times. */
+.v-clock__dial .v-clock__hour,
+.v-clock__dial .v-clock__minute {
+  stroke: var(--color-bone);
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 32px 32px;
+}
+.v-clock__dial .v-clock__hour {
+  stroke-width: 2;
+  transform: rotate(calc(240deg + var(--ss-progress, 0) * 420deg));
+}
+.v-clock__dial .v-clock__minute {
+  stroke: var(--color-ember);
+  stroke-width: 1.4;
+  transform: rotate(calc(var(--ss-progress, 0) * 5040deg));
+}
+.v-clock__pin {
+  fill: var(--color-ember);
+}
+/* Phones: the pour fills whatever the words leave at the top; the words sit on
+   the dark below, so they never cover the bowl. */
+@media (max-width: 767px) {
+  .v-clock__stage {
+    display: flex;
+    flex-direction: column;
+  }
+  .v-clock__film {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    height: auto;
+    object-position: 66% 50%;
+  }
+  .v-clock__shade {
+    display: none;
+  }
+  .v-clock__copy {
+    position: relative;
+    flex: none;
+    height: auto;
+    margin-top: -3.5rem;
+    padding-top: 3.5rem;
+    padding-bottom: clamp(1.75rem, 5vh, 3rem);
+    background: linear-gradient(180deg, rgb(13 12 11 / 0), #0d0c0b 3.5rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-clock {
+    height: auto;
+  }
+  .v-clock__stage {
+    position: relative;
+    height: auto;
+    min-height: 100svh;
+  }
+}
+
 /* ---------------------------------------------------------------- 03 from the south */
 
 .v-collage {
