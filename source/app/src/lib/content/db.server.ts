@@ -3,7 +3,7 @@
 // to the seed content and writes report that storage is unavailable.
 import type { D1Database, R2Bucket } from "@cloudflare/workers-types";
 
-import { DEFAULT_SETTINGS, SEED_CATEGORIES, SEED_POSTS } from "./seed";
+import { DEFAULT_SETTINGS, SEED_CATEGORIES, SEED_DISHES, SEED_POSTS } from "./seed";
 import type {
   Dish,
   EventItem,
@@ -143,7 +143,7 @@ export async function listCategories(): Promise<MenuCategory[]> {
 
 export async function listDishes(opts: { includeDrafts?: boolean } = {}): Promise<Dish[]> {
   const db = await getDb();
-  if (!db) return [];
+  if (!db) return SEED_DISHES.filter((d) => opts.includeDrafts || d.published);
   const sql = opts.includeDrafts
     ? "SELECT * FROM dishes ORDER BY category, sort, name"
     : "SELECT * FROM dishes WHERE published = 1 ORDER BY category, sort, name";
@@ -153,7 +153,7 @@ export async function listDishes(opts: { includeDrafts?: boolean } = {}): Promis
 
 export async function getDishBySlug(slug: string): Promise<Dish | null> {
   const db = await getDb();
-  if (!db) return null;
+  if (!db) return SEED_DISHES.find((d) => d.slug === slug && d.published) ?? null;
   const row = await db.prepare("SELECT * FROM dishes WHERE slug = ? AND published = 1").bind(slug).first<Row>();
   return row ? toDish(row) : null;
 }
