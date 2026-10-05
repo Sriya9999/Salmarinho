@@ -21,8 +21,9 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
     listPosts(),
     getSettings(),
   ]);
-  const signature = dishes.filter((d) => d.featured).slice(0, 8);
-  return { categories, signature: signature.length ? signature : dishes.slice(0, 6), posts: posts.slice(0, 3), settings };
+  // What's cooking? shows dishes that have a photograph; featured ones lead.
+  const pictured = dishes.filter((d) => d.image);
+  return { categories, dishes: pictured, posts: posts.slice(0, 7), settings };
 });
 
 export const getMenuData = createServerFn({ method: "GET" }).handler(async () => {

@@ -9,44 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WhoWeAreRouteImport } from './routes/who-we-are'
 import { Route as VisitRouteImport } from './routes/visit'
-import { Route as TheExperienceRouteImport } from './routes/the-experience'
-import { Route as TheCrabRouteImport } from './routes/the-crab'
+import { Route as TheCrabJourneyRouteImport } from './routes/the-crab-journey'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReserveRouteImport } from './routes/reserve'
-import { Route as PortugueseConnectionRouteImport } from './routes/portuguese-connection'
-import { Route as OurCraftRouteImport } from './routes/our-craft'
-import { Route as CoastalJourneyRouteImport } from './routes/coastal-journey'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as MenuIndexRouteImport } from './routes/menu/index'
 import { Route as JournalIndexRouteImport } from './routes/journal/index'
-import { Route as MenuSlugRouteImport } from './routes/menu/$slug'
 import { Route as MediaSplatRouteImport } from './routes/media/$'
 import { Route as JournalSlugRouteImport } from './routes/journal/$slug'
 import { Route as ApiAdminUploadRouteImport } from './routes/api/admin/upload'
 
-const WhoWeAreRoute = WhoWeAreRouteImport.update({
-  id: '/who-we-are',
-  path: '/who-we-are',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const VisitRoute = VisitRouteImport.update({
   id: '/visit',
   path: '/visit',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TheExperienceRoute = TheExperienceRouteImport.update({
-  id: '/the-experience',
-  path: '/the-experience',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TheCrabRoute = TheCrabRouteImport.update({
-  id: '/the-crab',
-  path: '/the-crab',
+const TheCrabJourneyRoute = TheCrabJourneyRouteImport.update({
+  id: '/the-crab-journey',
+  path: '/the-crab-journey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -62,21 +46,6 @@ const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
 const ReserveRoute = ReserveRouteImport.update({
   id: '/reserve',
   path: '/reserve',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PortugueseConnectionRoute = PortugueseConnectionRouteImport.update({
-  id: '/portuguese-connection',
-  path: '/portuguese-connection',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OurCraftRoute = OurCraftRouteImport.update({
-  id: '/our-craft',
-  path: '/our-craft',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoastalJourneyRoute = CoastalJourneyRouteImport.update({
-  id: '/coastal-journey',
-  path: '/coastal-journey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -104,11 +73,6 @@ const JournalIndexRoute = JournalIndexRouteImport.update({
   path: '/journal/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const MenuSlugRoute = MenuSlugRouteImport.update({
-  id: '/menu/$slug',
-  path: '/menu/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MediaSplatRoute = MediaSplatRouteImport.update({
   id: '/media/$',
   path: '/media/$',
@@ -129,19 +93,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
-  '/coastal-journey': typeof CoastalJourneyRoute
-  '/our-craft': typeof OurCraftRoute
-  '/portuguese-connection': typeof PortugueseConnectionRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/the-crab': typeof TheCrabRoute
-  '/the-experience': typeof TheExperienceRoute
+  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
-  '/who-we-are': typeof WhoWeAreRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
-  '/menu/$slug': typeof MenuSlugRoute
   '/journal/': typeof JournalIndexRoute
   '/menu/': typeof MenuIndexRoute
   '/api/admin/upload': typeof ApiAdminUploadRoute
@@ -150,19 +108,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
-  '/coastal-journey': typeof CoastalJourneyRoute
-  '/our-craft': typeof OurCraftRoute
-  '/portuguese-connection': typeof PortugueseConnectionRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/the-crab': typeof TheCrabRoute
-  '/the-experience': typeof TheExperienceRoute
+  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
-  '/who-we-are': typeof WhoWeAreRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
-  '/menu/$slug': typeof MenuSlugRoute
   '/journal': typeof JournalIndexRoute
   '/menu': typeof MenuIndexRoute
   '/api/admin/upload': typeof ApiAdminUploadRoute
@@ -172,19 +124,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
-  '/coastal-journey': typeof CoastalJourneyRoute
-  '/our-craft': typeof OurCraftRoute
-  '/portuguese-connection': typeof PortugueseConnectionRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/the-crab': typeof TheCrabRoute
-  '/the-experience': typeof TheExperienceRoute
+  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
-  '/who-we-are': typeof WhoWeAreRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
-  '/menu/$slug': typeof MenuSlugRoute
   '/journal/': typeof JournalIndexRoute
   '/menu/': typeof MenuIndexRoute
   '/api/admin/upload': typeof ApiAdminUploadRoute
@@ -195,19 +141,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
-    | '/coastal-journey'
-    | '/our-craft'
-    | '/portuguese-connection'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
-    | '/the-crab'
-    | '/the-experience'
+    | '/the-crab-journey'
     | '/visit'
-    | '/who-we-are'
     | '/journal/$slug'
     | '/media/$'
-    | '/menu/$slug'
     | '/journal/'
     | '/menu/'
     | '/api/admin/upload'
@@ -216,19 +156,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
-    | '/coastal-journey'
-    | '/our-craft'
-    | '/portuguese-connection'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
-    | '/the-crab'
-    | '/the-experience'
+    | '/the-crab-journey'
     | '/visit'
-    | '/who-we-are'
     | '/journal/$slug'
     | '/media/$'
-    | '/menu/$slug'
     | '/journal'
     | '/menu'
     | '/api/admin/upload'
@@ -237,19 +171,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
-    | '/coastal-journey'
-    | '/our-craft'
-    | '/portuguese-connection'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
-    | '/the-crab'
-    | '/the-experience'
+    | '/the-crab-journey'
     | '/visit'
-    | '/who-we-are'
     | '/journal/$slug'
     | '/media/$'
-    | '/menu/$slug'
     | '/journal/'
     | '/menu/'
     | '/api/admin/upload'
@@ -259,19 +187,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AppRoute: typeof AppRoute
-  CoastalJourneyRoute: typeof CoastalJourneyRoute
-  OurCraftRoute: typeof OurCraftRoute
-  PortugueseConnectionRoute: typeof PortugueseConnectionRoute
   ReserveRoute: typeof ReserveRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  TheCrabRoute: typeof TheCrabRoute
-  TheExperienceRoute: typeof TheExperienceRoute
+  TheCrabJourneyRoute: typeof TheCrabJourneyRoute
   VisitRoute: typeof VisitRoute
-  WhoWeAreRoute: typeof WhoWeAreRoute
   JournalSlugRoute: typeof JournalSlugRoute
   MediaSplatRoute: typeof MediaSplatRoute
-  MenuSlugRoute: typeof MenuSlugRoute
   JournalIndexRoute: typeof JournalIndexRoute
   MenuIndexRoute: typeof MenuIndexRoute
   ApiAdminUploadRoute: typeof ApiAdminUploadRoute
@@ -279,13 +201,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/who-we-are': {
-      id: '/who-we-are'
-      path: '/who-we-are'
-      fullPath: '/who-we-are'
-      preLoaderRoute: typeof WhoWeAreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/visit': {
       id: '/visit'
       path: '/visit'
@@ -293,18 +208,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VisitRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/the-experience': {
-      id: '/the-experience'
-      path: '/the-experience'
-      fullPath: '/the-experience'
-      preLoaderRoute: typeof TheExperienceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/the-crab': {
-      id: '/the-crab'
-      path: '/the-crab'
-      fullPath: '/the-crab'
-      preLoaderRoute: typeof TheCrabRouteImport
+    '/the-crab-journey': {
+      id: '/the-crab-journey'
+      path: '/the-crab-journey'
+      fullPath: '/the-crab-journey'
+      preLoaderRoute: typeof TheCrabJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -326,27 +234,6 @@ declare module '@tanstack/react-router' {
       path: '/reserve'
       fullPath: '/reserve'
       preLoaderRoute: typeof ReserveRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/portuguese-connection': {
-      id: '/portuguese-connection'
-      path: '/portuguese-connection'
-      fullPath: '/portuguese-connection'
-      preLoaderRoute: typeof PortugueseConnectionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/our-craft': {
-      id: '/our-craft'
-      path: '/our-craft'
-      fullPath: '/our-craft'
-      preLoaderRoute: typeof OurCraftRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/coastal-journey': {
-      id: '/coastal-journey'
-      path: '/coastal-journey'
-      fullPath: '/coastal-journey'
-      preLoaderRoute: typeof CoastalJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -384,13 +271,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof JournalIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/menu/$slug': {
-      id: '/menu/$slug'
-      path: '/menu/$slug'
-      fullPath: '/menu/$slug'
-      preLoaderRoute: typeof MenuSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/media/$': {
       id: '/media/$'
       path: '/media/$'
@@ -419,19 +299,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AppRoute: AppRoute,
-  CoastalJourneyRoute: CoastalJourneyRoute,
-  OurCraftRoute: OurCraftRoute,
-  PortugueseConnectionRoute: PortugueseConnectionRoute,
   ReserveRoute: ReserveRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  TheCrabRoute: TheCrabRoute,
-  TheExperienceRoute: TheExperienceRoute,
+  TheCrabJourneyRoute: TheCrabJourneyRoute,
   VisitRoute: VisitRoute,
-  WhoWeAreRoute: WhoWeAreRoute,
   JournalSlugRoute: JournalSlugRoute,
   MediaSplatRoute: MediaSplatRoute,
-  MenuSlugRoute: MenuSlugRoute,
   JournalIndexRoute: JournalIndexRoute,
   MenuIndexRoute: MenuIndexRoute,
   ApiAdminUploadRoute: ApiAdminUploadRoute,

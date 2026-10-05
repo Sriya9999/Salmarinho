@@ -40,6 +40,23 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
+// Pages retired with the move to South Indian food and all-day breakfast. Old
+// links land on the matching part of the new site instead of a 404.
+const RETIRED: Record<string, string> = {
+  "/who-we-are": "/#from-the-south",
+  "/our-craft": "/#fire",
+  "/the-experience": "/#come-in",
+  "/coastal-journey": "/#the-coast-is-in-everything",
+  "/portuguese-connection": "/#a-little-portuguese",
+  "/the-crab": "/the-crab-journey",
+};
+
+function retiredRedirect(url: URL): Response | null {
+  const target = RETIRED[url.pathname] ?? (/^\/menu\/[^/.]+$/.test(url.pathname) ? "/menu" : null);
+  if (!target) return null;
+  return new Response(null, { status: 301, headers: { location: target } });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     // One canonical URL per page: /menu/ permanently redirects to /menu.
@@ -48,6 +65,8 @@ export default {
       url.pathname = url.pathname.replace(/\/+$/, "");
       return applySecurityHeaders(Response.redirect(url.toString(), 301));
     }
+    const retired = retiredRedirect(url);
+    if (retired) return applySecurityHeaders(retired);
     // Self-hosted Cloudflare deploys keep static files in KV (see wrangler.cloudflare.jsonc).
     const kv = (env as { STATIC?: KVNamespace } | undefined)?.STATIC;
     if (kv) {

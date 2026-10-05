@@ -4,52 +4,6 @@ import type Lenis from "lenis";
 
 import { prefersReducedMotion } from "@/lib/motion";
 
-/**
- * Opening sequence: LIGHT THE FIRE, then THE TABLE IS SET, then the owner's
- * Balinese gate parts to reveal the page. Runs on pure CSS keyframes so it also
- * clears without JavaScript; JS only adds Skip and remembers the visit.
- * Returning visitors in the same session never see it (html[data-sm-seen]).
- */
-export function Loader() {
-  const [done, setDone] = useState(false);
-  useEffect(() => {
-    const finish = () => {
-      setDone(true);
-      try {
-        sessionStorage.setItem("sm-seen", "1");
-      } catch {
-        /* storage unavailable: the loader simply shows again next visit */
-      }
-    };
-    if (document.documentElement.dataset.smSeen === "1" || prefersReducedMotion()) {
-      finish();
-      return;
-    }
-    const timer = window.setTimeout(finish, 2600);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  if (done) return null;
-  return (
-    <div className="sm-loader" role="presentation">
-      <div className="sm-loader__gate sm-loader__gate--left" aria-hidden="true">
-        <img src="/assets/art/gate-left.webp" alt="" />
-      </div>
-      <div className="sm-loader__gate sm-loader__gate--right" aria-hidden="true">
-        <img src="/assets/art/gate-right.webp" alt="" />
-      </div>
-      <div className="sm-loader__center">
-        <span className="sm-loader__ember" aria-hidden="true" />
-        <p className="sm-loader__line sm-loader__line--one">Light the fire</p>
-        <p className="sm-loader__line sm-loader__line--two">The table is set.</p>
-      </div>
-      <button type="button" className="sm-loader__skip" onClick={() => setDone(true)}>
-        Skip
-      </button>
-    </div>
-  );
-}
-
 let lenisInstance: Lenis | null = null;
 
 /** Lenis smooth scrolling on desktop pointers; native scrolling on touch and under reduced motion. */
@@ -153,37 +107,4 @@ export function EmberCursor() {
     };
   }, []);
   return <div ref={dot} className="sm-ember-cursor" aria-hidden="true" data-active="false" />;
-}
-
-/**
- * Optional ambience (fire and distant waves). Muted by default; plays only
- * after the visitor asks for it, and remembers the choice for the session.
- */
-export function SoundToggle() {
-  const audio = useRef<HTMLAudioElement>(null);
-  const [on, setOn] = useState(false);
-  useEffect(() => {
-    const el = audio.current;
-    if (!el) return;
-    el.volume = 0.35;
-    if (on) void el.play().catch(() => setOn(false));
-    else el.pause();
-  }, [on]);
-  return (
-    <div className="sm-sound">
-      <audio ref={audio} src="/assets/audio/ambience.mp3" loop preload="none" />
-      <button type="button" onClick={() => setOn((v) => !v)} aria-pressed={on} className="sm-sound__button">
-        <span className="sm-sound__bars" data-on={on} aria-hidden="true">
-          <span />
-          <span />
-          <span />
-          <span />
-        </span>
-        <span className="sr-only">{on ? "Turn ambient sound off" : "Turn ambient sound on"}</span>
-        <span aria-hidden="true" className="sm-sound__label">
-          {on ? "Sound on" : "Sound off"}
-        </span>
-      </button>
-    </div>
-  );
 }

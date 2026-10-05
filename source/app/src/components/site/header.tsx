@@ -91,8 +91,8 @@ export function SiteHeader() {
         <div className="sm-journey-nav__inner">
           <ol className="sm-journey-nav__list">
             {NAV_ITEMS.map((item, i) => (
-              <li key={item.to} style={{ transitionDelay: menuOpen ? `${120 + i * 55}ms` : "0ms" }}>
-                <Link to={item.to} className="sm-journey-link" activeProps={{ "aria-current": "page" }}>
+              <li key={`${item.to}#${item.hash ?? ""}`} style={{ transitionDelay: menuOpen ? `${120 + i * 55}ms` : "0ms" }}>
+                <Link to={item.to} hash={item.hash} className="sm-journey-link" activeProps={{ "aria-current": "page" }}>
                   <span className="sm-journey-link__title">{item.title}</span>
                   <span className="sm-journey-link__sub">{item.subtitle}</span>
                 </Link>
@@ -100,11 +100,11 @@ export function SiteHeader() {
             ))}
           </ol>
           <div className="sm-journey-nav__aside">
-            <p className="sm-label">Further along the coast</p>
+            <p className="sm-label">Along the way</p>
             <ul className="mt-5 space-y-3">
               {MORE_ITEMS.map((item) => (
-                <li key={item.to}>
-                  <Link to={item.to} className="sm-journey-minor">
+                <li key={`${item.to}#${item.hash ?? ""}`}>
+                  <Link to={item.to} hash={item.hash} className="sm-journey-minor" onClick={() => setMenuOpen(false)}>
                     {item.title}
                   </Link>
                 </li>

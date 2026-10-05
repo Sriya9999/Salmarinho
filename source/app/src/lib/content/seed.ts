@@ -113,7 +113,10 @@ type DishSeed = {
   name: string;
   price: number;
   description?: string;
+  /** Shown in What's cooking? on the homepage (needs a photo). */
   featured?: boolean;
+  /** Has a photo in /assets/v2/dishes without being featured. */
+  photo?: boolean;
   dietary?: string[];
   imageAlt?: string;
 };
@@ -128,6 +131,7 @@ const slugify = (value: string) =>
 function dishes(category: string, items: DishSeed[]): Dish[] {
   return items.map((item, i) => {
     const slug = slugify(item.name);
+    const hasPhoto = Boolean(item.featured || item.photo);
     return {
       id: `dish-${slug}`,
       slug,
@@ -140,8 +144,8 @@ function dishes(category: string, items: DishSeed[]): Dish[] {
       ingredients: [],
       technique: "",
       story: "",
-      image: item.featured ? `/assets/v2/dishes/${slug}.webp` : "",
-      imageAlt: item.featured ? (item.imageAlt ?? item.name) : "",
+      image: hasPhoto ? `/assets/v2/dishes/${slug}.webp` : "",
+      imageAlt: hasPhoto ? (item.imageAlt ?? item.name) : "",
       gallery: [],
       dietary: item.dietary ?? [],
       spiceLevel: 0,
@@ -161,13 +165,15 @@ export const SEED_DISHES: Dish[] = [
       name: "Benne Dosa",
       price: 300,
       description: "Dosa with potato masala, served with sambhar, tomato chutney and coconut chutney. Can be made vegan.",
+      photo: true,
+      imageAlt: "A lacy benne dosa on a cast iron plate with potato masala, sambhar and two chutneys",
     },
     {
       name: "Chicken Ghee Roast Benne Dosa",
       price: 370,
       description: "Dosa served with Mangalorean chicken ghee roast.",
       featured: true,
-      imageAlt: "A crisp benne dosa beside a bowl of deep red Mangalorean chicken ghee roast",
+      imageAlt: "A lacy benne dosa beside a clay pot of deep red Mangalorean chicken ghee roast",
     },
     { name: "Mushroom / Paneer Ghee Roast Benne Dosa", price: 370, description: "Dosa served with Mangalorean mushroom or paneer ghee roast." },
     { name: "Chicken Chettinad Benne Dosa", price: 370, description: "Dosa served with chicken Chettinad masala." },
@@ -177,46 +183,50 @@ export const SEED_DISHES: Dish[] = [
       price: 200,
       description: "Deep-fried lentil fritters served with sambhar, tomato chutney and coconut chutney.",
       featured: true,
-      imageAlt: "Golden ulundu bonda with coconut chutney and a cup of sambhar",
+      imageAlt: "Golden ulundu bonda on a banana leaf with sambhar and coconut chutney",
     },
     {
       name: "Clay Pot Tatte Idli",
       price: 250,
       description: "Bangalore tatte idli served with sambhar, tomato chutney and coconut chutney.",
       featured: true,
-      imageAlt: "Soft tatte idli steaming in a clay pot with chutneys",
+      imageAlt: "A tatte idli in a clay pot with a bowl of sambhar and chutneys",
     },
-    { name: "Butter Podi Clay Pot Tatte Idli", price: 300, description: "Idli topped with butter and gunpowder." },
+    { name: "Butter Podi Clay Pot Tatte Idli", price: 300, description: "Idli topped with butter and gunpowder.", photo: true, imageAlt: "Tatte idli glistening with butter and dusted red with gunpowder" },
     { name: "Herbed Garlic Butter Clay Pot Tatte Idli", price: 300, description: "Idli topped with butter seasoned with herbs and garlic." },
     { name: "Ghee Shallow Fried", price: 300, description: "Idli shallow-fried in pure ghee until golden." },
-    { name: "Pundi Arepu", price: 400, description: "A steamed rice preparation, similar to gnocchi, tossed in a flavourful Mangalorean curry." },
+    { name: "Pundi Arepu", price: 400, description: "A steamed rice preparation, similar to gnocchi, tossed in a flavourful Mangalorean curry.", photo: true, imageAlt: "Ridged steamed rice pieces in a bright red Mangalorean curry with curry leaves" },
     {
       name: "Appe Masala",
       price: 300,
       description: "Appe tossed in gunpowder masala with ghee, tempered with coconut oil and served with coconut chutney.",
       featured: true,
-      imageAlt: "Appe tossed in gunpowder masala in a small cast iron pan",
+      imageAlt: "Golden appe with coconut chutney and a dried red chilli",
     },
     {
       name: "South Indian Breakfast",
       price: 550,
       description: "A South Indian breakfast platter of benne dosa, idli, bonda, appe, uppit and sheera, with sambhar, coconut chutney, tomato chutney and podi masala.",
       featured: true,
-      imageAlt: "A South Indian breakfast platter with dosa, idli, bonda, appe, uppit and sheera",
+      imageAlt: "A South Indian breakfast platter: dosa, idli, bonda, appe, uppit and sheera around a bowl of sambhar",
     },
-    { name: "Udupi Uppit", price: 170, description: "Savoury porridge of dry-roasted semolina, cooked until soft and fluffy." },
-    { name: "Sheera", price: 200, description: "A semolina pudding and a classic Indian dessert." },
+    { name: "Udupi Uppit", price: 170, description: "Savoury porridge of dry-roasted semolina, cooked until soft and fluffy.", photo: true, imageAlt: "A mound of Udupi uppit topped with cashews and curry leaves" },
+    { name: "Sheera", price: 200, description: "A semolina pudding and a classic Indian dessert.", photo: true, imageAlt: "Golden semolina sheera scattered with toasted nuts" },
   ]),
   ...dishes("morning-classics", [
     {
       name: "English Breakfast",
       price: 600,
       description: "Homemade hash browns, eggs your way (sunny side up, fried, scrambled, omelette or poached), baked beans, chicken sausage, sautéed mushroom, grilled tomato and bacon. With tea or coffee.",
+      photo: true,
+      imageAlt: "An English breakfast with hash brown, sausages, fried egg, mushrooms and grilled tomatoes",
     },
     {
       name: "Britain on Toast",
       price: 350,
       description: "A full English breakfast on toast: eggs your way (sunny side up, fried, scrambled, omelette or poached), chopped chicken sausage, mushroom and baked beans.",
+      photo: true,
+      imageAlt: "A sunny side up egg on toast with sliced sausage, mushrooms and beans",
     },
     { name: "Choris on Toast", price: 350, description: "Spiced Goan sausages sautéed with onion and tomatoes, topped with feta and blue cheese sauce." },
     {
@@ -224,7 +234,7 @@ export const SEED_DISHES: Dish[] = [
       price: 450,
       description: "Eggs gently poached in a warm, chunky sauce of tomatoes, bell peppers, onions and herbs, topped with hummus and served with char-toasted poi bread.",
       featured: true,
-      imageAlt: "Shakshuka in a cast iron pan with hummus and char-toasted poi",
+      imageAlt: "Shakshuka with three eggs in a cast iron pan, scattered with coriander",
     },
   ]),
   ...dishes("eggs-and-omelettes", [
@@ -236,7 +246,7 @@ export const SEED_DISHES: Dish[] = [
     { name: "Masala Omelette", price: 250, description: "Classic Mumbai street-style masala omelette." },
     { name: "Stuffed Mushroom / Spinach Omelette", price: 250, description: "Fluffy omelette filled with mushroom or spinach." },
     { name: "Herby Cheese Omelette", price: 250, description: "Omelette with fresh herbs and cheese." },
-    { name: "Ross Omelette", price: 350, description: "An all-time Goan favourite: omelette served with Goan xacuti curry." },
+    { name: "Ross Omelette", price: 350, description: "An all-time Goan favourite: omelette served with Goan xacuti curry.", photo: true, imageAlt: "An omelette in Goan xacuti curry with lime and soft poi" },
     {
       name: "Portuguese Omelette",
       price: 400,
@@ -249,12 +259,12 @@ export const SEED_DISHES: Dish[] = [
       price: 350,
       description: "Char-toasted poi with poached eggs, topped with our signature hollandaise.",
       featured: true,
-      imageAlt: "Eggs Benedict on char-toasted poi with hollandaise",
+      imageAlt: "Eggs Benedict on poi with hollandaise and edible flowers",
     },
     { name: "Turkish Eggs", price: 400, description: "Char-toasted poi with poached eggs, topped with yogurt infused with garlic, and chilli oil." },
   ]),
   ...dishes("buddha-bowls", [
-    { name: "Vegan Buddha Bowl", price: 300, description: "Quinoa, grilled vegetables and fresh green salad with avocado sauce.", dietary: ["Vegan"] },
+    { name: "Vegan Buddha Bowl", price: 300, description: "Quinoa, grilled vegetables and fresh green salad with avocado sauce.", dietary: ["Vegan"], photo: true, imageAlt: "A Buddha bowl of greens, quinoa, avocado and grilled vegetables" },
     { name: "Chimichurri Bowl", price: 300, description: "Red rice, sprouts and cucumber salad with chimichurri." },
     {
       name: "Sweet Potato Chickpeas Buddha Bowl",
@@ -283,7 +293,7 @@ export const SEED_DISHES: Dish[] = [
     { name: "Prawns", price: 200 },
   ]),
   ...dishes("french-toast", [
-    { name: "Classic French Toast", price: 400 },
+    { name: "Classic French Toast", price: 400, photo: true, imageAlt: "Two slices of classic French toast with a little jug of syrup" },
     {
       name: "Banana Salted Caramel French Toast",
       price: 450,
@@ -305,7 +315,7 @@ export const SEED_DISHES: Dish[] = [
   ...dishes("fresh-juices-and-shakes", [
     { name: "Watermelon Juice", price: 180 },
     { name: "Pineapple Juice", price: 180 },
-    { name: "Cold Coffee", price: 220 },
+    { name: "Cold Coffee", price: 220, photo: true, imageAlt: "A glass of cold coffee on a bed of roasted coffee beans" },
     { name: "Banana Vanilla Shake", price: 240 },
     { name: "Oreo Shake", price: 240 },
     { name: "Frozen Berry Shake", price: 260 },

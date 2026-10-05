@@ -86,7 +86,7 @@ function ReserveOverlay({ open, onClose }: { open: boolean; onClose: () => void 
 
 const TIMES = (() => {
   const slots: string[] = [];
-  for (let h = 12; h <= 22; h++) {
+  for (let h = 8; h <= 22; h++) {
     for (const m of ["00", "30"]) {
       if (h === 22 && m === "30") continue;
       slots.push(`${String(h).padStart(2, "0")}:${m}`);
@@ -144,12 +144,12 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
     return (
       <div className="text-center" role="status">
         <img
-          src="/assets/photos/state/confirmed.webp"
-          alt="A single ember glowing inside an open claypot"
+          src="/assets/v2/table/evening.webp"
+          alt="A table on the terrace in the warm light of evening"
           className="mx-auto mb-10 aspect-[16/9] w-full max-w-md object-cover"
         />
         <Heading id={headingId} className="sm-display text-3xl text-bone md:text-4xl">
-          The fire is lit.
+          Your table is noted.
         </Heading>
         <p className="mx-auto mt-4 max-w-sm text-sand">
           {result.handoff?.kind === "whatsapp"
@@ -178,7 +178,7 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
       <Heading id={headingId} className="sm-display text-center text-4xl text-bone md:text-5xl">
         Reserve your table
       </Heading>
-      <p className="mx-auto mt-4 max-w-sm text-center text-sand">Tell us when you are coming. We will light the fire.</p>
+      <p className="mx-auto mt-4 max-w-sm text-center text-sand">Tell us when you are coming and we will keep a table for you.</p>
       <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <Field label="Date" htmlFor={`${id}-date`}>
           <input id={`${id}-date`} name="date" type="date" required min={minDate} className="sm-input" />

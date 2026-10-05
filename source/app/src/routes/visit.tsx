@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { OrderChit, ViewfinderLink } from "@/components/cta/garments";
-import { LetterBuild } from "@/components/motion/primitives";
-import { Icon } from "@/components/site/Icon";
+import { PageHero } from "@/components/page/page-kit";
+import { useReserve } from "@/components/site/reserve";
 import { StructuredData } from "@/components/StructuredData";
+import { ContourLink } from "@/components/v2/home";
 import { getVisitData } from "@/lib/content/content.functions";
 import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
 
@@ -12,54 +12,49 @@ export const Route = createFileRoute("/visit")({
   head: () =>
     pageHead({
       title: "Visit",
-      description: "Find your way to the table: Sal Marinho in Anjuna, North Goa. Opening hours, directions, parking and reservations.",
+      description: "Come to the table: Sal Marinho in Anjuna, North Goa. Opening hours, directions and reservations.",
       path: "/visit",
-      image: "/assets/og/visit.jpg",
+      image: "/assets/v2/og/visit.jpg",
     }),
   component: Visit,
 });
 
 function Visit() {
   const { settings, events } = Route.useLoaderData();
+  const { open } = useReserve();
   const mapsHref =
     settings.mapsUrl ||
     (settings.latitude && settings.longitude
       ? `https://www.google.com/maps/search/?api=1&query=${settings.latitude},${settings.longitude}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Sal Marinho ${settings.locality}`)}`);
+  const whatsapp = settings.whatsapp.replace(/[^\d]/g, "");
 
   return (
-    <main id="main" className="bg-volcanic">
+    <main id="main" data-sound="waves">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
-      <header className="mx-auto max-w-7xl px-5 pt-40 pb-10 md:px-10 md:pt-48">
-        <p className="sm-script text-4xl text-clay md:text-6xl">find your way to the table</p>
-        <LetterBuild text="Visit" className="sm-display mt-2 text-6xl text-bone md:text-8xl" />
-      </header>
+      <PageHero
+        kicker="Visit"
+        title="Come to the table."
+        accent
+        line="Breakfast and South Indian food, all day, a short walk from the sea in Anjuna."
+        image="/assets/v2/table/evening.webp"
+        imageAlt="The terrace in the evening, tables lit by candles above the sea"
+      >
+        <button type="button" className="sm-ember-pill" onClick={open}>
+          <span className="sm-ember-pill__coal" aria-hidden="true" />
+          <span className="relative">Reserve a table</span>
+        </button>
+      </PageHero>
 
-      <section aria-label="Map" className="relative mx-auto max-w-7xl px-5 md:px-10">
-        <div className="sm-coast-map relative overflow-hidden">
-          <img src="/assets/art/goa-map.webp" alt="An engraved map of the North Goa coastline from Arambol to Aguada" className="w-full" />
-          <svg viewBox="0 0 100 56" preserveAspectRatio="none" className="absolute inset-0 h-full w-full" aria-hidden="true">
-            <path className="sm-coast-map__route" d="M4 6 C 12 8, 20 13, 27 17 S 33 22, 36 23.5" vectorEffect="non-scaling-stroke" />
-          </svg>
-          <div className="sm-coast-map__pin" style={{ left: "36%", top: "42%" }}>
-            <span className="sm-coast-map__pulse" aria-hidden="true" />
-            <span className="sm-coast-map__label">Sal Marinho, {settings.locality}</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="mx-auto grid max-w-7xl gap-14 px-5 py-20 md:grid-cols-3 md:px-10 md:py-28" aria-label="Visiting details">
+      <section className="v-wrap grid gap-14 py-20 md:grid-cols-3 md:py-28" aria-label="Visiting details">
         <div>
-          <h2 className="sm-label flex items-center gap-3">
-            <Icon name="pin" className="h-6 w-6 text-clay" />
-            Where
-          </h2>
+          <h2 className="sm-label">Where</h2>
           <address className="mt-4 text-lg not-italic text-bone">
             {settings.address ? <span className="block whitespace-pre-line">{settings.address}</span> : null}
             <span className="block text-sand">{settings.locality}</span>
           </address>
-          <div className="mt-8">
-            <ViewfinderLink href={mapsHref}>Get directions</ViewfinderLink>
+          <div className="mt-6">
+            <ContourLink href={mapsHref}>Get directions</ContourLink>
           </div>
           {settings.parking ? (
             <>
@@ -69,10 +64,7 @@ function Visit() {
           ) : null}
         </div>
         <div>
-          <h2 className="sm-label flex items-center gap-3">
-            <Icon name="clock" className="h-6 w-6 text-clay" />
-            When
-          </h2>
+          <h2 className="sm-label">When</h2>
           {settings.hours.length ? (
             <dl className="mt-4 space-y-3">
               {settings.hours.map((h) => (
@@ -85,7 +77,7 @@ function Visit() {
               ))}
             </dl>
           ) : (
-            <p className="mt-4 text-sand">Evenings by the sea. Reserve and we will confirm your time.</p>
+            <p className="mt-4 text-sand">Breakfast is served all day. Reserve and we will confirm your time.</p>
           )}
         </div>
         <div>
@@ -98,14 +90,9 @@ function Visit() {
                 </a>
               </li>
             ) : null}
-            {settings.whatsapp ? (
+            {whatsapp ? (
               <li>
-                <a
-                  className="text-bone hover:text-sand"
-                  href={`https://wa.me/${settings.whatsapp.replace(/[^\d]/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a className="text-bone hover:text-sand" href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener noreferrer">
                   WhatsApp
                 </a>
               </li>
@@ -117,24 +104,33 @@ function Visit() {
                 </a>
               </li>
             ) : null}
+            {settings.instagram ? (
+              <li>
+                <a className="text-bone hover:text-sand" href={settings.instagram} target="_blank" rel="noopener noreferrer">
+                  Instagram
+                </a>
+              </li>
+            ) : null}
+            <li>
+              <button type="button" className="text-bone underline decoration-ember/60 underline-offset-4 hover:decoration-ember" onClick={open}>
+                Reserve online
+              </button>
+            </li>
           </ul>
-          <div className="mt-10">
-            <OrderChit note="See you soon" />
-          </div>
         </div>
       </section>
 
       {events.length ? (
         <section className="border-t border-hairline" aria-labelledby="events-title">
-          <div className="mx-auto max-w-7xl px-5 py-20 md:px-10">
-            <h2 id="events-title" className="sm-display text-3xl text-bone md:text-4xl">
+          <div className="v-wrap py-20">
+            <h2 id="events-title" className="v-title v-title--sm">
               Coming up at the table
             </h2>
             <ul className="mt-10 grid gap-8 md:grid-cols-3">
               {events.map((e) => (
                 <li key={e.id} className="border-t border-hairline pt-6">
                   {e.image ? <img src={e.image} alt="" loading="lazy" className="mb-5 aspect-[4/3] w-full object-cover" /> : null}
-                  <p className="font-body text-xs tracking-[0.24em] text-clay uppercase">
+                  <p className="text-xs font-medium tracking-[0.24em] text-ember uppercase">
                     <time dateTime={e.date}>{new Date(`${e.date}T00:00:00`).toLocaleDateString("en-IN", { day: "numeric", month: "long" })}</time>
                     {e.time ? ` · ${e.time}` : ""}
                   </p>

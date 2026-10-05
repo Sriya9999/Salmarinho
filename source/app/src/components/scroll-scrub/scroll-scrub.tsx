@@ -51,6 +51,8 @@ export interface ScrollScrubProps {
   connectors?: (ScrollScrubConnector | null)[];
   theme: ScrollScrubTheme;
   className?: string;
+  /** Heading level of the first scene; use "h2" when the page already has an h1. */
+  firstHeading?: "h1" | "h2";
   onActiveSectionChange?: (index: number) => void;
 }
 
@@ -171,6 +173,7 @@ export function ScrollScrub({
   connectors,
   theme,
   className,
+  firstHeading = "h1",
   onActiveSectionChange,
 }: ScrollScrubProps) {
   const rootRef = useRef<HTMLElement>(null);
@@ -672,7 +675,7 @@ export function ScrollScrub({
           if (!scene) {
             return null;
           }
-          const Heading = segment.sectionIndex === 0 ? "h1" : "h2";
+          const Heading = segment.sectionIndex === 0 ? firstHeading : "h2";
 
           return (
             <article

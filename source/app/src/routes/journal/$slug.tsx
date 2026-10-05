@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 
 import { PageHero, Prose } from "@/components/page/page-kit";
-import { ShorelineLink } from "@/components/cta/garments";
 import { StructuredData } from "@/components/StructuredData";
+import { StoryCard } from "@/components/v2/home";
 import { getJournalPost } from "@/lib/content/content.functions";
 import { articleSchema, jsonLd, pageHead } from "@/lib/seo";
 
@@ -23,11 +23,12 @@ export const Route = createFileRoute("/journal/$slug")({
 function Article() {
   const { post, more } = Route.useLoaderData();
   const date = new Date(`${post.publishedAt}T00:00:00`);
+  const soon = post.category === "The crab";
   return (
-    <main id="main" className="bg-volcanic">
+    <main id="main" data-sound={soon ? "waves" : "quiet"}>
       <StructuredData json={jsonLd(articleSchema(post))} />
-      <PageHero title={post.title} script={post.category.toLowerCase()} line={post.excerpt} image={post.cover} imageAlt={post.coverAlt} />
-      <article className="mx-auto grid max-w-7xl gap-12 px-5 py-20 md:grid-cols-12 md:px-10 md:py-28">
+      <PageHero kicker={soon ? "Coming soon" : post.category} title={post.title} line={post.excerpt} image={post.cover} imageAlt={post.coverAlt} />
+      <article className="v-wrap grid gap-12 py-20 md:grid-cols-12 md:py-28">
         <aside className="md:col-span-3">
           <p className="sm-label">{post.author}</p>
           <p className="mt-2 text-sm text-sand">
@@ -38,32 +39,33 @@ function Article() {
         </aside>
         <div className="md:col-span-8 md:col-start-5">
           <Prose body={post.body} />
+          {soon ? (
+            <Link to="/the-crab-journey" className="v-ripple-link mt-10">
+              <span className="v-ripple-link__ring" aria-hidden="true" />
+              Follow the journey
+            </Link>
+          ) : null}
         </div>
       </article>
       {more.length ? (
         <section className="border-t border-hairline" aria-labelledby="more-stories">
-          <div className="mx-auto max-w-7xl px-5 py-20 md:px-10">
+          <div className="v-wrap py-20">
             <div className="flex flex-wrap items-end justify-between gap-6">
-              <h2 id="more-stories" className="sm-display text-3xl text-bone">
+              <h2 id="more-stories" className="v-title v-title--sm">
                 More from the journal
               </h2>
-              <ShorelineLink to="/journal">Read the journal</ShorelineLink>
+              <Link to="/journal" className="v-contour-link">
+                All stories
+                <svg viewBox="0 0 260 8" preserveAspectRatio="none" aria-hidden="true">
+                  <path d="M0 4 C 30 0, 50 8, 80 4 S 130 0, 160 4 S 220 8, 260 3" />
+                </svg>
+              </Link>
             </div>
-            <ul className="mt-10 grid gap-10 md:grid-cols-2">
+            <div className="mt-10 grid gap-6 md:grid-cols-2">
               {more.map((p) => (
-                <li key={p.id}>
-                  <Link to="/journal/$slug" params={{ slug: p.slug }} className="group grid grid-cols-5 items-end gap-5">
-                    <div className="col-span-2 overflow-hidden">
-                      <img src={p.cover} alt={p.coverAlt} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-700 group-hover:scale-105" />
-                    </div>
-                    <div className="col-span-3">
-                      <p className="font-body text-xs tracking-[0.26em] text-ember uppercase">{p.category}</p>
-                      <h3 className="mt-2 text-2xl text-bone">{p.title}</h3>
-                    </div>
-                  </Link>
-                </li>
+                <StoryCard key={p.id} post={p} />
               ))}
-            </ul>
+            </div>
           </div>
         </section>
       ) : null}

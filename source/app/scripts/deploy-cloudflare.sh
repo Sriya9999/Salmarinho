@@ -9,10 +9,14 @@
 # Plus:
 #   CLOUDFLARE_ACCOUNT_ID  your 32-character Cloudflare account ID
 # Optional:
+#   WORKER_NAME            defaults to salmarinho (the live site). Any other name
+#                          deploys a separate copy with its own database and file
+#                          store, for example WORKER_NAME=salmarinho-next for a
+#                          preview that leaves the live site untouched
 #   ADMIN_PASSWORD         admin panel password; if unset on the first deploy,
 #                          a strong one is generated and printed once
 #   SITE_URL               public address, for example https://www.salmarinho.in
-#                          (defaults to https://salmarinho.<your-subdomain>.workers.dev)
+#                          (defaults to https://<worker-name>.<your-subdomain>.workers.dev)
 #
 # Static files go to Workers KV rather than Workers static assets: the assets
 # upload uses a one-time pass that a proxy-attached credential would replace.
@@ -33,11 +37,16 @@ fi
 export CLOUDFLARE_API_TOKEN="${CLOUDFLARE_API_TOKEN:-attached-by-proxy}"
 export CI=true # run wrangler without interactive prompts
 
+NAME=${WORKER_NAME:-salmarinho}
+if ! [[ "$NAME" =~ ^[a-z0-9][a-z0-9-]{0,40}$ ]]; then
+  echo "WORKER_NAME may use lowercase letters, digits and dashes only." >&2
+  exit 1
+fi
 CFG=wrangler.cloudflare.jsonc
-DEPLOY_CFG=wrangler.deploy.jsonc # generated per run, never committed
-DB=salmarinho-db
-BUCKET=salmarinho-media
-KV_TITLE=salmarinho-static
+DEPLOY_CFG=wrangler.deploy.jsonc # generated per run from $CFG, never committed
+DB=$NAME-db
+BUCKET=$NAME-media
+KV_TITLE=$NAME-static
 WORK=$(mktemp -d)
 trap 'rm -rf "$WORK" "$DEPLOY_CFG"' EXIT
 
@@ -51,7 +60,14 @@ api_try() {
   curl -sS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
     "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID$1"
 }
-set_id() { sed -i.bak -E "s/(\"$1\": )\"[^\"]*\"/\1\"$2\"/" "$CFG" && rm -f "$CFG.bak"; }
+set_field() { sed -i.bak -E "s/(\"$1\": )\"[^\"]*\"/\1\"$2\"/" "$DEPLOY_CFG" && rm -f "$DEPLOY_CFG.bak"; }
+
+# Work on a copy, so a preview deploy never rewrites the committed config.
+cp "$CFG" "$DEPLOY_CFG"
+set_field name "$NAME"
+set_field APP_SLUG "$NAME"
+set_field database_name "$DB"
+set_field bucket_name "$BUCKET"
 
 echo "== Checking access"
 if ! curl -fsS -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" https://api.cloudflare.com/client/v4/user/tokens/verify | jq -e '.success' >/dev/null; then
@@ -62,13 +78,13 @@ fi
 echo "== Database"
 id=$(api "/d1/database?name=$DB" | jq -r --arg n "$DB" '.result[] | select(.name == $n) | .uuid' | head -n1)
 [ -n "$id" ] || id=$(api /d1/database -X POST -d "{\"name\":\"$DB\"}" | jq -r '.result.uuid')
-set_id database_id "$id"
-wrangler d1 migrations apply "$DB" --remote -c "$CFG"
+set_field database_id "$id"
+wrangler d1 migrations apply "$DB" --remote -c "$DEPLOY_CFG"
 
 echo "== Static file storage"
 ns=$(api "/storage/kv/namespaces?per_page=100" | jq -r --arg t "$KV_TITLE" '.result[] | select(.title == $t) | .id' | head -n1)
 [ -n "$ns" ] || ns=$(api /storage/kv/namespaces -X POST -d "{\"title\":\"$KV_TITLE\"}" | jq -r '.result.id')
-set_id id "$ns"
+set_field id "$ns"
 
 echo "== Photo storage"
 r2=$(api_try /r2/buckets)
@@ -76,12 +92,12 @@ if jq -e '.success' <<<"$r2" >/dev/null; then
   if ! jq -e --arg n "$BUCKET" '.result.buckets[] | select(.name == $n)' <<<"$r2" >/dev/null; then
     api /r2/buckets -X POST -d "{\"name\":\"$BUCKET\"}" >/dev/null
   fi
-  cp "$CFG" "$DEPLOY_CFG"
 else
   echo "R2 is not turned on, so admin photo uploads stay off for now. Turn on R2 Object Storage in the dashboard and re-run to enable them."
   # Same config without the photo-storage block (its comment and r2_buckets).
-  awk '/Photos uploaded from the admin panel/ {skip=1} skip && /"r2_buckets"/ {skip=0; next} !skip' "$CFG" |
-    perl -0pe 's/,(\s*)\}\s*$/$1}\n/' > "$DEPLOY_CFG"
+  awk '/Photos uploaded from the admin panel/ {skip=1} skip && /"r2_buckets"/ {skip=0; next} !skip' "$DEPLOY_CFG" |
+    perl -0pe 's/,(\s*)\}\s*$/$1}\n/' > "$WORK/no-r2.jsonc"
+  mv "$WORK/no-r2.jsonc" "$DEPLOY_CFG"
 fi
 
 echo "== Site address"
@@ -91,7 +107,7 @@ if [ -z "${SITE_URL:-}" ]; then
     echo "No workers.dev subdomain yet. Open Workers & Pages in the Cloudflare dashboard once to pick one, then re-run." >&2
     exit 1
   fi
-  SITE_URL="https://salmarinho.$sub.workers.dev"
+  SITE_URL="https://$NAME.$sub.workers.dev"
 fi
 echo "$SITE_URL"
 

@@ -22,11 +22,15 @@ describe("scroll-scrub website landing contract", () => {
 
   test("keeps public landing and full app routes separate", () => {
     const landingRoute = readFileSync(new URL("../src/routes/index.tsx", import.meta.url), "utf8");
+    const homeSections = readFileSync(new URL("../src/components/v2/home.tsx", import.meta.url), "utf8");
     const appRoute = readFileSync(new URL("../src/routes/app.tsx", import.meta.url), "utf8");
 
-    // scroll-scrub's home IS the site: "/" renders the journey instead of the
-    // stock LandingPage. Everything else about the split is unchanged.
-    expect(landingRoute).toContain("ScrollScrub");
+    // scroll-scrub's home IS the site: "/" renders the restaurant's sections
+    // (whose scroll films use ScrollScrub) instead of the stock LandingPage.
+    // Everything else about the split is unchanged.
+    expect(landingRoute).not.toContain("LandingPage");
+    expect(landingRoute).toContain("@/components/v2/home");
+    expect(homeSections).toContain("ScrollScrub");
     expect(appRoute).toContain('createFileRoute("/app")');
     expect(appRoute).toContain("previewMode");
   });

@@ -4,7 +4,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 type HeadInput = { title: string; description: string; path: string; image?: string; type?: "website" | "article" };
 
 /** Per-route head: title, description, canonical and social tags. */
-export function pageHead({ title, description, path, image = "/assets/og/home.jpg", type = "website" }: HeadInput) {
+export function pageHead({ title, description, path, image = "/assets/v2/og/home.jpg", type = "website" }: HeadInput) {
   const fullTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
   const url = absoluteUrl(path);
   const img = absoluteUrl(image);
@@ -74,8 +74,8 @@ export function restaurantSchema(settings: SiteSettings) {
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     logo: absoluteUrl("/icons/icon-512.png"),
-    image: [absoluteUrl("/assets/og/home.jpg")],
-    servesCuisine: ["Coastal Indian", "Goan", "Seafood", "Portuguese-influenced"],
+    image: [absoluteUrl("/assets/v2/og/home.jpg")],
+    servesCuisine: ["South Indian", "Breakfast", "Goan", "Cafe"],
     acceptsReservations: true,
     menu: absoluteUrl("/menu"),
     areaServed: settings.locality,
@@ -128,7 +128,6 @@ export function menuSchema(categories: MenuCategory[], dishes: Dish[]) {
             "@type": "MenuItem",
             name: d.name,
             description: d.description,
-            url: absoluteUrl(`/menu/${d.slug}`),
             ...(d.image ? { image: absoluteUrl(d.image) } : {}),
             ...(d.price != null ? { offers: { "@type": "Offer", price: d.price, priceCurrency: "INR" } } : {}),
             ...(d.dietary.includes("Vegetarian") ? { suitableForDiet: "https://schema.org/VegetarianDiet" } : {}),

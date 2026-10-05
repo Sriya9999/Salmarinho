@@ -16,9 +16,10 @@ import { reportHiggsfieldError } from "../lib/higgsfield-error-reporting";
 // repo by the marketplace meta API and read at BUILD time — no runtime fetch.
 // Editing it via the app settings UI rewrites this file and redeploys the app.
 import appMetaJson from "../app-meta.json";
-import { EmberCursor, Loader, PageVeil, SmoothScroll, SoundToggle } from "../components/site/ambient";
+import { EmberCursor, PageVeil, SmoothScroll } from "../components/site/ambient";
 import { SiteFooter } from "../components/site/footer";
 import { SiteHeader } from "../components/site/header";
+import { SoundScape } from "../components/v2/sound";
 import { ReserveProvider } from "../components/site/reserve";
 import { getSiteSettings } from "../lib/content/content.functions";
 import { DEFAULT_SETTINGS } from "../lib/content/seed";
@@ -27,7 +28,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, THEME_COLOR } from "../lib/site"
 declare const __HF_DESIGN_INSPECTOR__: boolean;
 
 // Built-in defaults for any field that isn't set in app-meta.json.
-const DEFAULT_TITLE = "Sal Marinho | Coastal gastronomy in Anjuna, Goa";
+const DEFAULT_TITLE = "Sal Marinho, Anjuna | South Indian food and all-day breakfast";
 const DEFAULT_DESCRIPTION = SITE_DESCRIPTION;
 
 type AppMeta = {
@@ -112,8 +113,8 @@ function buildHead(meta: AppMeta) {
     ],
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "preload", href: "/fonts/cinzel-var.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" as const },
-      { rel: "preload", href: "/fonts/satoshi-400.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" as const },
+      { rel: "preload", href: "/fonts/boska-300.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" as const },
+      { rel: "preload", href: "/fonts/general-sans-400.woff2", as: "font", type: "font/woff2", crossOrigin: "anonymous" as const },
       { rel: "icon", href: favicon ?? "/icons/favicon.ico", sizes: "any" },
       { rel: "icon", type: "image/png", sizes: "32x32", href: "/icons/favicon-32.png" },
       { rel: "icon", type: "image/png", sizes: "16x16", href: "/icons/favicon-16.png" },
@@ -134,18 +135,23 @@ function NotFoundComponent() {
   return (
     <main id="main" className="relative flex min-h-dvh items-center justify-center overflow-hidden px-5">
       <img
-        src="/assets/photos/state/404.webp"
+        src="/assets/v2/growing/mangrove.webp"
         alt=""
         aria-hidden="true"
-        className="absolute inset-0 h-full w-full object-cover opacity-60"
+        className="absolute inset-0 h-full w-full object-cover opacity-45"
       />
       <div className="relative max-w-md text-center">
-        <p className="sm-script text-5xl text-clay">lost at sea</p>
-        <h1 className="sm-display mt-4 text-4xl text-bone md:text-5xl">This page has drifted away</h1>
-        <p className="mt-4 text-sand">The tide took it. The table is still set.</p>
-        <Link to="/" className="sm-text-arrow mt-8 inline-flex">
-          Back to the shore
-        </Link>
+        <p className="v-kicker justify-center">Lost at sea</p>
+        <h1 className="v-title v-title--md mt-5">This page has drifted away.</h1>
+        <p className="mt-4 text-sand">The tide took it. Breakfast is still on.</p>
+        <div className="mt-8 flex flex-wrap justify-center gap-8">
+          <Link to="/" className="sm-text-arrow">
+            Back to the shore
+          </Link>
+          <Link to="/menu" className="sm-text-arrow">
+            What&rsquo;s cooking?
+          </Link>
+        </div>
       </div>
     </main>
   );
@@ -161,7 +167,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <main id="main" className="flex min-h-dvh items-center justify-center px-5">
       <div className="max-w-md text-center">
-        <h1 className="sm-display text-3xl text-bone">The fire went out for a moment</h1>
+        <h1 className="v-title v-title--sm">The kitchen paused for a moment</h1>
         <p className="mt-4 text-sand">Something went wrong on our side. Try again, or head back to the shore.</p>
         <div className="mt-8 flex flex-wrap justify-center gap-6">
           <button
@@ -256,14 +262,13 @@ function SiteShell({ children }: { children: ReactNode }) {
   if (bare) return <>{children}</>;
   return (
     <ReserveProvider>
-      <Loader />
       <SmoothScroll />
       <SiteHeader />
       {children}
       <SiteFooter settings={settings} />
       <PageVeil />
       <EmberCursor />
-      <SoundToggle />
+      <SoundScape />
     </ReserveProvider>
   );
 }

@@ -7,8 +7,9 @@ export const Route = createFileRoute("/reserve")({
   head: () =>
     pageHead({
       title: "Reserve your table",
-      description: "Book a table at Sal Marinho in Anjuna, Goa. Choose a date, time and number of guests, and we will light the fire.",
+      description: "Book a table at Sal Marinho in Anjuna, Goa. Choose a date, time and number of guests, and we will keep a table for you.",
       path: "/reserve",
+      image: "/assets/v2/og/visit.jpg",
     }),
   component: Reserve,
 });
