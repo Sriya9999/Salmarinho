@@ -1953,6 +1953,11 @@ html[data-sm-seen="1"] .v-opening {
 .v-story--soon .v-story__title {
   font-style: italic;
 }
+.v-story--soon .sm-label,
+.v-story--soon .text-sand,
+.v-story--soon .v-story__arrow {
+  color: var(--color-bone);
+}
 
 /* ---------------------------------------------------------------- 10 something is growing */
 
