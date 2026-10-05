@@ -2098,9 +2098,8 @@ html[data-sm-seen="1"] .v-opening {
 /* ---------------------------------------------------------------- menu page */
 
 .v-menu-nav {
-  position: sticky;
+  position: relative;
   z-index: 20;
-  top: 76px;
   background: color-mix(in srgb, var(--color-volcanic) 92%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -2126,7 +2125,18 @@ html[data-sm-seen="1"] .v-opening {
   color: var(--color-bone);
 }
 .v-menu-cat {
-  scroll-margin-top: 10rem;
+  scroll-margin-top: 6rem;
+}
+/* Pinned under the header on wide screens, where the sections fit on one or two
+   lines. On phones the list wraps to several lines, so it stays at the top. */
+@media (min-width: 900px) {
+  .v-menu-nav {
+    position: sticky;
+    top: 76px;
+  }
+  .v-menu-cat {
+    scroll-margin-top: 11rem;
+  }
 }
 .v-menu-item {
   display: grid;

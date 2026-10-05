@@ -74,8 +74,8 @@ export function Hero() {
           A little coastal magic, <em>all day.</em>
         </h1>
         <p className="v-lede mt-6">
-          South Indian food and breakfast that keeps no clock. Dosa from the tawa, idli from the clay pot, eggs on poi,
-          and coffee whenever you would like another.
+          South Indian and Goan breakfast that keeps no clock. Dosa from the tawa, idli from the clay pot, a Ross
+          omelette with poi, and coffee whenever you would like another.
         </p>
         <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
           <SteamCta href="#whats-cooking">What&rsquo;s cooking?</SteamCta>
@@ -90,6 +90,7 @@ export function Hero() {
 
 const SHORT_LABEL: Record<string, string> = {
   "south-indian-breakfast": "South Indian",
+  "goan-breakfast": "Goan",
   "morning-classics": "Morning classics",
   "eggs-and-omelettes": "Eggs",
   "buddha-bowls": "Bowls",
@@ -144,7 +145,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
           </div>
           <div className="md:col-span-5">
             <p className="v-lede">
-              Breakfast and South Indian food, served all day. A few favourites from the kitchen; the full menu, with
+              South Indian and Goan breakfast, served all day. A few favourites from the kitchen; the full menu, with
               every price, is one click away.
             </p>
           </div>
@@ -508,6 +509,14 @@ export function PortugueseMap() {
             Poi from the bakers who followed the ships. Choris with its vinegar and smoke. Facades washed in lime,
             doorways framed in blue. You will find it on the breakfast table, under almost every egg.
           </p>
+          <div className="md:col-span-5 md:col-start-8">
+            <Link to="/menu" hash="goan-breakfast" className="v-contour-link">
+              The Goan breakfast
+              <svg viewBox="0 0 260 8" preserveAspectRatio="none" aria-hidden="true">
+                <path d="M0 4 C 30 0, 50 8, 80 4 S 130 0, 160 4 S 220 8, 260 3" />
+              </svg>
+            </Link>
+          </div>
         </div>
 
         <div ref={wrap} className="v-map mt-12">

@@ -15,7 +15,7 @@ export const Route = createFileRoute("/menu/")({
     pageHead({
       title: "Menu: What's cooking?",
       description:
-        "The full Sal Marinho menu with prices: South Indian breakfast, morning classics, eggs and omelettes, Buddha bowls, French toast, coffee and tea, fresh juices, shakes and smoothies.",
+        "The full Sal Marinho menu with prices: South Indian breakfast, Goan breakfast, morning classics, eggs and omelettes, Buddha bowls, French toast, coffee and tea, fresh juices, shakes and smoothies.",
       path: "/menu",
       image: "/assets/v2/og/menu.jpg",
     }),
@@ -57,7 +57,7 @@ function MenuPage() {
           <h1 className="v-accent-title mt-5">What&rsquo;s cooking?</h1>
           <div className="mt-8 grid gap-10 md:grid-cols-12">
             <p className="v-lede md:col-span-6">
-              South Indian breakfast, morning classics, eggs on char-grilled poi, bowls, French toast, and coffee,
+              South Indian breakfast, Goan breakfast, morning classics, eggs on char-grilled poi, bowls, French toast, and coffee,
               juices and smoothies. Everything is on from the moment we open to the moment we close.
             </p>
             <div className="flex flex-wrap items-start gap-3 md:col-span-5 md:col-start-8">

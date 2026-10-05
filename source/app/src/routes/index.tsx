@@ -23,9 +23,9 @@ export const Route = createFileRoute("/")({
   loader: () => getHomeData(),
   head: () =>
     pageHead({
-      title: "Sal Marinho, Anjuna | South Indian food and all-day breakfast",
+      title: "Sal Marinho, Anjuna | South Indian and Goan breakfast, all day",
       description:
-        "A coastal restaurant in Anjuna, Goa: benne dosa, clay pot tatte idli, Goan and Portuguese eggs, Buddha bowls, French toast, coffee and fresh juices, served all day.",
+        "A coastal restaurant in Anjuna, Goa: benne dosa, clay pot tatte idli, Ross omelette with poi, choris on toast, Buddha bowls, French toast, coffee and fresh juices, served all day.",
       path: "/",
       image: "/assets/v2/og/home.jpg",
     }),

@@ -46,7 +46,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
                 ))}
               </dl>
             ) : (
-              <p className="mt-5 text-sm text-sand">Breakfast and South Indian food, served all day.</p>
+              <p className="mt-5 text-sm text-sand">South Indian and Goan breakfast, served all day.</p>
             )}
           </div>
           <div>

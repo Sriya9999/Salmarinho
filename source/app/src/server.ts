@@ -40,7 +40,7 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
-// Pages retired with the move to South Indian food and all-day breakfast. Old
+// Pages retired with the move to South Indian and Goan breakfast. Old
 // links land on the matching part of the new site instead of a 404.
 const RETIRED: Record<string, string> = {
   "/who-we-are": "/#from-the-south",

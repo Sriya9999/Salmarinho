@@ -5,7 +5,7 @@ export const SITE_LOCALITY = "Anjuna, Goa";
 export const THEME_COLOR = "#161513";
 export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://salmarinho.higgsfield.app";
 export const SITE_DESCRIPTION =
-  "A coastal restaurant in Anjuna, Goa, serving South Indian food and breakfast all day: benne dosa, clay pot tatte idli, Goan and Portuguese eggs, Buddha bowls, coffee and fresh juices.";
+  "A coastal restaurant in Anjuna, Goa, serving South Indian and Goan breakfast all day: benne dosa, clay pot tatte idli, Ross omelette with poi, choris, Buddha bowls, coffee and fresh juices.";
 
 export type NavItem = { to: string; hash?: string; title: string; subtitle: string };
 

@@ -22,6 +22,17 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     sort: 1,
   },
   {
+    slug: "goan-breakfast",
+    title: "Goan Breakfast",
+    subtitle: "Goan and Portuguese favourites",
+    story: "The Goan side of the morning: an omelette with xacuti curry, smoked choris, and omelettes served with char-grilled poi.",
+    mood: "ember",
+    image: "/assets/v2/menu/goan-breakfast.webp",
+    imageAlt: "A Ross omelette in Goan xacuti curry with lime and soft poi",
+    icon: "pan",
+    sort: 2,
+  },
+  {
     slug: "morning-classics",
     title: "Morning Classics",
     subtitle: "The big breakfasts, served all day",
@@ -30,7 +41,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/morning-classics.webp",
     imageAlt: "Shakshuka in a cast iron pan with char-toasted poi bread",
     icon: "pan",
-    sort: 2,
+    sort: 3,
   },
   {
     slug: "eggs-and-omelettes",
@@ -41,7 +52,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/eggs-and-omelettes.webp",
     imageAlt: "A Portuguese omelette with smoked choris and onion jam",
     icon: "pan",
-    sort: 3,
+    sort: 4,
   },
   {
     slug: "buddha-bowls",
@@ -52,7 +63,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/buddha-bowls.webp",
     imageAlt: "A miso mushroom Buddha bowl with red rice, shiitake and red cabbage",
     icon: "leaf",
-    sort: 4,
+    sort: 5,
   },
   {
     slug: "add-your-protein",
@@ -63,7 +74,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "",
     imageAlt: "",
     icon: "leaf",
-    sort: 5,
+    sort: 6,
   },
   {
     slug: "french-toast",
@@ -74,7 +85,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/french-toast.webp",
     imageAlt: "Banana salted caramel French toast on a clay plate",
     icon: "clock",
-    sort: 6,
+    sort: 7,
   },
   {
     slug: "coffee-and-tea",
@@ -85,7 +96,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/coffee-and-tea.webp",
     imageAlt: "A cup of milk coffee and a glass of masala chai on a stone table",
     icon: "flame",
-    sort: 7,
+    sort: 8,
   },
   {
     slug: "fresh-juices-and-shakes",
@@ -96,7 +107,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/fresh-juices-and-shakes.webp",
     imageAlt: "Watermelon juice and an avocado shake on a sunlit table",
     icon: "coconut",
-    sort: 8,
+    sort: 9,
   },
   {
     slug: "signature-smoothies",
@@ -107,7 +118,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     image: "/assets/v2/menu/signature-smoothies.webp",
     imageAlt: "A Goa tropical smoothie with mango, pineapple and coconut milk",
     icon: "coconut",
-    sort: 9,
+    sort: 10,
   },
 ];
 
@@ -215,6 +226,17 @@ export const SEED_DISHES: Dish[] = [
     { name: "Udupi Uppit", price: 170, description: "Savoury porridge of dry-roasted semolina, cooked until soft and fluffy.", photo: true, imageAlt: "A mound of Udupi uppit topped with cashews and curry leaves" },
     { name: "Sheera", price: 200, description: "A semolina pudding and a classic Indian dessert.", photo: true, imageAlt: "Golden semolina sheera scattered with toasted nuts" },
   ]),
+  ...dishes("goan-breakfast", [
+    { name: "Ross Omelette", price: 350, description: "An all-time Goan favourite: omelette served with Goan xacuti curry.", featured: true, imageAlt: "An omelette in Goan xacuti curry with lime and soft poi" },
+    {
+      name: "Portuguese Omelette",
+      price: 400,
+      description: "Fluffy omelette with chunks of smoked choris and herbs, served with onion jam.",
+      featured: true,
+      imageAlt: "A folded omelette with smoked choris, herbs and onion jam",
+    },
+    { name: "Choris on Toast", price: 350, description: "Spiced Goan sausages sautéed with onion and tomatoes, topped with feta and blue cheese sauce." },
+  ]),
   ...dishes("morning-classics", [
     {
       name: "English Breakfast",
@@ -230,7 +252,6 @@ export const SEED_DISHES: Dish[] = [
       photo: true,
       imageAlt: "A sunny side up egg on toast with sliced sausage, mushrooms and beans",
     },
-    { name: "Choris on Toast", price: 350, description: "Spiced Goan sausages sautéed with onion and tomatoes, topped with feta and blue cheese sauce." },
     {
       name: "Shakshuka",
       price: 450,
@@ -248,14 +269,6 @@ export const SEED_DISHES: Dish[] = [
     { name: "Masala Omelette", price: 250, description: "Classic Mumbai street-style masala omelette." },
     { name: "Stuffed Mushroom / Spinach Omelette", price: 250, description: "Fluffy omelette filled with mushroom or spinach." },
     { name: "Herby Cheese Omelette", price: 250, description: "Omelette with fresh herbs and cheese." },
-    { name: "Ross Omelette", price: 350, description: "An all-time Goan favourite: omelette served with Goan xacuti curry.", photo: true, imageAlt: "An omelette in Goan xacuti curry with lime and soft poi" },
-    {
-      name: "Portuguese Omelette",
-      price: 400,
-      description: "Fluffy omelette with chunks of smoked choris and herbs, served with onion jam.",
-      featured: true,
-      imageAlt: "A folded omelette with smoked choris, herbs and onion jam",
-    },
     {
       name: "Eggs Benedict",
       price: 350,
@@ -311,7 +324,7 @@ export const SEED_DISHES: Dish[] = [
     { name: "Milk Coffee", price: 140, featured: true, imageAlt: "A cup of milk coffee on a stone table in morning light" },
     { name: "Black Tea", price: 110 },
     { name: "Lemon Tea", price: 130 },
-    { name: "Masala Chai", price: 140, featured: true, imageAlt: "A glass of masala chai with a little steam" },
+    { name: "Masala Chai", price: 140, photo: true, imageAlt: "A glass of masala chai with a little steam" },
     { name: "Classic Chai", price: 120 },
   ]),
   ...dishes("fresh-juices-and-shakes", [

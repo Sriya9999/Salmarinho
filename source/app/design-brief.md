@@ -1,7 +1,7 @@
 # Sal Marinho, Anjuna: design brief (v2, "An imagined coast")
 
 ## Position
-A coastal restaurant in Anjuna serving South Indian food, all-day breakfast, coffee and
+A coastal restaurant in Anjuna serving South Indian food, Goan breakfast, all-day breakfast, coffee and
 beverages. The site sells what is on the table now: the visitor reaches **What's cooking?**
 within one scroll. Crab is a future chapter only (cultivation underway), never on the landing
 page or in the hero, always labelled Coming soon.

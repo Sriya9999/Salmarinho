@@ -36,7 +36,7 @@ function Visit() {
         kicker="Visit"
         title="Come to the table."
         accent
-        line="Breakfast and South Indian food, all day, a short walk from the sea in Anjuna."
+        line="South Indian and Goan breakfast, all day, a short walk from the sea in Anjuna."
         image="/assets/v2/table/evening.webp"
         imageAlt="The terrace in the evening, tables lit by candles above the sea"
       >

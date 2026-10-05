@@ -28,7 +28,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, THEME_COLOR } from "../lib/site"
 declare const __HF_DESIGN_INSPECTOR__: boolean;
 
 // Built-in defaults for any field that isn't set in app-meta.json.
-const DEFAULT_TITLE = "Sal Marinho, Anjuna | South Indian food and all-day breakfast";
+const DEFAULT_TITLE = "Sal Marinho, Anjuna | South Indian and Goan breakfast, all day";
 const DEFAULT_DESCRIPTION = SITE_DESCRIPTION;
 
 type AppMeta = {
