@@ -93,7 +93,7 @@ type Film = { src: string; mobileSrc: string; poster: string };
  * A looping film that loads when it nears the screen and pauses when it
  * leaves. Under reduced motion the poster stays as a still.
  */
-export function LoopFilm({ film, className, label }: { film: Film; className?: string; label?: string }) {
+export function LoopFilm({ film, className, label, speed }: { film: Film; className?: string; label?: string; speed?: number }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => {
     const video = ref.current;
@@ -129,6 +129,7 @@ export function LoopFilm({ film, className, label }: { film: Film; className?: s
       preload="none"
       aria-hidden={label ? undefined : true}
       aria-label={label}
+      data-speed={speed}
     />
   );
 }
