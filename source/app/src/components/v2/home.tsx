@@ -109,7 +109,11 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
       .map((c) => ({ slug: c.slug, label: SHORT_LABEL[c.slug] ?? c.title })),
   ];
   const [active, setActive] = useState("all");
-  const featured = pictured.filter((d) => d.featured);
+  // Menu order, with the chef's pick leading the grid in the large first tile.
+  const order = (d: Dish) => categories.findIndex((c) => c.slug === d.category);
+  const featured = pictured
+    .filter((d) => d.featured)
+    .sort((a, b) => Number(b.chefRecommendation) - Number(a.chefRecommendation) || order(a) - order(b) || a.sort - b.sort);
   const shown = (active === "all" ? (featured.length ? featured : pictured) : pictured.filter((d) => d.category === active)).slice(0, 13);
 
   const list = useRef<HTMLDivElement>(null);
