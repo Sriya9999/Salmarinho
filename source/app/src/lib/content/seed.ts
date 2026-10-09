@@ -7,7 +7,7 @@
 
 import { OPENING_HOURS } from "@/lib/site";
 
-import type { CrabStage, Dish, JournalPost, MenuCategory, SiteSettings } from "./types";
+import type { CrabStage, Dish, EventsSettings, JournalPost, MenuCategory, SiteSettings } from "./types";
 
 export const SEED_CATEGORIES: MenuCategory[] = [
   {
@@ -416,7 +416,7 @@ export const SEED_POSTS: JournalPost[] = [
     published: true,
     body: [
       "Somewhere along the way breakfast acquired a deadline. Order before eleven, or the kitchen moves on.",
-      "By the sea, days keep a different time. Some mornings start at dawn with the fishing boats; some start at noon after a late night. Neither deserves a lesser plate.",
+      "On this coast, days keep a different time. Some mornings start at dawn with the fishing boats; some start at noon after a late night. Neither deserves a lesser plate.",
       "## Breakfast, all day",
       "So breakfast stays on the menu from the moment we open to the moment we close, morning and evening. Idli at one in the afternoon. A masala omelette at nine at night. Coffee whenever you would like another.",
       "> The best meal of the day should not depend on what time you woke up.",
@@ -609,6 +609,78 @@ export const DEFAULT_CRAB_STAGES: CrabStage[] = [
   },
 ];
 
+/**
+ * Sal Marinho Events. The descriptions are a starting point for the team to
+ * confirm; the pictures are mood images, labelled as illustrative on the site
+ * until real event photographs replace them in /admin.
+ */
+const ev = (name: string) => `/assets/v2/events/${name}.webp`;
+export const DEFAULT_EVENTS: EventsSettings = {
+  illustrative: true,
+  enquiryEmail: "",
+  enquiryWhatsapp: "",
+  categories: [
+    {
+      slug: "villas",
+      title: "Villas",
+      line: "Private dining at home in Goa",
+      body: "Private dining, intimate gatherings and thoughtfully styled villa experiences.",
+      image: ev("villa"),
+      imageAlt: "A long dinner table set inside a lime-washed villa at dusk, candles lit and doors open to the garden",
+    },
+    {
+      slug: "yachts",
+      title: "Yachts",
+      line: "On the water",
+      body: "Elevated experiences on the water, with elegant details and an atmosphere designed for the occasion.",
+      image: ev("yacht"),
+      imageAlt: "A small dinner table set on the teak deck of a yacht at golden hour, the coast hazy behind",
+    },
+    {
+      slug: "beach-and-poolside",
+      title: "Beach & Poolside Events",
+      line: "Open air, water and sunset",
+      body: "Celebrations shaped around open air, water, sunset, lighting and the setting.",
+      image: ev("beach"),
+      imageAlt: "A low table on the sand with cushions, lanterns and candles as the sun sets over the sea",
+    },
+    {
+      slug: "birthdays",
+      title: "Birthdays",
+      line: "Personal, from the first detail",
+      body: "Personalised celebrations with thoughtful details, memorable food and a distinct visual atmosphere.",
+      image: ev("birthday"),
+      imageAlt: "A birthday cake with lit candles on a table scattered with petals, glasses raised in soft focus",
+    },
+    {
+      slug: "corporate",
+      title: "Corporate Events",
+      line: "Hospitality with presence",
+      body: "Premium gatherings, team occasions, client hospitality and corporate celebrations.",
+      image: ev("corporate"),
+      imageAlt: "A long table with crisp linen, glassware and tropical leaves under warm festoon lights in a garden pavilion",
+    },
+    {
+      slug: "private-celebrations",
+      title: "Private Celebrations",
+      line: "Made around your occasion",
+      body: "Bespoke experiences designed around the occasion, guest list and desired atmosphere.",
+      image: ev("private"),
+      imageAlt: "A candlelit table in a tropical garden at night, a carved stone statue softly lit behind",
+    },
+  ],
+  gallery: [
+    { src: ev("villa"), alt: "A long dinner table set inside a villa at dusk", caption: "A villa table at dusk", illustrative: true },
+    { src: ev("terrace"), alt: "A round table under strings of lanterns on an open terrace at blue hour", caption: "Out onto the terrace", illustrative: true },
+    { src: ev("yacht"), alt: "A dinner table on a yacht deck at golden hour", caption: "On the water", illustrative: true },
+    { src: ev("beach"), alt: "A low table with lanterns on the sand at sunset", caption: "Sand and sunset", illustrative: true },
+    { src: ev("poolside"), alt: "Floating candles on a lit pool beside a table of small plates", caption: "By the pool", illustrative: true },
+    { src: ev("birthday"), alt: "A birthday cake with lit candles and scattered petals", caption: "A birthday", illustrative: true },
+    { src: ev("corporate"), alt: "A long corporate dinner table under festoon lights", caption: "A long table for the team", illustrative: true },
+    { src: ev("private"), alt: "A candlelit private dinner in a tropical garden", caption: "Candlelight, close friends", illustrative: true },
+  ],
+};
+
 export const DEFAULT_SETTINGS: SiteSettings = {
   address: "",
   locality: "Anjuna, Goa",
@@ -626,6 +698,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   gallery: [],
   crabStatus: "coming-soon",
   crabStages: DEFAULT_CRAB_STAGES,
+  events: DEFAULT_EVENTS,
 };
 
 /** Retired by migrations/0003 (the crab-centric concept). */

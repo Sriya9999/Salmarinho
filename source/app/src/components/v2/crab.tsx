@@ -51,7 +51,7 @@ export function GrowingSection({ settings }: { settings: SiteSettings }) {
           </h2>
           <p className="v-lede mt-6">{first}</p>
           <p className="v-lede mt-3">{second}</p>
-          <Link to="/the-crab-journey" className="v-ripple-link mt-9">
+          <Link to="/the-coast" hash="something-is-growing" className="v-ripple-link mt-9">
             <span className="v-ripple-link__ring" aria-hidden="true" />
             Follow the crab journey
           </Link>

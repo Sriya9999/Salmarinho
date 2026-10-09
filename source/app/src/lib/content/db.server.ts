@@ -7,6 +7,7 @@ import { DEFAULT_SETTINGS, SEED_CATEGORIES, SEED_DISHES, SEED_POSTS } from "./se
 import type {
   Dish,
   EventItem,
+  EventEnquiry,
   JournalPost,
   MenuCategory,
   Reservation,
@@ -120,6 +121,22 @@ function toEvent(r: Row): EventItem {
   };
 }
 
+function toEnquiry(r: Row): EventEnquiry {
+  return {
+    id: str(r.id),
+    name: str(r.name),
+    email: str(r.email),
+    phone: str(r.phone),
+    eventType: str(r.event_type),
+    eventDate: str(r.event_date),
+    location: str(r.location),
+    guests: Number(r.guests ?? 0),
+    message: str(r.message),
+    status: str(r.status) as EventEnquiry["status"],
+    createdAt: str(r.created_at),
+  };
+}
+
 function toReservation(r: Row): Reservation {
   return {
     id: str(r.id),
@@ -197,7 +214,8 @@ export async function getSettings(): Promise<SiteSettings> {
   const row = await db.prepare("SELECT value FROM settings WHERE key = 'site'").first<{ value: string }>();
   if (!row) return DEFAULT_SETTINGS;
   try {
-    return { ...DEFAULT_SETTINGS, ...(JSON.parse(row.value) as Partial<SiteSettings>) };
+    const stored = JSON.parse(row.value) as Partial<SiteSettings>;
+    return { ...DEFAULT_SETTINGS, ...stored, events: { ...DEFAULT_SETTINGS.events, ...stored.events } };
   } catch {
     return DEFAULT_SETTINGS;
   }
@@ -307,4 +325,18 @@ export async function listReservations(limit = 200): Promise<Reservation[]> {
 export async function setReservationStatus(id: string, status: Reservation["status"]): Promise<void> {
   const db = await requireDb();
   await db.prepare("UPDATE reservations SET status = ? WHERE id = ?").bind(status, id).run();
+}
+
+export async function listEnquiries(limit = 200): Promise<EventEnquiry[]> {
+  const db = await requireDb();
+  const { results } = await db
+    .prepare("SELECT * FROM event_enquiries ORDER BY created_at DESC LIMIT ?")
+    .bind(limit)
+    .all<Row>();
+  return results.map(toEnquiry);
+}
+
+export async function setEnquiryStatus(id: string, status: EventEnquiry["status"]): Promise<void> {
+  const db = await requireDb();
+  await db.prepare("UPDATE event_enquiries SET status = ? WHERE id = ?").bind(status, id).run();
 }

@@ -40,7 +40,7 @@ function Article() {
         <div className="md:col-span-8 md:col-start-5">
           <Prose body={post.body} />
           {soon ? (
-            <Link to="/the-crab-journey" className="v-ripple-link mt-10">
+            <Link to="/the-coast" hash="something-is-growing" className="v-ripple-link mt-10">
               <span className="v-ripple-link__ring" aria-hidden="true" />
               Follow the journey
             </Link>

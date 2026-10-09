@@ -1073,117 +1073,9 @@ select.sm-input option {
   }
 }
 
-/* ---------------------------------------------------------------- opening */
+/* ---------------------------------------------------------------- opening buttons (the door on the landing page) */
 
-.v-opening {
-  position: fixed;
-  z-index: 90;
-  inset: 0;
-  background: #050505;
-  transition: opacity 1.4s var(--ease-tide), visibility 0s 1.4s;
-}
-.v-opening[data-state="done"] {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-/* Without JavaScript the opening clears itself; returning visitors never see it. */
-.v-opening:not([data-live]) {
-  animation: v-opening-failsafe 1.4s var(--ease-tide) 6s forwards;
-}
-@keyframes v-opening-failsafe {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-html[data-sm-seen="1"] .v-opening {
-  display: none;
-}
-.v-opening__film {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  opacity: 0;
-  transition: opacity 1.6s var(--ease-tide);
-}
-.v-opening__film[data-on="true"] {
-  opacity: 1;
-}
-/* Before the film arrives: a faint shimmer of water in the dark. */
-.v-opening__shimmer {
-  position: absolute;
-  inset: 45% 15% 30%;
-  background: repeating-linear-gradient(180deg, transparent 0 9px, rgb(200 214 222 / 0.07) 9px 10px);
-  -webkit-mask: radial-gradient(60% 50% at 50% 40%, #000, transparent 70%);
-  mask: radial-gradient(60% 50% at 50% 40%, #000, transparent 70%);
-  animation: v-shimmer 5s ease-in-out infinite;
-}
-@keyframes v-shimmer {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: translateY(0);
-  }
-  50% {
-    opacity: 1;
-    transform: translateY(3px);
-  }
-}
-.v-opening__glow {
-  position: absolute;
-  inset: auto 0 0;
-  height: 60%;
-  background: radial-gradient(40% 60% at 50% 100%, rgb(216 138 100 / 0.32), transparent 70%);
-  opacity: 0;
-  transition: opacity 3s var(--ease-tide);
-}
-.v-opening[data-phase="fire"] .v-opening__glow,
-.v-opening[data-phase="table"] .v-opening__glow {
-  opacity: 1;
-}
-.v-opening__brand {
-  position: absolute;
-  left: 50%;
-  bottom: clamp(3rem, 10vh, 6rem);
-  display: grid;
-  justify-items: center;
-  gap: 0.9rem;
-  color: var(--color-bone);
-  transform: translateX(-50%);
-  text-align: center;
-  opacity: 0;
-  transition: opacity 2s var(--ease-tide) 0.4s;
-}
-.v-opening[data-phase="fire"] .v-opening__brand {
-  opacity: 1;
-}
 /* Enter: the tap that lets the sound begin. */
-.v-opening__gate {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.1rem;
-  text-align: center;
-  transition: opacity 1.2s var(--ease-tide), visibility 0s 1.2s;
-}
-.v-opening:not([data-state="gate"]) .v-opening__gate {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-.v-opening__hint {
-  color: var(--color-sand);
-  font-size: 0.7rem;
-  font-weight: 500;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-}
 .v-opening__enter {
   display: inline-flex;
   align-items: center;
@@ -1237,13 +1129,6 @@ html[data-sm-seen="1"] .v-opening {
 }
 .v-opening__quiet:hover {
   color: var(--color-bone);
-}
-.v-opening__place {
-  color: var(--color-sand);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 0.42em;
-  text-transform: uppercase;
 }
 .v-opening__skip {
   position: absolute;
@@ -2839,6 +2724,17 @@ html[data-sm-seen="1"] .v-opening {
   height: 100%;
   object-fit: cover;
 }
+/* The real garden, drifting slowly as if walked through. */
+.v-room__still {
+  overflow: hidden;
+}
+.v-room__still img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 42%;
+  animation: v-hero-drift 30s ease-in-out infinite alternate;
+}
 .v-room__shade {
   position: absolute;
   inset: 0;
@@ -3216,17 +3112,559 @@ html[data-sm-seen="1"] .v-opening {
   .v-contours svg,
   .v-spice__item,
   .v-smoke span,
-  .v-opening__shimmer,
   .v-soon::before,
   .v-particles span {
     animation: none !important;
-  }
-  .v-opening {
-    display: none;
   }
   .v-reveal,
   .v-reveal img {
     clip-path: none;
     transform: none;
   }
+}
+
+/* ================================================================ events */
+
+.v-ev-tag {
+  position: absolute;
+  z-index: 2;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(10 9 8 / 0.7);
+  color: var(--color-sand);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* Home: settings crossfade slowly behind the invitation. */
+.v-ev-teaser {
+  position: relative;
+  overflow: hidden;
+  background: #0d0c0b;
+}
+.v-ev-teaser__frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: v-ev-cycle 24s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 6s);
+}
+@keyframes v-ev-cycle {
+  0% {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  6%,
+  25% {
+    opacity: 1;
+  }
+  31%,
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+.v-ev-teaser__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(10 9 8 / 0.86) 0%, rgb(10 9 8 / 0.5) 45%, rgb(10 9 8 / 0.1) 75%),
+    linear-gradient(0deg, rgb(10 9 8 / 0.75) 0%, rgb(10 9 8 / 0) 45%);
+}
+.v-ev-teaser__note,
+.v-ev-hero__note {
+  color: rgb(216 199 169 / 0.7);
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Events: a cinematic opening, settings dissolving into one another. */
+.v-ev-hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: hidden;
+  background: #0d0c0b;
+}
+.v-ev-hero__frames img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  animation: v-ev-cycle 30s ease-in-out infinite;
+  animation-delay: calc(var(--i) * 6s - 0.5s);
+}
+.v-ev-hero__frames img:first-child {
+  animation-delay: -0.5s;
+}
+.v-ev-hero__light {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 196 140 / 0.1) 48%, transparent 62%);
+  mix-blend-mode: screen;
+  animation: v-light 14s ease-in-out infinite alternate;
+}
+.v-ev-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(10 9 8 / 0.85) 0%, rgb(10 9 8 / 0.5) 40%, rgb(10 9 8 / 0.05) 70%),
+    linear-gradient(0deg, rgb(10 9 8 / 0.8) 0%, rgb(10 9 8 / 0) 45%);
+}
+.v-ev-hero__copy {
+  position: relative;
+  display: flex;
+  min-height: 100svh;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: 8rem;
+  padding-bottom: clamp(4.5rem, 11vh, 7.5rem);
+}
+.v-ev-hero__title {
+  max-width: 13ch;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2.9rem, 7.4vw, 7.6rem);
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+}
+.v-ev-hero__title em {
+  font-style: italic;
+}
+
+/* Events: one sticky frame; each setting opens out of the last like light on water. */
+.v-ev-journey {
+  --p: 0;
+  position: relative;
+  height: calc(var(--n) * 90svh);
+  background: #0d0c0b;
+}
+.v-ev-journey__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+}
+.v-ev-journey__layer {
+  --t: clamp(0, calc(var(--p) * (var(--n) - 1) - var(--i) + 1), 1);
+  position: absolute;
+  inset: 0;
+  clip-path: circle(calc(var(--t) * 120%) at 50% 62%);
+}
+.v-ev-journey__layer:first-child {
+  clip-path: none;
+}
+.v-ev-journey__layer img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(calc(1.14 - var(--t) * 0.1));
+}
+.v-ev-journey__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(10 9 8 / 0.82) 0%, rgb(10 9 8 / 0.42) 42%, rgb(10 9 8 / 0) 70%),
+    linear-gradient(0deg, rgb(10 9 8 / 0.6) 0%, transparent 40%);
+}
+.v-ev-journey__ripple {
+  position: absolute;
+  inset: 0;
+  background: repeating-radial-gradient(circle at 50% 62%, transparent 0 22px, rgb(241 232 216 / 0.035) 23px 24px);
+  mix-blend-mode: screen;
+  opacity: 0.6;
+  animation: v-ev-ripple 9s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes v-ev-ripple {
+  to {
+    transform: scale(1.06);
+    opacity: 0.25;
+  }
+}
+.v-ev-journey__copy {
+  position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2rem;
+}
+.v-ev-journey__lines {
+  display: grid;
+  max-width: 30rem;
+}
+.v-ev-journey__lines li {
+  grid-area: 1 / 1;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.7s var(--ease-tide),
+    transform 0.9s var(--ease-tide);
+}
+.v-ev-journey__lines li[data-active="true"] {
+  opacity: 1;
+  transform: none;
+}
+.v-ev-journey__kicker {
+  display: block;
+  color: var(--color-ember);
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.v-ev-journey__line {
+  display: block;
+  margin-top: 0.6rem;
+  color: var(--color-bone);
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 2.2rem);
+  font-weight: 300;
+  line-height: 1.2;
+}
+.v-ev-journey .v-ev-tag {
+  position: static;
+  align-self: flex-start;
+}
+
+/* Events: the six kinds of event. */
+.v-ev-cards {
+  display: grid;
+  gap: clamp(2.5rem, 4vw, 3.5rem) clamp(1.25rem, 2.5vw, 2rem);
+}
+@media (min-width: 720px) {
+  .v-ev-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1100px) {
+  .v-ev-cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .v-ev-card:nth-child(3n + 2) {
+    margin-top: 4rem;
+  }
+}
+.v-ev-card {
+  display: flex;
+  flex-direction: column;
+}
+.v-ev-card__media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.v-ev-card__img {
+  aspect-ratio: 4 / 3;
+  transition: transform 1.2s var(--ease-tide);
+}
+.v-ev-card__img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.v-ev-card__img--empty {
+  background: linear-gradient(135deg, var(--color-smoked), var(--color-charcoal));
+}
+.v-ev-card__media::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(110deg, transparent 35%, rgb(255 210 160 / 0.16) 50%, transparent 65%);
+  transform: translateX(-100%);
+  transition: transform 1.2s var(--ease-tide);
+  pointer-events: none;
+}
+.v-ev-card:hover .v-ev-card__img {
+  transform: scale(1.04);
+}
+.v-ev-card:hover .v-ev-card__media::after {
+  transform: translateX(100%);
+}
+.v-ev-card__num {
+  margin-top: 1.4rem;
+  color: var(--color-ember);
+  font-size: 0.7rem;
+  letter-spacing: 0.24em;
+}
+.v-ev-card__title {
+  margin-top: 0.5rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 2.4vw, 2.3rem);
+  font-weight: 300;
+  line-height: 1.05;
+}
+.v-ev-card__line {
+  margin-top: 0.5rem;
+  color: var(--color-clay);
+  font-family: var(--font-accent);
+  font-size: 1.05rem;
+  font-weight: 200;
+}
+.v-ev-card__body {
+  margin-top: 0.8rem;
+  max-width: 34ch;
+  color: var(--color-sand);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.v-ev-card__plan {
+  align-self: flex-start;
+  min-height: 44px;
+  margin-top: 0.6rem;
+  color: var(--color-bone);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.v-ev-card__plan span {
+  display: inline-block;
+  transition: transform 0.4s var(--ease-tide);
+}
+.v-ev-card__plan:hover span,
+.v-ev-card__plan:focus-visible span {
+  transform: translateX(6px);
+}
+
+/* Events: gallery. Native horizontal scrolling with snap: swipe, buttons or arrow keys. */
+.v-ev-gallery__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.v-ev-gallery__count {
+  min-width: 3.5rem;
+  color: var(--color-sand);
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+}
+.v-ev-gallery__btn {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgb(241 232 216 / 0.25);
+  border-radius: 999px;
+  color: var(--color-bone);
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+.v-ev-gallery__btn:hover:not(:disabled) {
+  border-color: var(--color-ember);
+  background: rgb(156 74 46 / 0.18);
+}
+.v-ev-gallery__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.v-ev-gallery {
+  display: flex;
+  gap: clamp(0.8rem, 2vw, 1.5rem);
+  overflow-x: auto;
+  padding-inline: max(clamp(1rem, 4.5vw, 3.5rem), calc((100vw - 88rem) / 2 + 3.5rem));
+  padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: max(clamp(1rem, 4.5vw, 3.5rem), calc((100vw - 88rem) / 2 + 3.5rem));
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.v-ev-gallery::-webkit-scrollbar {
+  display: none;
+}
+.v-ev-gallery:focus-visible {
+  outline: 2px solid var(--color-ember);
+  outline-offset: 4px;
+}
+.v-ev-gallery__item {
+  flex: 0 0 min(78vw, 46rem);
+  scroll-snap-align: start;
+}
+.v-ev-gallery__item img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.v-ev-gallery__item figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.8rem;
+  color: var(--color-sand);
+  font-size: 0.9rem;
+}
+.v-ev-gallery__ill {
+  color: rgb(216 199 169 / 0.7);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Events: enquiry. */
+.v-ev-enquire {
+  position: relative;
+  border-top: 1px solid var(--color-hairline);
+  background:
+    radial-gradient(70% 60% at 85% 100%, rgb(156 74 46 / 0.14), transparent 70%),
+    var(--color-volcanic);
+}
+.v-ev-form__grid {
+  display: grid;
+  gap: 1.8rem 2rem;
+}
+@media (min-width: 720px) {
+  .v-ev-form__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.v-ev-form__field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+}
+.v-ev-form__field .sm-input[aria-invalid="true"] {
+  border-bottom-color: var(--color-ember);
+}
+.v-ev-form__error {
+  color: var(--color-ember);
+  font-size: 0.82rem;
+}
+.v-ev-form .sm-input::placeholder {
+  color: rgb(216 199 169 / 0.45);
+}
+.v-ev-form__done {
+  padding: clamp(1.5rem, 4vw, 3rem);
+  border: 1px solid var(--color-hairline);
+  outline: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v-ev-teaser__frames img:not(:first-child),
+  .v-ev-hero__frames img:not(:first-child) {
+    display: none;
+  }
+  .v-ev-teaser__frames img:first-child,
+  .v-ev-hero__frames img:first-child {
+    opacity: 1;
+    animation: none;
+  }
+  .v-ev-hero__light,
+  .v-ev-journey__ripple {
+    animation: none;
+  }
+  /* The settings become a simple sequence of pictures. */
+  .v-ev-journey {
+    height: auto;
+  }
+  .v-ev-journey__stage {
+    position: relative;
+    height: auto;
+  }
+  .v-ev-journey__layer {
+    position: relative;
+    height: 60svh;
+    clip-path: none;
+  }
+  .v-ev-journey__layer img {
+    transform: none;
+  }
+  .v-ev-journey__shade,
+  .v-ev-journey__ripple {
+    display: none;
+  }
+  .v-ev-journey__copy {
+    padding-block: 4rem;
+  }
+  .v-ev-journey__lines li {
+    grid-area: auto;
+    margin-top: 1.4rem;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ================================================================ visit */
+
+.v-visit-photos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.6rem, 1.5vw, 1.2rem);
+}
+@media (min-width: 900px) {
+  .v-visit-photos {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+  .v-visit-photos li:nth-child(even) {
+    margin-top: 3rem;
+  }
+}
+.v-visit-photos img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+.v-visit-photos li:nth-child(6) {
+  display: none;
+}
+.v-map-card,
+.v-map-frame {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border: 1px solid var(--color-hairline);
+}
+.v-map-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(40% 50% at 58% 46%, rgb(156 74 46 / 0.2), transparent 70%),
+    var(--color-charcoal);
+  cursor: pointer;
+}
+.v-map-card__lines {
+  position: absolute;
+  inset: -10%;
+  background: repeating-radial-gradient(ellipse at 58% 46%, transparent 0 26px, rgb(241 232 216 / 0.07) 27px 28px);
+}
+.v-map-card__pin {
+  position: absolute;
+  top: 46%;
+  left: 58%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--color-ember);
+  box-shadow: 0 0 0 8px rgb(216 138 100 / 0.18), 0 0 30px 6px rgb(216 138 100 / 0.4);
+  transform: translate(-50%, -50%);
+}
+.v-map-card__label {
+  position: absolute;
+  bottom: 1.2rem;
+  left: 1.4rem;
+  color: var(--color-bone);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+.v-map-card:hover .v-map-card__label,
+.v-map-card:focus-visible .v-map-card__label {
+  color: var(--color-ember);
+}
+.v-map-frame {
+  height: auto;
+  filter: grayscale(0.35) contrast(0.95);
 }

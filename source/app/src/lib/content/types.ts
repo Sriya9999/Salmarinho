@@ -97,6 +97,48 @@ export interface CrabStage {
   status: "now" | "soon";
 }
 
+/** One kind of event Sal Marinho hosts across Goa. The team confirms what each includes. */
+export interface EventCategory {
+  slug: string;
+  title: string;
+  line: string;
+  body: string;
+  image: string;
+  imageAlt: string;
+}
+
+/** A picture on the Events page. Illustrative pictures stay labelled until real event photographs replace them. */
+export interface EventPhoto {
+  src: string;
+  alt: string;
+  caption: string;
+  illustrative: boolean;
+}
+
+export interface EventsSettings {
+  categories: EventCategory[];
+  gallery: EventPhoto[];
+  /** True while category pictures are mood images rather than photographs of Sal Marinho events. */
+  illustrative: boolean;
+  /** Shown beside the enquiry form. Enquiries themselves arrive in the admin inbox. */
+  enquiryEmail: string;
+  enquiryWhatsapp: string;
+}
+
+export interface EventEnquiry {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  eventType: string;
+  eventDate: string;
+  location: string;
+  guests: number;
+  message: string;
+  status: "new" | "replied" | "closed";
+  createdAt: string;
+}
+
 export interface SiteSettings {
   address: string;
   locality: string;
@@ -114,7 +156,9 @@ export interface SiteSettings {
   /** Switch to "now-serving" when the crab experience launches. */
   crabStatus: "coming-soon" | "now-serving";
   crabStages: CrabStage[];
+  /** Photographs of the restaurant itself (its garden, rooms and tables). */
   gallery: string[];
+  events: EventsSettings;
 }
 
 export interface Reservation {

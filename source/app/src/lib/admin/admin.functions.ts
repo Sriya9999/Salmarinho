@@ -8,10 +8,12 @@ import {
   getSettings,
   listCategories,
   listDishes,
+  listEnquiries,
   listEvents,
   listPosts,
   listReservations,
   saveSettings,
+  setEnquiryStatus,
   setReservationStatus,
   upsertCategory,
   upsertDish,
@@ -83,15 +85,16 @@ export const adminChangePassword = createServerFn({ method: "POST" })
 export const adminData = createServerFn({ method: "GET" }).handler(() =>
   run(async () => {
     await requireAdmin();
-    const [dishes, categories, posts, events, settings, reservations] = await Promise.all([
+    const [dishes, categories, posts, events, settings, reservations, enquiries] = await Promise.all([
       listDishes({ includeDrafts: true }),
       listCategories(),
       listPosts({ includeDrafts: true }),
       listEvents({ includeDrafts: true }),
       getSettings(),
       listReservations(),
+      listEnquiries(),
     ]);
-    return { dishes, categories, posts, events, settings, reservations };
+    return { dishes, categories, posts, events, settings, reservations, enquiries };
   }),
 );
 
@@ -255,12 +258,51 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
         )
         .min(1)
         .max(10),
+      events: z.object({
+        illustrative: z.boolean(),
+        enquiryEmail: z.string().trim().max(120).refine((v) => v === "" || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v), "Check the events email address."),
+        enquiryWhatsapp: z.string().trim().max(30),
+        categories: z
+          .array(
+            z.object({
+              slug: z.string().trim().min(1).max(60),
+              title: z.string().trim().min(1).max(60),
+              line: z.string().trim().max(80),
+              body: z.string().trim().max(600),
+              image: mediaPath,
+              imageAlt: z.string().trim().max(200),
+            }),
+          )
+          .max(12),
+        gallery: z
+          .array(
+            z.object({
+              src: mediaPath.refine((v) => v !== "", "Every gallery picture needs a photo."),
+              alt: z.string().trim().max(200),
+              caption: z.string().trim().max(120),
+              illustrative: z.boolean(),
+            }),
+          )
+          .max(24),
+      }),
     }),
   )
   .handler(({ data }) =>
     run(async () => {
       await requireAdmin({ write: true });
       await saveSettings(data);
+      return null;
+    }),
+  );
+
+// ---------------------------------------------------------------- event enquiries
+
+export const adminSetEnquiry = createServerFn({ method: "POST" })
+  .validator(z.object({ id: z.string().min(1).max(64), status: z.enum(["new", "replied", "closed"]) }))
+  .handler(({ data }) =>
+    run(async () => {
+      await requireAdmin({ write: true });
+      await setEnquiryStatus(data.id, data.status);
       return null;
     }),
   );

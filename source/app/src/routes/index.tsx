@@ -1,55 +1,76 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { ScrollScrub } from "@/components/scroll-scrub/scroll-scrub";
+import { SplitReserve, WaveArrowLink } from "@/components/first/garments";
+import { DoorOpening } from "@/components/first/door";
+import { firstScenes, firstTheme } from "@/components/first/scenes";
+import { Atmosphere, ClaypotReveal, CoastPan, ExperienceStrip, FatteningRitual, Philosophy } from "@/components/first/story-sections";
+import { JournalSpread, MenuSlices, PortugueseConnection, ReserveBand } from "@/components/first/table-sections";
+import { EventsTeaser } from "@/components/v2/events";
 import { StructuredData } from "@/components/StructuredData";
-import {
-  ClockSection,
-  CoastFilm,
-  ComeIn,
-  ComeToTheTable,
-  Fire,
-  FollowTheSpice,
-  FromTheSouth,
-  Hero,
-  JournalSpread,
-  PortugueseMap,
-  WhatsCooking,
-} from "@/components/v2/home";
-import { GrowingSection } from "@/components/v2/crab";
-import { Opening } from "@/components/v2/opening";
-import { getHomeData } from "@/lib/content/content.functions";
+import { getLandingData } from "@/lib/content/content.functions";
 import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
-  loader: () => getHomeData(),
+  loader: () => getLandingData(),
   head: () =>
     pageHead({
-      title: "Sal Marinho, Anjuna | South Indian and Goan breakfast, all day",
+      title: "Sal Marinho, Anjuna | Crab, fire and claypot, and breakfast all day",
       description:
-        "A coastal restaurant in Anjuna, Goa: benne dosa, clay pot tatte idli, Ross omelette with poi, choris on toast, Buddha bowls, French toast, coffee and fresh juices, served all day.",
+        "Sal Marinho in Anjuna, Goa: the story of fattened mud crab, live wood fire and claypot cooking, a coastline shaped by Portuguese exchange, and South Indian and Goan breakfast served all day.",
       path: "/",
-      image: "/assets/v2/og/home.jpg",
+      image: "/assets/og/home.jpg",
     }),
   component: Index,
 });
 
+// The original landing film owns scroll-to-video time for the journey;
+// everything after it is ordinary server-rendered sections. Scenes stay a
+// module constant so the controller is built once.
+const journeyScenes = firstScenes.map((scene, i) => {
+  if (i === 0) return { ...scene, actions: <WaveArrowLink href="#the-crab">Enter the experience</WaveArrowLink> };
+  if (i === firstScenes.length - 1) return { ...scene, actions: <SplitReserve /> };
+  return scene;
+});
+
+// The fire leg doubles as the mid-page fire band.
+const fireBand = [
+  {
+    ...firstScenes[2],
+    id: "cooked-the-old-way",
+    label: "Fire",
+    kicker: undefined,
+    title: "Cooked the old way. Served a new way.",
+    body: "Wood fire, charcoal and hibachi-style heat, read by hand and by eye.",
+    tags: undefined,
+    align: "right" as const,
+    scroll: 1.3,
+  },
+];
+
 function Index() {
   const { categories, dishes, posts, settings } = Route.useLoaderData();
   return (
-    <main id="main">
+    <main id="main" className="sm-first">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
-      <Opening />
-      <Hero />
-      <WhatsCooking categories={categories} dishes={dishes} />
-      <ClockSection />
-      <FromTheSouth />
-      <FollowTheSpice />
-      <CoastFilm />
-      <PortugueseMap />
-      <Fire />
-      <GrowingSection settings={settings} />
-      <ComeIn />
+      <DoorOpening />
+      <div data-sound="waves">
+        <ScrollScrub scenes={journeyScenes} theme={firstTheme} />
+      </div>
+      <Philosophy />
+      <FatteningRitual />
+      <CoastPan />
+      <div data-cursor="ember" data-sound="fire">
+        <ScrollScrub scenes={fireBand} theme={firstTheme} className="scroll-scrub--band" firstHeading="h2" />
+      </div>
+      <MenuSlices categories={categories} dishes={dishes} />
+      <PortugueseConnection />
+      <ClaypotReveal />
+      <ExperienceStrip />
       <JournalSpread posts={posts} />
-      <ComeToTheTable settings={settings} />
+      <Atmosphere gallery={settings.gallery} />
+      <EventsTeaser />
+      <ReserveBand />
     </main>
   );
 }

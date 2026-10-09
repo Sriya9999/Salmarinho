@@ -25,6 +25,8 @@
 @import "shadcn/tailwind.css";
 /* Sal Marinho brand layer (tokens, fonts, base overrides). Loaded last so it wins. */
 @import "./site.css";
+/* The original landing page, scoped to .sm-first. */
+@import "./first.css";
 
 @custom-variant dark (&:where([data-theme="default-dark"], [data-theme="default-dark"] *));
 

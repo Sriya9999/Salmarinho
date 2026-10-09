@@ -13,7 +13,7 @@ import {
 
 import { ScrollScrub, type ScrollScrubScene } from "@/components/scroll-scrub/scroll-scrub";
 import { useReserve } from "@/components/site/reserve";
-import { Contours, LoopFilm, Reveal, ScrollFilm, useInView } from "@/components/v2/kit";
+import { Contours, LoopFilm, Reveal, useInView } from "@/components/v2/kit";
 import type { Dish, JournalPost, MenuCategory, SiteSettings } from "@/lib/content/types";
 import { prefersReducedMotion, watchScrollProgress } from "@/lib/motion";
 import { scrollScrubTheme } from "@/scroll-scrub-scenes";
@@ -62,13 +62,13 @@ export function FoldTab({ to, children }: { to: string; children: ReactNode }) {
 
 export function Hero() {
   return (
-    <section className="v-hero" data-sound="waves" aria-labelledby="hero-title">
+    <section className="v-hero" data-sound="breakfast" aria-labelledby="hero-title">
       <div className="v-hero__media">
         <picture>
-          <source media="(max-width: 767px)" srcSet="/assets/v2/hero/table-m.webp" />
+          <source media="(max-width: 767px)" srcSet="/assets/v2/hero/garden-m.webp" />
           <img
-            src="/assets/v2/hero/table.webp"
-            alt="Breakfast on a terrace table above the sea: a golden dosa on a banana leaf, coconut chutney, sambhar and coffee"
+            src="/assets/v2/hero/garden.webp"
+            alt="Breakfast in the garden: a golden benne dosa, chutneys, sambar and filter coffee on a wooden table, a carved stone statue among banana leaves behind"
             fetchPriority="high"
             decoding="async"
           />
@@ -465,7 +465,7 @@ export function FromTheSouth() {
             </h2>
             <p className="v-lede mt-6">
               Coconut, curry leaf, pepper, mustard seed, tamarind and rice. Batter left overnight, a banana leaf for a
-              plate. Mangalore, Udupi, Bangalore and Chettinad, cooked by the sea in Goa.
+              plate. Mangalore, Udupi, Bangalore and Chettinad, cooked in Anjuna, Goa.
             </p>
           </div>
           {SOUTH.map((item) => (
@@ -755,23 +755,27 @@ export function Fire() {
 /* ------------------------------------------------------------------ 08 come in */
 
 const ROOM_DETAILS = [
-  { src: "/assets/v2/room/arch.webp", alt: "An open arch looking out to the sea", cap: "The arch" },
+  { src: "/assets/v2/garden/statue-smile.webp", alt: "A smiling carved stone figure among banana leaves in the restaurant garden", cap: "The garden" },
   { src: "/assets/v2/room/cup.webp", alt: "A cup of coffee on a stone ledge in dappled light", cap: "Coffee" },
   { src: "/assets/v2/room/hands.webp", alt: "Hands folding a dosa on a hot tawa", cap: "The tawa" },
   { src: "/assets/v2/room/idli-grill.webp", alt: "A clay pot of tatte idli on a grill", cap: "Clay pot" },
   { src: "/assets/v2/room/table.webp", alt: "A wooden table with eggs on poi, coffee and small bowls", cap: "The table" },
-  { src: "/assets/v2/room/oils.webp", alt: "Small glass bottles of oils in a row against green leaves", cap: "Oils" },
+  { src: "/assets/v2/garden/statue-claypots.webp", alt: "A carved stone figure beside clay pots steaming on the grill", cap: "Clay pots" },
+  { src: "/assets/v2/garden/oils.webp", alt: "Small glass bottles of oils in a row on a wooden table against green leaves", cap: "Oils" },
 ];
 
 export function ComeIn() {
   return (
     <section id="come-in" className="relative" data-sound="restaurant" aria-labelledby="room-title">
       <div className="v-room">
-        <ScrollFilm
-          className="v-room__film"
-          label="A slow walk through the restaurant: stone walls, wooden tables, an arch open to the sea"
-          film={{ src: "/assets/v2/film/room.mp4", mobileSrc: "/assets/v2/film/room-m.mp4", poster: "/assets/v2/film/room.webp" }}
-        />
+        <div className="v-room__film v-room__still">
+          <img
+            src="/assets/v2/garden/statue-leaves-l.webp"
+            alt="The restaurant garden: a carved stone figure holding an offering among tall banana leaves"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
         <div className="v-room__shade" aria-hidden="true" />
         <div className="v-wrap relative flex min-h-[92svh] flex-col justify-end pb-[clamp(3rem,8vw,6rem)]">
           <p className="v-kicker">08 &middot; The room</p>
@@ -779,8 +783,8 @@ export function ComeIn() {
             Come in. <em>Stay awhile.</em>
           </h2>
           <p className="v-lede mt-6">
-            Stone, timber and a little shade. A table by the arch, light moving slowly across it, and a coffee that
-            turns into a second one.
+            A garden of banana leaves and carved stone, tables in the shade, light moving slowly across them, and a
+            coffee that turns into a second one.
           </p>
         </div>
       </div>
@@ -856,7 +860,12 @@ export function ComeToTheTable({ settings }: { settings: SiteSettings }) {
   return (
     <section id="come-to-the-table" className="v-table" data-sound="restaurant" aria-labelledby="table-title">
       <div className="v-table__media">
-        <img src="/assets/v2/table/evening.webp" alt="The terrace in the evening, tables lit by candles above the sea" loading="lazy" decoding="async" />
+        <img
+          src="/assets/v2/table/garden-evening.webp"
+          alt="The garden in the evening: lanterns in the trees, candles on wooden tables and a carved stone figure softly lit"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <div className="v-table__shade" aria-hidden="true" />
       <div ref={ref} className="v-wrap relative grid min-h-[100svh] items-end gap-12 py-24 md:grid-cols-12 md:items-center" data-in={seen}>

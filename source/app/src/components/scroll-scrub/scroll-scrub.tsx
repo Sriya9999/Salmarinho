@@ -26,6 +26,8 @@ export interface ScrollScrubScene {
   linger?: number;
   objectPosition?: string;
   mobileObjectPosition?: string;
+  /** Soundscape mood while this chapter holds the middle of the screen (see SoundScape). */
+  sound?: string;
 }
 
 export interface ScrollScrubConnector {
@@ -682,6 +684,7 @@ export function ScrollScrub({
               className="scroll-scrub__chapter"
               data-align={scene.align ?? "left"}
               data-scroll-scrub-band=""
+              data-sound={scene.sound}
               id={scene.id}
               key={segment.key}
               style={bandStyle}

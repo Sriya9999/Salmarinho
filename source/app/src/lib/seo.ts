@@ -4,7 +4,7 @@ import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 type HeadInput = { title: string; description: string; path: string; image?: string; type?: "website" | "article" };
 
 /** Per-route head: title, description, canonical and social tags. */
-export function pageHead({ title, description, path, image = "/assets/v2/og/home.jpg", type = "website" }: HeadInput) {
+export function pageHead({ title, description, path, image = "/assets/v2/og/breakfast.jpg", type = "website" }: HeadInput) {
   const fullTitle = path === "/" ? title : `${title} | ${SITE_NAME}`;
   const url = absoluteUrl(path);
   const img = absoluteUrl(image);
@@ -74,7 +74,7 @@ export function restaurantSchema(settings: SiteSettings) {
     description: SITE_DESCRIPTION,
     url: SITE_URL,
     logo: absoluteUrl("/icons/icon-512.png"),
-    image: [absoluteUrl("/assets/v2/og/home.jpg")],
+    image: [absoluteUrl("/assets/v2/og/breakfast.jpg")],
     servesCuisine: ["South Indian", "Breakfast", "Goan", "Cafe"],
     acceptsReservations: true,
     menu: absoluteUrl("/menu"),

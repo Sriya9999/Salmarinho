@@ -5,18 +5,19 @@ export const SITE_LOCALITY = "Anjuna, Goa";
 export const THEME_COLOR = "#161513";
 export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://salmarinho.higgsfield.app";
 export const SITE_DESCRIPTION =
-  "A coastal restaurant in Anjuna, Goa, serving South Indian and Goan breakfast all day: benne dosa, clay pot tatte idli, Ross omelette with poi, choris, Buddha bowls, coffee and fresh juices.";
+  "A restaurant in Anjuna, Goa, serving South Indian and Goan breakfast all day, with a crab cultivation project underway and private events across Goa.";
 
 export type NavItem = { to: string; hash?: string; title: string; subtitle: string };
 
 /** Primary navigation: plain names, with a line of character beneath each. */
 export const NAV_ITEMS: NavItem[] = [
+  { to: "/breakfast", title: "Breakfast", subtitle: "All day, no clock" },
   { to: "/menu", title: "What's cooking?", subtitle: "Today's table" },
   { to: "/our-story", title: "Our story", subtitle: "The story behind the spice" },
   { to: "/the-coast", title: "The coast", subtitle: "Where it all begins" },
-  { to: "/the-crab-journey", title: "The journey", subtitle: "Something is growing" },
+  { to: "/events", title: "Events", subtitle: "Moments worth gathering for" },
   { to: "/journal", title: "Journal", subtitle: "From our kitchen journal" },
-  { to: "/visit", title: "Visit", subtitle: "Come to the table" },
+  { to: "/visit", title: "Visit", subtitle: "Come in. Stay awhile." },
 ];
 
 /** Secondary links, in the footer. */
@@ -34,6 +35,9 @@ export type JournalCategory = (typeof JOURNAL_CATEGORIES)[number];
 
 export const MOODS = ["ocean", "forest", "charcoal", "clay", "ember", "volcanic"] as const;
 export type Mood = (typeof MOODS)[number];
+
+/** What guests can choose on the event enquiry form. */
+export const EVENT_TYPES = ["Villa", "Yacht", "Beach or poolside", "Birthday", "Corporate", "Private celebration", "Something else"] as const;
 
 export const DIETARY = ["Vegetarian", "Vegan", "Gluten free", "Contains nuts", "Contains shellfish", "Dairy free"] as const;
 

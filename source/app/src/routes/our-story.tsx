@@ -11,7 +11,7 @@ export const Route = createFileRoute("/our-story")({
       description:
         "How the coast, South Indian food, a little Portugal and fire came together at Sal Marinho in Anjuna, and what is quietly growing beside the restaurant.",
       path: "/our-story",
-      image: "/assets/v2/og/home.jpg",
+      image: "/assets/v2/og/breakfast.jpg",
     }),
   component: OurStory,
 });
@@ -27,8 +27,8 @@ function OurStory() {
           </>
         }
         line="A kitchen in Anjuna where South Indian food, the coast and a little Portugal share one table, with fire underneath and something growing beside it."
-        image="/assets/v2/journal/south-to-coast.webp"
-        imageAlt="A dosa and chutney on a rock by the sea in morning light"
+        image="/assets/v2/garden/statue-claypots-l.webp"
+        imageAlt="In the restaurant garden, a carved stone figure stands beside clay pots steaming on the grill"
       />
       <div data-sound="waves">
         <StoryChapter
@@ -52,7 +52,7 @@ function OurStory() {
       >
         <p>
           Benne dosa and clay pot tatte idli, appe, bonda and a pot of sambar. Recipes from Mangalore, Udupi, Bangalore and
-          Chettinad, cooked by the sea in Goa.
+          Chettinad, cooked in Anjuna, Goa.
         </p>
         <p>
           Then the small things that make them taste like themselves: mustard seed crackling in hot oil, curry leaf, dried
@@ -108,7 +108,7 @@ function OurStory() {
             we will not rush it to the table.
           </p>
           <p>
-            <Link to="/the-crab-journey" className="text-bone underline decoration-ember/60 underline-offset-4 hover:decoration-ember">
+            <Link to="/the-coast" hash="something-is-growing" className="text-bone underline decoration-ember/60 underline-offset-4 hover:decoration-ember">
               Follow the crab journey
             </Link>
           </p>

@@ -30,6 +30,19 @@ export const getHomeData = createServerFn({ method: "GET" }).handler(async () =>
   return { categories, dishes: pictured, posts: crab ? [...today, crab] : today, settings };
 });
 
+/** The landing page: the crab story first, then today's table. */
+export const getLandingData = createServerFn({ method: "GET" }).handler(async () => {
+  const [categories, dishes, posts, settings] = await Promise.all([
+    listCategories(),
+    listDishes(),
+    listPosts(),
+    getSettings(),
+  ]);
+  const crab = posts.filter((p) => p.category === "The crab");
+  const others = posts.filter((p) => p.category !== "The crab");
+  return { categories, dishes, posts: [...crab, ...others].slice(0, 4), settings };
+});
+
 export const getMenuData = createServerFn({ method: "GET" }).handler(async () => {
   const [categories, dishes] = await Promise.all([listCategories(), listDishes()]);
   return { categories, dishes };

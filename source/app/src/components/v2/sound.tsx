@@ -13,7 +13,7 @@ import { useRouterState } from "@tanstack/react-router";
  * its own cues with "sm:phase" events and asks for its crackle with "sm:crackle".
  */
 type Bed = "waves" | "fire" | "room" | "water" | "air";
-export type Mood = "waves" | "breakfast" | "spice" | "fire" | "crab" | "restaurant" | "quiet" | "opening-water" | "opening-fire";
+export type Mood = "waves" | "breakfast" | "spice" | "fire" | "crab" | "restaurant" | "events" | "quiet" | "opening-water" | "opening-fire";
 
 const BEDS: Bed[] = ["waves", "fire", "room", "water", "air"];
 const FILE: Record<Bed | "crackle", string> = {
@@ -27,12 +27,13 @@ const FILE: Record<Bed | "crackle", string> = {
 const MIX: Record<Mood, Partial<Record<Bed, number>>> = {
   "opening-water": { waves: 0.55 },
   "opening-fire": { waves: 0.4, fire: 0.38 },
-  waves: { waves: 0.6, room: 0.06 },
+  waves: { waves: 0.6, air: 0.12, room: 0.04 },
   breakfast: { waves: 0.26, room: 0.22 },
   spice: { air: 0.45, waves: 0.06 },
   fire: { fire: 0.6, waves: 0.05 },
   crab: { water: 0.6, waves: 0.18 },
   restaurant: { room: 0.45, waves: 0.1, fire: 0.06 },
+  events: { room: 0.22, waves: 0.16, air: 0.1 },
   quiet: { waves: 0.12, room: 0.1 },
 };
 const STORAGE_KEY = "sm-sound";

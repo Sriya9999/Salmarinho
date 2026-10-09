@@ -40,15 +40,15 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
-// Pages retired with the move to South Indian and Goan breakfast. Old
-// links land on the matching part of the new site instead of a 404.
+// Retired pages. Old links land on the matching part of the site instead of a 404.
 const RETIRED: Record<string, string> = {
   "/who-we-are": "/our-story",
-  "/our-craft": "/#fire",
-  "/the-experience": "/#come-in",
+  "/our-craft": "/breakfast#fire",
+  "/the-experience": "/breakfast#come-in",
   "/coastal-journey": "/the-coast",
-  "/portuguese-connection": "/#a-little-portuguese",
-  "/the-crab": "/the-crab-journey",
+  "/portuguese-connection": "/breakfast#a-little-portuguese",
+  "/the-crab": "/the-coast#something-is-growing",
+  "/the-crab-journey": "/the-coast#something-is-growing",
 };
 
 function retiredRedirect(url: URL): Response | null {

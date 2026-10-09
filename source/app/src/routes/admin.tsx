@@ -12,10 +12,11 @@ import {
   adminSaveEvent,
   adminSavePost,
   adminSaveSettings,
+  adminSetEnquiry,
   adminSetReservation,
   adminStatus,
 } from "@/lib/admin/admin.functions";
-import type { CrabStage, Dish, EventItem, JournalPost, MenuCategory, Reservation, SiteSettings } from "@/lib/content/types";
+import type { CrabStage, Dish, EventCategory, EventEnquiry, EventItem, EventPhoto, EventsSettings, JournalPost, MenuCategory, Reservation, SiteSettings } from "@/lib/content/types";
 import { DIETARY, JOURNAL_CATEGORIES, MOODS, formatPrice } from "@/lib/site";
 
 export const Route = createFileRoute("/admin")({
@@ -31,15 +32,18 @@ type Data = {
   events: EventItem[];
   settings: SiteSettings;
   reservations: Reservation[];
+  enquiries: EventEnquiry[];
 };
-type Tab = "reservations" | "dishes" | "courses" | "journal" | "crab" | "events" | "settings" | "password";
+type Tab = "reservations" | "enquiries" | "dishes" | "courses" | "journal" | "crab" | "eventspage" | "events" | "settings" | "password";
 const TABS: { id: Tab; label: string }[] = [
   { id: "reservations", label: "Reservations" },
+  { id: "enquiries", label: "Event enquiries" },
   { id: "dishes", label: "Dishes" },
   { id: "courses", label: "Courses" },
   { id: "journal", label: "Journal" },
   { id: "crab", label: "Crab journey" },
-  { id: "events", label: "Events" },
+  { id: "eventspage", label: "Events page" },
+  { id: "events", label: "Dated events" },
   { id: "settings", label: "Restaurant details" },
   { id: "password", label: "Password" },
 ];
@@ -156,6 +160,10 @@ function Dashboard({ onSignedOut }: { onSignedOut: () => void }) {
           <p className="text-sand">Loading</p>
         ) : tab === "reservations" ? (
           <Reservations items={data.reservations} reload={reload} />
+        ) : tab === "enquiries" ? (
+          <Enquiries items={data.enquiries} reload={reload} />
+        ) : tab === "eventspage" ? (
+          <EventsPage settings={data.settings} reload={reload} />
         ) : tab === "dishes" ? (
           <Dishes dishes={data.dishes} categories={data.categories} reload={reload} />
         ) : tab === "courses" ? (
@@ -884,6 +892,159 @@ function Events({ events, reload }: { events: EventItem[]; reload: () => Promise
 }
 
 /* ---------------------------------------------------------------- settings */
+
+/* ---------------------------------------------------------------- event enquiries */
+
+function Enquiries({ items, reload }: { items: EventEnquiry[]; reload: () => Promise<void> }) {
+  if (!items.length) return <p className="text-sand">No event enquiries yet. They arrive here from the Events page.</p>;
+  return (
+    <div>
+      <h1 className="font-display text-2xl">Event enquiries</h1>
+      <p className="mt-2 text-sm text-sand">Reply by email or phone, then mark each enquiry.</p>
+      <ul className="mt-6 divide-y divide-hairline border-y border-hairline">
+        {items.map((q) => (
+          <li key={q.id} className="grid gap-3 py-5 md:grid-cols-[1fr_auto] md:items-start">
+            <div>
+              <p className="text-lg">
+                {q.name} · {q.eventType} · {q.guests} {q.guests === 1 ? "guest" : "guests"}
+              </p>
+              <p className="text-sm text-sand">
+                {q.eventDate} · {q.location}
+              </p>
+              <p className="text-sm text-sand">
+                <a className="underline" href={`mailto:${q.email}`}>
+                  {q.email}
+                </a>{" "}
+                ·{" "}
+                <a className="underline" href={`tel:${q.phone.replace(/\s/g, "")}`}>
+                  {q.phone}
+                </a>
+              </p>
+              <p className="mt-2 max-w-2xl whitespace-pre-line text-sm text-bone/90">{q.message}</p>
+              <p className="mt-1 text-xs text-sand/70">Received {q.createdAt}</p>
+            </div>
+            <div className="flex gap-2">
+              {(["new", "replied", "closed"] as const).map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  aria-pressed={q.status === st}
+                  className="adm-chip"
+                  onClick={async () => {
+                    await adminSetEnquiry({ data: { id: q.id, status: st } });
+                    await reload();
+                  }}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/* ---------------------------------------------------------------- events page */
+
+function EventsPage({ settings, reload }: { settings: SiteSettings; reload: () => Promise<void> }) {
+  const [ev, setEv] = useState<EventsSettings>(settings.events);
+  const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const setCat = <K extends keyof EventCategory>(i: number, key: K, value: EventCategory[K]) =>
+    setEv((prev) => ({ ...prev, categories: prev.categories.map((c, j) => (j === i ? { ...c, [key]: value } : c)) }));
+  const setPhoto = <K extends keyof EventPhoto>(i: number, key: K, value: EventPhoto[K]) =>
+    setEv((prev) => ({ ...prev, gallery: prev.gallery.map((p, j) => (j === i ? { ...p, [key]: value } : p)) }));
+  return (
+    <form
+      className="space-y-8"
+      onSubmit={async (event) => {
+        event.preventDefault();
+        const res = await adminSaveSettings({ data: { ...settings, events: ev } });
+        if (res.ok) {
+          setMsg({ kind: "ok", text: "Saved. The Events page is updated." });
+          await reload();
+        } else setMsg({ kind: "error", text: res.message });
+      }}
+    >
+      <div>
+        <h1 className="font-display text-2xl">Events page</h1>
+        <p className="mt-2 text-sm text-sand">
+          The kinds of event, the gallery and where enquiries can also reach you. Enquiries from the form arrive under Event
+          enquiries. Describe only what the team offers; the starting text is a suggestion to confirm.
+        </p>
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Field label="Events email" hint="Shown beside the form. Leave empty to use the restaurant email.">
+          <input className="sm-input" type="email" value={ev.enquiryEmail} onChange={(e) => setEv({ ...ev, enquiryEmail: e.target.value })} />
+        </Field>
+        <Field label="Events WhatsApp" hint="With country code. Leave empty to use the restaurant number.">
+          <input className="sm-input" type="tel" value={ev.enquiryWhatsapp} onChange={(e) => setEv({ ...ev, enquiryWhatsapp: e.target.value })} />
+        </Field>
+      </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={ev.illustrative} onChange={(e) => setEv({ ...ev, illustrative: e.target.checked })} />
+        Label the event pictures as illustrative (untick once they are photographs of real Sal Marinho events)
+      </label>
+      <fieldset className="space-y-6">
+        <legend className="sm-label">Kinds of event</legend>
+        {ev.categories.map((c, i) => (
+          <div key={i} className="space-y-4 border border-hairline p-4">
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Name">
+                <input className="sm-input" required value={c.title} onChange={(e) => setCat(i, "title", e.target.value)} />
+              </Field>
+              <Field label="Short line">
+                <input className="sm-input" value={c.line} onChange={(e) => setCat(i, "line", e.target.value)} />
+              </Field>
+            </div>
+            <Field label="Description">
+              <textarea className="sm-input" rows={2} value={c.body} onChange={(e) => setCat(i, "body", e.target.value)} />
+            </Field>
+            <div className="grid gap-4 md:grid-cols-2">
+              <PhotoField label="Photo" value={c.image} onChange={(v) => setCat(i, "image", v)} />
+              <Field label="Photo description" hint="Read aloud by screen readers.">
+                <input className="sm-input" value={c.imageAlt} onChange={(e) => setCat(i, "imageAlt", e.target.value)} />
+              </Field>
+            </div>
+          </div>
+        ))}
+      </fieldset>
+      <fieldset className="space-y-4">
+        <legend className="sm-label">Gallery</legend>
+        {ev.gallery.map((p, i) => (
+          <div key={i} className="grid items-end gap-4 border border-hairline p-4 md:grid-cols-[auto_1fr_1fr_auto]">
+            <img src={p.src} alt="" className="h-16 w-24 object-cover" />
+            <Field label="Caption">
+              <input className="sm-input" value={p.caption} onChange={(e) => setPhoto(i, "caption", e.target.value)} />
+            </Field>
+            <Field label="Photo description">
+              <input className="sm-input" value={p.alt} onChange={(e) => setPhoto(i, "alt", e.target.value)} />
+            </Field>
+            <div className="flex flex-col gap-2 text-sm">
+              <label className="flex items-center gap-2">
+                <input type="checkbox" checked={p.illustrative} onChange={(e) => setPhoto(i, "illustrative", e.target.checked)} />
+                Illustrative
+              </label>
+              <button type="button" className="text-left underline" onClick={() => setEv({ ...ev, gallery: ev.gallery.filter((_, j) => j !== i) })}>
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
+        <PhotoField
+          label="Add a gallery photo"
+          value=""
+          onChange={(v) => v && setEv({ ...ev, gallery: [...ev.gallery, { src: v, alt: "", caption: "", illustrative: false }] })}
+        />
+      </fieldset>
+      <Notice message={msg} />
+      <button type="submit" className="adm-btn">
+        Save the Events page
+      </button>
+    </form>
+  );
+}
 
 /* ---------------------------------------------------------------- crab journey */
 

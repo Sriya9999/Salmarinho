@@ -134,8 +134,8 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
     return (
       <div className="text-center" role="status">
         <img
-          src="/assets/v2/table/evening.webp"
-          alt="A table on the terrace in the warm light of evening"
+          src="/assets/v2/table/garden-evening.webp"
+          alt="Tables in the garden in the warm light of evening, lanterns in the trees"
           className="mx-auto mb-10 aspect-[16/9] w-full max-w-md object-cover"
         />
         <Heading id={headingId} className="sm-display text-3xl text-bone md:text-4xl">

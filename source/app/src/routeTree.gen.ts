@@ -10,12 +10,13 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VisitRouteImport } from './routes/visit'
-import { Route as TheCrabJourneyRouteImport } from './routes/the-crab-journey'
 import { Route as TheCoastRouteImport } from './routes/the-coast'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as ReserveRouteImport } from './routes/reserve'
 import { Route as OurStoryRouteImport } from './routes/our-story'
+import { Route as EventsRouteImport } from './routes/events'
+import { Route as BreakfastRouteImport } from './routes/breakfast'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -28,11 +29,6 @@ import { Route as ApiAdminUploadRouteImport } from './routes/api/admin/upload'
 const VisitRoute = VisitRouteImport.update({
   id: '/visit',
   path: '/visit',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TheCrabJourneyRoute = TheCrabJourneyRouteImport.update({
-  id: '/the-crab-journey',
-  path: '/the-crab-journey',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TheCoastRoute = TheCoastRouteImport.update({
@@ -58,6 +54,16 @@ const ReserveRoute = ReserveRouteImport.update({
 const OurStoryRoute = OurStoryRouteImport.update({
   id: '/our-story',
   path: '/our-story',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EventsRoute = EventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BreakfastRoute = BreakfastRouteImport.update({
+  id: '/breakfast',
+  path: '/breakfast',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppRoute = AppRouteImport.update({
@@ -105,12 +111,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/breakfast': typeof BreakfastRoute
+  '/events': typeof EventsRoute
   '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-coast': typeof TheCoastRoute
-  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
@@ -122,12 +129,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/breakfast': typeof BreakfastRoute
+  '/events': typeof EventsRoute
   '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-coast': typeof TheCoastRoute
-  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
@@ -140,12 +148,13 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/app': typeof AppRoute
+  '/breakfast': typeof BreakfastRoute
+  '/events': typeof EventsRoute
   '/our-story': typeof OurStoryRoute
   '/reserve': typeof ReserveRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/the-coast': typeof TheCoastRoute
-  '/the-crab-journey': typeof TheCrabJourneyRoute
   '/visit': typeof VisitRoute
   '/journal/$slug': typeof JournalSlugRoute
   '/media/$': typeof MediaSplatRoute
@@ -159,12 +168,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/breakfast'
+    | '/events'
     | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/the-coast'
-    | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
     | '/media/$'
@@ -176,12 +186,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/breakfast'
+    | '/events'
     | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/the-coast'
-    | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
     | '/media/$'
@@ -193,12 +204,13 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/app'
+    | '/breakfast'
+    | '/events'
     | '/our-story'
     | '/reserve'
     | '/robots.txt'
     | '/sitemap.xml'
     | '/the-coast'
-    | '/the-crab-journey'
     | '/visit'
     | '/journal/$slug'
     | '/media/$'
@@ -211,12 +223,13 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   AppRoute: typeof AppRoute
+  BreakfastRoute: typeof BreakfastRoute
+  EventsRoute: typeof EventsRoute
   OurStoryRoute: typeof OurStoryRoute
   ReserveRoute: typeof ReserveRoute
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TheCoastRoute: typeof TheCoastRoute
-  TheCrabJourneyRoute: typeof TheCrabJourneyRoute
   VisitRoute: typeof VisitRoute
   JournalSlugRoute: typeof JournalSlugRoute
   MediaSplatRoute: typeof MediaSplatRoute
@@ -232,13 +245,6 @@ declare module '@tanstack/react-router' {
       path: '/visit'
       fullPath: '/visit'
       preLoaderRoute: typeof VisitRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/the-crab-journey': {
-      id: '/the-crab-journey'
-      path: '/the-crab-journey'
-      fullPath: '/the-crab-journey'
-      preLoaderRoute: typeof TheCrabJourneyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/the-coast': {
@@ -274,6 +280,20 @@ declare module '@tanstack/react-router' {
       path: '/our-story'
       fullPath: '/our-story'
       preLoaderRoute: typeof OurStoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/events': {
+      id: '/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof EventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/breakfast': {
+      id: '/breakfast'
+      path: '/breakfast'
+      fullPath: '/breakfast'
+      preLoaderRoute: typeof BreakfastRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/app': {
@@ -339,12 +359,13 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   AppRoute: AppRoute,
+  BreakfastRoute: BreakfastRoute,
+  EventsRoute: EventsRoute,
   OurStoryRoute: OurStoryRoute,
   ReserveRoute: ReserveRoute,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TheCoastRoute: TheCoastRoute,
-  TheCrabJourneyRoute: TheCrabJourneyRoute,
   VisitRoute: VisitRoute,
   JournalSlugRoute: JournalSlugRoute,
   MediaSplatRoute: MediaSplatRoute,
