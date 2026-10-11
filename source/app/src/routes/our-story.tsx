@@ -79,8 +79,8 @@ function OurStory() {
           flip
         >
           <p>
-            Before refrigeration and before machinery, there was fire. Cast iron, clay and flame still do things no stove can:
-            the edge on a dosa, the char on a poi, the softness of an idli in its clay pot.
+            Fire was the first kitchen, and we never moved out. Cast iron, clay and flame still do things no stove can: the
+            edge on a dosa, the char on a poi, the softness of an idli in its clay pot.
           </p>
         </StoryChapter>
       </div>

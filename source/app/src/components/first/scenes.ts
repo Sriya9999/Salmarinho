@@ -58,7 +58,7 @@ export const firstScenes: ScrollScrubScene[] = [
     sound: "fire",
     label: "Fire",
     title: "Through the fire.",
-    body: "Before refrigeration and before machinery, there was fire. We still cook with it.",
+    body: "Fire was the first kitchen. We never saw a reason to move out.",
     scroll: 1.6,
     linger: 0.2,
   },
