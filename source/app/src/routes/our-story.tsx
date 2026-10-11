@@ -34,8 +34,8 @@ function OurStory() {
         <StoryChapter
           index={1}
           title="Sal marinho means sea salt."
-          image="/assets/v2/coast/basket-shore.webp"
-          imageAlt="A woman carrying a basket on her head along the shore at sunset"
+          image="/assets/v2/coast/salt.webp"
+          imageAlt="Coarse sea salt crystals on dark rock"
         >
           <p>
             It is where every meal here starts: the sea at the end of the path, salt on the wind, and a coastline that has

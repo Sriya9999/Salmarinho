@@ -61,7 +61,7 @@ const SHORES = [
 const ELEMENTS = [
   { src: "/assets/v2/coast/grass.webp", alt: "Wild grass on a cliff above the sea in low sun", caption: "Wind" },
   { src: "/assets/v2/coast/salt.webp", alt: "Coarse sea salt crystals on dark rock", caption: "Salt" },
-  { src: "/assets/v2/coast/basket-shore.webp", alt: "A woman carrying a basket on her head along the shore at sunset", caption: "Water" },
+  { src: "/assets/photos/ritual/coast.webp", alt: "Crab traps stacked on black rocks as the sea breaks at first light", caption: "Water" },
   { src: "/assets/v2/coast/vessels.webp", alt: "Fishing boats and stacked vessels in a harbour", caption: "Harbour" },
   { src: "/assets/v2/coast/basket-street.webp", alt: "A woman with a basket on her head walking down an old street", caption: "Stone" },
   { src: "/assets/v2/coast/garlic-strings.webp", alt: "Strings of garlic hanging against a blue wall", caption: "Market" },

@@ -377,7 +377,7 @@ export function ClockSection() {
 
 const COAST_STILLS = [
   { src: "/assets/v2/coast/grass.webp", alt: "Wild grass on a cliff above the sea in low sun", caption: "Land" },
-  { src: "/assets/v2/coast/basket-shore.webp", alt: "A woman carrying a basket on her head along the shore at sunset", caption: "Shore" },
+  { src: "/assets/v2/shores/goa.webp", alt: "Wooden outrigger boats pulled up on a beach at dusk", caption: "Shore" },
   { src: "/assets/v2/coast/salt.webp", alt: "Coarse sea salt crystals on dark rock", caption: "Salt" },
   { src: "/assets/v2/coast/vessels.webp", alt: "Fishing boats and stacked vessels in a harbour", caption: "Harbour" },
   { src: "/assets/v2/coast/basket-street.webp", alt: "A woman with a basket on her head walking down an old street", caption: "Street" },
