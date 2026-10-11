@@ -571,8 +571,8 @@ export const DEFAULT_CRAB_STAGES: CrabStage[] = [
     title: "Grow",
     note: "One crab, one box",
     body: "Each crab settles into a box of its own. It is slow, careful work, with a lot of attention to detail.",
-    image: "/assets/v2/crab/stage-grow.webp",
-    imageAlt: "A man tending rows of blue boxes beside the restaurant",
+    image: "/assets/v2/crab/stage-grow-2.webp",
+    imageAlt: "In black and white: a man lifting a mud crab from one of the numbered crab boxes stacked along a wall beside the restaurant",
     status: "now",
   },
   {
