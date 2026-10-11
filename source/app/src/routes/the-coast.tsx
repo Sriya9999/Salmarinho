@@ -195,7 +195,7 @@ function TheCoast() {
               A culinary experiment, <em>a few steps from the kitchen.</em>
             </h2>
             <div className="v-crab__doc mt-12">
-              <Reveal src="/assets/v2/crab/boxes.webp" alt="Rows of blue crab boxes along a wall beside the restaurant" className="v-crab__doc-wide" sizes="(min-width: 900px) 50vw, 100vw" />
+              <Reveal src="/assets/v2/crab/boxes-2.webp" alt="In black and white: a man lifting a mud crab from one of the numbered crab boxes stacked along a wall beside the restaurant" className="v-crab__doc-wide" sizes="(min-width: 900px) 50vw, 100vw" />
               <Reveal src="/assets/v2/crab/cultivation.webp" alt="A man tending rows of cultivation boxes, in black and white" sizes="(min-width: 900px) 25vw, 50vw" />
               <Reveal src="/assets/v2/crab/shell.webp" alt="A mud crab resting on patterned tiles, in black and white" sizes="(min-width: 900px) 25vw, 50vw" />
             </div>

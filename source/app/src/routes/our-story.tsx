@@ -99,8 +99,8 @@ function OurStory() {
         <StoryChapter
           index={6}
           title="Something is growing."
-          image="/assets/v2/crab/boxes.webp"
-          imageAlt="Rows of blue crab boxes along a wall beside the restaurant"
+          image="/assets/v2/crab/boxes-2.webp"
+          imageAlt="In black and white: a man lifting a mud crab from one of the numbered crab boxes stacked along a wall beside the restaurant"
           flip
         >
           <p>
