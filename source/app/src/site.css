@@ -3070,9 +3070,15 @@ select.sm-input option {
   .v-crab__doc {
     grid-template-columns: 2fr 1fr 1fr;
   }
+  /* The wide photograph takes the row height set by its two 4:5 neighbours. */
   .v-crab__doc-wide {
+    position: relative;
     grid-column: auto;
     aspect-ratio: auto !important;
+  }
+  .v-crab__doc-wide img {
+    position: absolute;
+    inset: 0;
   }
 }
 
