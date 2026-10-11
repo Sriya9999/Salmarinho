@@ -194,9 +194,10 @@ function TheCoast() {
             <h2 id="beside-title" className="v-title v-title--md mt-5 max-w-3xl">
               A culinary experiment, <em>a few steps from the kitchen.</em>
             </h2>
-            <div className="v-crab__doc v-crab__doc--pair mt-12">
-              <Reveal src="/assets/v2/crab/cultivation.webp" alt="A man tending rows of cultivation boxes, in black and white" sizes="(min-width: 900px) 40vw, 50vw" />
-              <Reveal src="/assets/v2/crab/shell.webp" alt="A mud crab resting on patterned tiles, in black and white" sizes="(min-width: 900px) 40vw, 50vw" />
+            <div className="v-crab__doc mt-12">
+              <Reveal src="/assets/v2/crab/tub.webp" alt="In black and white: a glossy mud crab in a clean white tub, seen from above" className="v-crab__doc-wide" sizes="(min-width: 900px) 50vw, 100vw" />
+              <Reveal src="/assets/v2/crab/cultivation.webp" alt="In black and white: a man lifting a mud crab from the numbered crab boxes beside the restaurant" sizes="(min-width: 900px) 25vw, 50vw" />
+              <Reveal src="/assets/v2/crab/shell.webp" alt="A mud crab resting on patterned tiles, in black and white" sizes="(min-width: 900px) 25vw, 50vw" />
             </div>
           </div>
         </section>
