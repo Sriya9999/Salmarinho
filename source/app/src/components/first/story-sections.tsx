@@ -19,20 +19,23 @@ export function Philosophy() {
         />
         <div className="order-1 col-span-2 py-6 text-center md:order-2 md:col-span-6">
           <h2 id="philosophy-title" className="sm-display text-4xl text-bone md:text-6xl">
-            Not another seafood restaurant.
+            Not your usual coastal kitchen.
           </h2>
           <p className="mx-auto mt-8 max-w-md text-lg text-sand">
-            The coast gives us the catch. Fire gives it character. Time gives it a story, and we serve the story.
+            The coast brings the spice. Fire gives it character. Time gives it a story, and we serve the story.
           </p>
           <span className="mx-auto mt-10 block h-px w-24 bg-terracotta" aria-hidden="true" />
         </div>
-        <ParallaxImage
-          src="/assets/photos/owner/butters.webp"
-          alt="Nine house butters in small white pots on black slate"
-          strength={0.16}
-          className="order-3 aspect-[3/4] md:col-span-3 md:mt-40"
-          sizes="(min-width: 768px) 25vw, 50vw"
-        />
+        {/* Shown whole, never cropped, so every handwritten butter label reads; the frame drifts instead. */}
+        <Drift distance={40} className="order-3 md:col-span-3 md:mt-40">
+          <img
+            src="/assets/photos/owner/butters.webp"
+            alt="Nine house butters in small white pots on black slate, labelled by hand: miso, coriander pepper, thyme, burnt garlic, rosemary, smoked red chilli, parsley, black pepper garlic and jalapeño"
+            loading="lazy"
+            decoding="async"
+            className="aspect-[4/5] w-full object-cover"
+          />
+        </Drift>
       </div>
     </section>
   );
