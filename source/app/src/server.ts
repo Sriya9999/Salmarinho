@@ -4,6 +4,7 @@ import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { serveStaticFromKv } from "./lib/kv-static.server";
 import { applySecurityHeaders } from "./lib/security-headers.server";
+import { SITE_URL } from "./lib/site";
 import type { KVNamespace } from "@cloudflare/workers-types";
 
 type ServerEntry = {
@@ -61,6 +62,12 @@ export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     // One canonical URL per page: /menu/ permanently redirects to /menu.
     const url = new URL(request.url);
+    // One address for the site: www.salmarinho.in permanently redirects to salmarinho.in.
+    const canonical = new URL(SITE_URL);
+    if (url.hostname === `www.${canonical.hostname}`) {
+      url.hostname = canonical.hostname;
+      return applySecurityHeaders(Response.redirect(url.toString(), 301));
+    }
     if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
       url.pathname = url.pathname.replace(/\/+$/, "");
       return applySecurityHeaders(Response.redirect(url.toString(), 301));

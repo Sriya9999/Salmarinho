@@ -3,7 +3,7 @@
 export const SITE_NAME = "Sal Marinho";
 export const SITE_LOCALITY = "Anjuna, Goa";
 export const THEME_COLOR = "#161513";
-export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://salmarinho.higgsfield.app";
+export const SITE_URL = (import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://salmarinho.in";
 export const SITE_DESCRIPTION =
   "A restaurant in Anjuna, Goa, serving South Indian and Goan breakfast all day, with a crab cultivation project underway and private events across Goa.";
 
