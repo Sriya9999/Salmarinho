@@ -111,7 +111,7 @@ export function restaurantSchema(settings: SiteSettings) {
   return data;
 }
 
-export function menuSchema(categories: MenuCategory[], dishes: Dish[]) {
+export function menuSchema(categories: MenuCategory[], dishes: Dish[], showPrices: boolean) {
   return {
     "@context": "https://schema.org",
     "@type": "Menu",
@@ -129,7 +129,7 @@ export function menuSchema(categories: MenuCategory[], dishes: Dish[]) {
             name: d.name,
             description: d.description,
             ...(d.image ? { image: absoluteUrl(d.image) } : {}),
-            ...(d.price != null ? { offers: { "@type": "Offer", price: d.price, priceCurrency: "INR" } } : {}),
+            ...(showPrices && d.price != null ? { offers: { "@type": "Offer", price: d.price, priceCurrency: "INR" } } : {}),
             ...(d.dietary.includes("Vegetarian") ? { suitableForDiet: "https://schema.org/VegetarianDiet" } : {}),
           })),
       }))

@@ -243,6 +243,7 @@ export const adminSaveSettings = createServerFn({ method: "POST" })
       hours: z.array(z.object({ days: z.string().trim().min(1).max(40), open: z.string().trim().min(1).max(12), close: z.string().trim().min(1).max(12) })).max(10),
       parking: z.string().trim().max(400),
       reservationUrl: url,
+      showPrices: z.boolean(),
       gallery: z.array(mediaPath).max(10),
       crabStatus: z.enum(["coming-soon", "now-serving"]),
       crabStages: z

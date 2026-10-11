@@ -153,6 +153,8 @@ export interface SiteSettings {
   hours: OpeningHours[];
   parking: string;
   reservationUrl: string;
+  /** Show dish prices on the website (menu, breakfast page, home page). Off by default. */
+  showPrices: boolean;
   /** Switch to "now-serving" when the crab experience launches. */
   crabStatus: "coming-soon" | "now-serving";
   crabStages: CrabStage[];

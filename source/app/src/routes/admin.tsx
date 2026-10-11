@@ -1178,6 +1178,10 @@ function Settings({ settings, reload }: { settings: SiteSettings; reload: () => 
           <input className="sm-input" type="url" value={s.reservationUrl} onChange={(e) => set("reservationUrl", e.target.value)} />
         </Field>
       </div>
+      <label className="flex items-center gap-2 text-sm">
+        <input type="checkbox" checked={s.showPrices} onChange={(e) => set("showPrices", e.target.checked)} />
+        Show prices on the website (menu, breakfast page and home page). Prices stay saved here either way.
+      </label>
       <Field label="Parking">
         <textarea className="sm-input" rows={2} value={s.parking} onChange={(e) => set("parking", e.target.value)} />
       </Field>

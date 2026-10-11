@@ -63,7 +63,7 @@ function Index() {
       <div data-cursor="ember" data-sound="fire">
         <ScrollScrub scenes={fireBand} theme={firstTheme} className="scroll-scrub--band" firstHeading="h2" />
       </div>
-      <MenuSlices categories={categories} dishes={dishes} />
+      <MenuSlices categories={categories} dishes={dishes} showPrices={settings.showPrices} />
       <PortugueseConnection />
       <ClaypotReveal />
       <ExperienceStrip />

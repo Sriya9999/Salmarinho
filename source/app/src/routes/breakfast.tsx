@@ -39,7 +39,7 @@ function Breakfast() {
     <main id="main">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
       <Hero />
-      <WhatsCooking categories={categories} dishes={dishes} />
+      <WhatsCooking categories={categories} dishes={dishes} showPrices={settings.showPrices} />
       <ClockSection />
       <FromTheSouth />
       <FollowTheSpice />

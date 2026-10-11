@@ -82,7 +82,7 @@ export const SEED_CATEGORIES: MenuCategory[] = [
     subtitle: "Thick, golden and a little indulgent",
     story: "French toast five ways, from classic to Irish coffee and cream cheese.",
     mood: "clay",
-    image: "/assets/v2/menu/french-toast.webp",
+    image: "/assets/v2/menu/french-toast-2.webp",
     imageAlt: "Classic French toast on a white plate with a little jug of syrup",
     icon: "clock",
     sort: 7,
@@ -341,7 +341,7 @@ export const SEED_DISHES: Dish[] = [
     { name: "Prawns", price: 200 },
   ]),
   ...dishes("french-toast", [
-    { name: "Classic French Toast", price: 400, featured: true, imageAlt: "Two slices of classic French toast with a little jug of syrup" },
+    { name: "Classic French Toast", price: 400, featured: true, photoName: "classic-french-toast-2", imageAlt: "Two thick slices of golden French toast dusted with icing sugar, with a little pot of syrup" },
     {
       name: "Banana Salted Caramel French Toast",
       price: 450,
@@ -695,6 +695,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   hours: OPENING_HOURS,
   parking: "",
   reservationUrl: "",
+  showPrices: false,
   gallery: [],
   crabStatus: "coming-soon",
   crabStages: DEFAULT_CRAB_STAGES,

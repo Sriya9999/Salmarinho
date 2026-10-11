@@ -10,7 +10,7 @@ import { formatPrice } from "@/lib/site";
 
 /* ---------------------------------------------------------------- What's cooking? (menu slices) */
 
-export function MenuSlices({ categories, dishes }: { categories: MenuCategory[]; dishes: Dish[] }) {
+export function MenuSlices({ categories, dishes, showPrices }: { categories: MenuCategory[]; dishes: Dish[]; showPrices: boolean }) {
   const [open, setOpen] = useState(0);
   const current = categories[open];
   return (
@@ -71,7 +71,7 @@ export function MenuSlices({ categories, dishes }: { categories: MenuCategory[];
                         <li key={d.id}>
                           <Link to="/menu" hash={c.slug} className="flex items-baseline justify-between gap-4 py-3 text-bone">
                             <span className="font-display text-lg">{d.name}</span>
-                            {formatPrice(d.price) ? <span className="text-sm text-sand">{formatPrice(d.price)}</span> : null}
+                            {showPrices && formatPrice(d.price) ? <span className="text-sm text-sand">{formatPrice(d.price)}</span> : null}
                           </Link>
                         </li>
                       ))}

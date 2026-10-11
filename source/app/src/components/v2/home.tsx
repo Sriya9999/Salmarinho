@@ -136,7 +136,7 @@ const SHORT_LABEL: Record<string, string> = {
   "signature-smoothies": "Smoothies",
 };
 
-export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[]; dishes: Dish[] }) {
+export function WhatsCooking({ categories, dishes, showPrices }: { categories: MenuCategory[]; dishes: Dish[]; showPrices: boolean }) {
   const pictured = dishes.filter((d) => d.image);
   const tabs = [
     { slug: "all", label: "All" },
@@ -185,8 +185,8 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
           </div>
           <div className="md:col-span-5">
             <p className="v-lede">
-              South Indian and Goan breakfast, served all day. A few favourites from the kitchen; the full menu, with
-              every price, is one click away.
+              South Indian and Goan breakfast, served all day. A few favourites from the kitchen; the full menu is one
+              click away.
             </p>
           </div>
         </div>
@@ -222,7 +222,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
               />
               <div className="v-dish__row">
                 <h3 className="v-dish__name">{dish.name}</h3>
-                {dish.price != null ? <span className="v-dish__price">{formatPrice(dish.price)}</span> : null}
+                {showPrices && dish.price != null ? <span className="v-dish__price">{formatPrice(dish.price)}</span> : null}
               </div>
               <DishMarks dish={dish} />
               {dish.description ? <p className="v-dish__desc">{dish.description}</p> : null}
@@ -232,7 +232,7 @@ export function WhatsCooking({ categories, dishes }: { categories: MenuCategory[
 
         <div className="mt-14 flex flex-wrap items-center gap-x-8 gap-y-4">
           <FoldTab to="/menu">View full menu</FoldTab>
-          <p className="text-sm text-sand">Taxes extra. A 10% service charge applies.</p>
+          {showPrices ? <p className="text-sm text-sand">Taxes extra. A 10% service charge applies.</p> : null}
         </div>
       </div>
     </section>

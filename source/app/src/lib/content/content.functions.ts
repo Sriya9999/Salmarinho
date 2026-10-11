@@ -44,8 +44,8 @@ export const getLandingData = createServerFn({ method: "GET" }).handler(async ()
 });
 
 export const getMenuData = createServerFn({ method: "GET" }).handler(async () => {
-  const [categories, dishes] = await Promise.all([listCategories(), listDishes()]);
-  return { categories, dishes };
+  const [categories, dishes, settings] = await Promise.all([listCategories(), listDishes(), getSettings()]);
+  return { categories, dishes, showPrices: settings.showPrices };
 });
 
 export const getDish = createServerFn({ method: "GET" })
