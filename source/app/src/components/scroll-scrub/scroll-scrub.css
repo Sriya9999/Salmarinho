@@ -163,16 +163,20 @@
   pointer-events: auto;
 }
 
+/* Shade behind the words. closest-side ends the ellipse exactly at the box's
+   edges, so it melts into bright frames instead of showing a rectangle. */
 .scroll-scrub__copy::before {
   position: absolute;
   z-index: -1;
-  inset: -3rem -5rem;
+  inset: -6rem -10rem;
   content: "";
   background: radial-gradient(
-    ellipse at center,
-    color-mix(in srgb, var(--ss-bg) 88%, transparent) 0%,
-    color-mix(in srgb, var(--ss-bg) 58%, transparent) 52%,
-    transparent 76%
+    closest-side,
+    color-mix(in srgb, var(--ss-bg) 86%, transparent) 0%,
+    color-mix(in srgb, var(--ss-bg) 74%, transparent) 45%,
+    color-mix(in srgb, var(--ss-bg) 46%, transparent) 70%,
+    color-mix(in srgb, var(--ss-bg) 16%, transparent) 88%,
+    transparent 100%
   );
   pointer-events: none;
 }
@@ -262,12 +266,15 @@
     width: min(100%, 36rem);
   }
 
+  /* Fades out below the words as well as above, so no edge shows when the
+     copy rides up over a bright frame. */
   .scroll-scrub__copy::before {
-    inset: -3rem -2rem;
+    inset: -5rem -2rem -4rem;
     background: linear-gradient(
       to top,
-      var(--ss-bg) 0%,
-      color-mix(in srgb, var(--ss-bg) 82%, transparent) 58%,
+      transparent 0%,
+      color-mix(in srgb, var(--ss-bg) 84%, transparent) 4rem,
+      color-mix(in srgb, var(--ss-bg) 78%, transparent) 60%,
       transparent 100%
     );
   }
