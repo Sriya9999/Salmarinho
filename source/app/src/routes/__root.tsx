@@ -261,7 +261,7 @@ function SiteShell({ children }: { children: ReactNode }) {
   const bare = pathname.startsWith("/admin") || pathname === "/app" || pathname.startsWith("/app/");
   if (bare) return <>{children}</>;
   return (
-    <ReserveProvider>
+    <ReserveProvider hours={settings.hours}>
       <SmoothScroll />
       <SiteHeader />
       {children}

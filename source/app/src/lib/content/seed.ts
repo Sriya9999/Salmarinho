@@ -418,7 +418,7 @@ export const SEED_POSTS: JournalPost[] = [
       "Somewhere along the way breakfast acquired a deadline. Order before eleven, or the kitchen moves on.",
       "On this coast, days keep a different time. Some mornings start at dawn with the fishing boats; some start at noon after a late night. Neither deserves a lesser plate.",
       "## Breakfast, all day",
-      "So breakfast stays on the menu from the moment we open to the moment we close, morning and evening. Idli at one in the afternoon. A masala omelette at nine at night. Coffee whenever you would like another.",
+      "So breakfast stays on the menu from the moment we open to the moment we close. Idli at one in the afternoon. A masala omelette at seven in the evening. Coffee whenever you would like another.",
       "> The best meal of the day should not depend on what time you woke up.",
     ].join("\n\n"),
   },

@@ -41,11 +41,40 @@ export const EVENT_TYPES = ["Villa", "Yacht", "Beach or poolside", "Birthday", "
 
 export const DIETARY = ["Vegetarian", "Vegan", "Gluten free", "Contains nuts", "Contains shellfish", "Dairy free"] as const;
 
-/** Opening hours: two sittings a day. Editable later in the admin panel. */
+/** Opening hours: 8 am to 8 pm, closed on Wednesdays. Editable in the admin panel. */
 export const OPENING_HOURS = [
-  { days: "Every day", open: "8:00 am", close: "1:30 pm" },
-  { days: "Every day", open: "6:00 pm", close: "10:00 pm" },
+  { days: "Thursday to Tuesday", open: "8:00 am", close: "8:00 pm" },
+  { days: "Wednesday", open: "Closed", close: "" },
 ];
+
+type Hours = { days: string; open: string; close: string };
+
+/** A day the restaurant does not open: "Closed" in the opening time, or no closing time. */
+export const isClosedHours = (h: Hours) => !h.close.trim() || /closed/i.test(h.open);
+
+/** "8:00 am to 8:00 pm", or "Closed". */
+export const formatHours = (h: Hours) => (isClosedHours(h) ? "Closed" : `${h.open} to ${h.close}`);
+
+const WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+/** "Thursday to Tuesday", "Mon-Fri", "Every day" or "Wednesday" as a list of day names. */
+export function expandDays(label: string): string[] {
+  const s = label.toLowerCase().replace(/\s+/g, "");
+  if (s === "everyday" || s === "daily") return WEEK;
+  const range = s.match(/^([a-z]{3})[a-z]*(?:-|to)([a-z]{3})[a-z]*$/);
+  if (range) {
+    const a = WEEK.findIndex((d) => d.toLowerCase().startsWith(range[1]));
+    const b = WEEK.findIndex((d) => d.toLowerCase().startsWith(range[2]));
+    if (a >= 0 && b >= 0) return a <= b ? WEEK.slice(a, b + 1) : [...WEEK.slice(a), ...WEEK.slice(0, b + 1)];
+  }
+  return WEEK.filter((d) => s.startsWith(d.slice(0, 3).toLowerCase()));
+}
+
+/** Names of the days marked closed in the opening hours, for example ["Wednesday"]. */
+export const closedDays = (hours: Hours[]) => hours.filter(isClosedHours).flatMap((h) => expandDays(h.days));
+
+/** The weekday of a yyyy-mm-dd date, for example "Wednesday". */
+export const weekdayOf = (isoDate: string) => WEEK[(new Date(`${isoDate}T12:00:00Z`).getUTCDay() + 6) % 7];
 
 /** Bookable times, every half hour, with the last booking half an hour before closing. */
 function halfHours(from: number, to: number): string[] {
@@ -56,8 +85,9 @@ function halfHours(from: number, to: number): string[] {
   return slots;
 }
 export const RESERVATION_SITTINGS = [
-  { label: "Morning", times: halfHours(8, 13) },
-  { label: "Evening", times: halfHours(18, 21.5) },
+  { label: "Morning", times: halfHours(8, 11.5) },
+  { label: "Afternoon", times: halfHours(12, 15.5) },
+  { label: "Evening", times: halfHours(16, 19.5) },
 ];
 export const RESERVATION_TIMES = RESERVATION_SITTINGS.flatMap((s) => s.times);
 

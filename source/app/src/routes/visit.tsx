@@ -7,6 +7,7 @@ import { StructuredData } from "@/components/StructuredData";
 import { ContourLink } from "@/components/v2/home";
 import { getVisitData } from "@/lib/content/content.functions";
 import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
+import { formatHours } from "@/lib/site";
 
 /** Photographs of the restaurant itself, from the team. */
 const GARDEN = [
@@ -113,9 +114,7 @@ function Visit() {
               {settings.hours.map((h) => (
                 <div key={`${h.days}-${h.open}`} className="flex justify-between gap-6 border-b border-hairline pb-3">
                   <dt className="text-sand">{h.days}</dt>
-                  <dd className="text-bone">
-                    {h.open} to {h.close}
-                  </dd>
+                  <dd className="text-bone">{formatHours(h)}</dd>
                 </div>
               ))}
             </dl>

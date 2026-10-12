@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 
 import { BrandLockup } from "@/components/site/Brand";
 import type { SiteSettings } from "@/lib/content/types";
-import { MORE_ITEMS, NAV_ITEMS } from "@/lib/site";
+import { MORE_ITEMS, NAV_ITEMS, formatHours } from "@/lib/site";
 
 export function SiteFooter({ settings }: { settings: SiteSettings }) {
   const hasContact = Boolean(settings.address || settings.phone || settings.email || settings.whatsapp);
@@ -39,9 +39,7 @@ export function SiteFooter({ settings }: { settings: SiteSettings }) {
                 {settings.hours.map((h) => (
                   <div key={`${h.days}-${h.open}`} className="flex justify-between gap-6">
                     <dt>{h.days}</dt>
-                    <dd className="text-bone">
-                      {h.open} to {h.close}
-                    </dd>
+                    <dd className="text-bone">{formatHours(h)}</dd>
                   </div>
                 ))}
               </dl>

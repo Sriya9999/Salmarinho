@@ -17,7 +17,7 @@ import { Contours, LoopFilm, Reveal, useInView } from "@/components/v2/kit";
 import type { Dish, JournalPost, MenuCategory, SiteSettings } from "@/lib/content/types";
 import { prefersReducedMotion, watchScrollProgress } from "@/lib/motion";
 import { scrollScrubTheme } from "@/scroll-scrub-scenes";
-import { formatPrice } from "@/lib/site";
+import { formatHours, formatPrice } from "@/lib/site";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -365,7 +365,7 @@ export function ClockSection() {
             <ClockPlate />
           </div>
           <p className="v-clock__note">
-            Dosa at noon. Eggs at nine at night. The sambar keeps pouring from the first table of the morning to the last of
+            Dosa at noon. Eggs at seven in the evening. The sambar keeps pouring from the first table of the morning to the last of
             the evening.
           </p>
           <ClockRuler />
@@ -892,7 +892,7 @@ export function ComeToTheTable({ settings }: { settings: SiteSettings }) {
                 <dd>
                   {settings.hours.map((h) => (
                     <span key={`${h.days}-${h.open}`} className="block">
-                      {h.days}: {h.open} to {h.close}
+                      {h.days}: {formatHours(h)}
                     </span>
                   ))}
                 </dd>

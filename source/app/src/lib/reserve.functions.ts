@@ -4,7 +4,7 @@ import { z } from "zod";
 
 import { getDb, getSettings } from "@/lib/content/db.server";
 import { hashValue } from "@/lib/crypto.server";
-import { RESERVATION_TIMES } from "@/lib/site";
+import { RESERVATION_TIMES, closedDays, weekdayOf } from "@/lib/site";
 
 const reservationSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
@@ -32,10 +32,14 @@ export const submitReservation = createServerFn({ method: "POST" })
     const today = new Date().toISOString().slice(0, 10);
     if (data.date < today) return { ok: false, message: "Please choose a date from today onwards." };
     if (!RESERVATION_TIMES.includes(data.time)) {
-      return { ok: false, message: "Please choose a time between 8 am and 1 pm, or 6 pm and 9:30 pm." };
+      return { ok: false, message: "Please choose a time between 8 am and 7:30 pm." };
     }
 
     const settings = await getSettings();
+    const day = weekdayOf(data.date);
+    if (closedDays(settings.hours).includes(day)) {
+      return { ok: false, message: `We are closed on ${day}s. Please choose another day.` };
+    }
     const db = await getDb();
     const ip = getRequestHeader("cf-connecting-ip") ?? getRequestHeader("x-forwarded-for") ?? "unknown";
     const ipHash = await hashValue(`reserve:${ip}`);

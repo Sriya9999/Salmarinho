@@ -3,7 +3,8 @@
  *
  * Multi-leg, architecture A (design brief): each leg starts from the previous
  * leg's actual last rendered frame. Every `poster` is the exact first frame of
- * the encoded clip beside it.
+ * the encoded clip beside it. The -v2 encodes seek fast: every frame is a
+ * keyframe on phones, every second frame on desktop, and no B-frames.
  *
  * Keep this array a module constant. Changing its identity on every render
  * intentionally rebuilds the media controller.
@@ -22,8 +23,8 @@ export const firstTheme: ScrollScrubTheme = {
 };
 
 const leg = (n: number) => ({
-  clip: `/assets/world/leg-${n}.mp4`,
-  mobileClip: `/assets/world/leg-${n}-mobile.mp4`,
+  clip: `/assets/world/leg-${n}-v2.mp4`,
+  mobileClip: `/assets/world/leg-${n}-mobile-v2.mp4`,
   poster: `/assets/world/leg-${n}-poster.jpg`,
   mobilePoster: `/assets/world/leg-${n}-mobile-poster.jpg`,
 });

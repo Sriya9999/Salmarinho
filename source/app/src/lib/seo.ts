@@ -1,5 +1,5 @@
 import type { Dish, JournalPost, MenuCategory, SiteSettings } from "@/lib/content/types";
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl, expandDays, isClosedHours } from "@/lib/site";
 
 type HeadInput = { title: string; description: string; path: string; image?: string; type?: "website" | "article" };
 
@@ -29,30 +29,6 @@ export function pageHead({ title, description, path, image = "/assets/v2/og/brea
 /** JSON for <script type="application/ld+json">, with "<" escaped so it can never close the tag. */
 export function jsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");
-}
-
-const DAY_MAP: Record<string, string[]> = {
-  mon: ["Monday"],
-  tue: ["Tuesday"],
-  wed: ["Wednesday"],
-  thu: ["Thursday"],
-  fri: ["Friday"],
-  sat: ["Saturday"],
-  sun: ["Sunday"],
-  daily: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-  everyday: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-};
-const ORDER = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-
-function expandDays(label: string): string[] {
-  const s = label.toLowerCase().replace(/\s+/g, "");
-  const range = s.match(/^([a-z]{3})[a-z]*(?:-|to)([a-z]{3})[a-z]*$/);
-  if (range) {
-    const a = ORDER.findIndex((d) => d.toLowerCase().startsWith(range[1]));
-    const b = ORDER.findIndex((d) => d.toLowerCase().startsWith(range[2]));
-    if (a >= 0 && b >= 0) return a <= b ? ORDER.slice(a, b + 1) : [...ORDER.slice(a), ...ORDER.slice(0, b + 1)];
-  }
-  return DAY_MAP[s.slice(0, 3)] ?? DAY_MAP[s] ?? [];
 }
 
 const to24h = (t: string) => {
@@ -98,6 +74,7 @@ export function restaurantSchema(settings: SiteSettings) {
   const sameAs = [settings.instagram, settings.facebook].filter(Boolean);
   if (sameAs.length) data.sameAs = sameAs;
   const hours = settings.hours
+    .filter((h) => !isClosedHours(h))
     .map((h) => ({ days: expandDays(h.days), opens: to24h(h.open), closes: to24h(h.close) }))
     .filter((h) => h.days.length);
   if (hours.length) {

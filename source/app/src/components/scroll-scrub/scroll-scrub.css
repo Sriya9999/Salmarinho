@@ -31,6 +31,17 @@
   z-index: 0;
 }
 
+/* The film settles into the page colour as it leaves (--ss-end, set by scroll). */
+.scroll-scrub__stage::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+  background: var(--ss-bg);
+  opacity: var(--ss-end, 0);
+  pointer-events: none;
+}
+
 .scroll-scrub__layer {
   margin: 0;
   overflow: hidden;

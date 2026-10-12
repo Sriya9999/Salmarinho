@@ -2,9 +2,10 @@ import { createContext, useCallback, useContext, useEffect, useId, useMemo, useR
 import { useRouterState } from "@tanstack/react-router";
 
 import { submitReservation, type ReservationResult } from "@/lib/reserve.functions";
-import { RESERVATION_SITTINGS, formatTime } from "@/lib/site";
+import type { OpeningHours } from "@/lib/content/types";
+import { OPENING_HOURS, RESERVATION_SITTINGS, closedDays, formatTime, weekdayOf } from "@/lib/site";
 
-type ReserveContextValue = { open: () => void; close: () => void; isOpen: boolean };
+type ReserveContextValue = { open: () => void; close: () => void; isOpen: boolean; hours: OpeningHours[] };
 const ReserveContext = createContext<ReserveContextValue | null>(null);
 
 export function useReserve(): ReserveContextValue {
@@ -13,13 +14,13 @@ export function useReserve(): ReserveContextValue {
   return ctx;
 }
 
-export function ReserveProvider({ children }: { children: ReactNode }) {
+export function ReserveProvider({ children, hours = OPENING_HOURS }: { children: ReactNode; hours?: OpeningHours[] }) {
   const [isOpen, setOpen] = useState(false);
   const open = useCallback(() => setOpen(true), []);
   const close = useCallback(() => setOpen(false), []);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   useEffect(() => setOpen(false), [pathname]);
-  const value = useMemo(() => ({ open, close, isOpen }), [open, close, isOpen]);
+  const value = useMemo(() => ({ open, close, isOpen, hours }), [open, close, isOpen, hours]);
   return (
     <ReserveContext.Provider value={value}>
       {children}
@@ -99,10 +100,16 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
   const [result, setResult] = useState<Extract<ReservationResult, { ok: true }> | null>(null);
   const [minDate, setMinDate] = useState<string | undefined>(undefined);
   useEffect(() => setMinDate(todayIso()), []);
+  const closed = closedDays(useContext(ReserveContext)?.hours ?? OPENING_HOURS);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
+    const date = String(form.get("date") ?? "");
+    if (date && closed.includes(weekdayOf(date))) {
+      setError(`We are closed on ${weekdayOf(date)}s. Please choose another day.`);
+      return;
+    }
     setError(null);
     setStatus("sending");
     try {
@@ -171,10 +178,15 @@ export function ReserveForm({ headingId, as: Heading = "h2" }: { headingId?: str
       <p className="mx-auto mt-4 max-w-sm text-center text-sand">Tell us when you are coming and we will keep a table for you.</p>
       <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
         <Field label="Date" htmlFor={`${id}-date`}>
-          <input id={`${id}-date`} name="date" type="date" required min={minDate} className="sm-input" />
+          <input id={`${id}-date`} name="date" type="date" required min={minDate} className="sm-input" aria-describedby={closed.length ? `${id}-closed` : undefined} />
+          {closed.length ? (
+            <span id={`${id}-closed`} className="mt-1 block text-xs text-sand/80">
+              Closed on {closed.join(" and ")}s
+            </span>
+          ) : null}
         </Field>
         <Field label="Time" htmlFor={`${id}-time`}>
-          <select id={`${id}-time`} name="time" required defaultValue="20:00" className="sm-input">
+          <select id={`${id}-time`} name="time" required defaultValue="13:00" className="sm-input">
             {RESERVATION_SITTINGS.map((sitting) => (
               <optgroup key={sitting.label} label={sitting.label}>
                 {sitting.times.map((t) => (

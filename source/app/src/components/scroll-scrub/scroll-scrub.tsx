@@ -416,6 +416,10 @@ export function ScrollScrub({
       const pageY = window.scrollY || window.pageYOffset;
       const y = clamp(pageY - rootTop, 0, total);
       const crossfade = 0.1 * viewportHeight;
+      // Each clip dissolves in over the one before it across this much scroll,
+      // centred on their seam, so a clip that is still catching up with the
+      // finger never shows as a hard cut.
+      const dissolve = 0.36 * viewportHeight;
       let currentIndex = 0;
 
       for (const [index, segment] of runtime.entries()) {
@@ -436,14 +440,29 @@ export function ScrollScrub({
         if (y > segment.end) {
           outside = y - segment.end;
         }
-        let opacity = smoothstep(1 - outside / Math.max(crossfade, 1));
+        let opacity: number;
         if (reduceMotion) {
           opacity = outside === 0 ? 1 : 0;
+        } else {
+          const fadeIn =
+            index === 0
+              ? 1
+              : smoothstep((y - (segment.start - dissolve / 2)) / dissolve);
+          const fadeOut =
+            index === runtime.length - 1
+              ? 1
+              : smoothstep(
+                  1 -
+                    (y - (segment.end + dissolve / 2)) /
+                      Math.max(crossfade, 1)
+                );
+          opacity = Math.min(fadeIn, fadeOut);
         }
 
         segment.visible = opacity > 0.001;
         segment.layer.style.opacity = String(opacity);
-        segment.layer.style.zIndex = index === currentIndex ? "2" : "1";
+        // Later clips sit above earlier ones, so the dissolve is visible.
+        segment.layer.style.zIndex = String(index + 1);
 
         if (
           y > segment.start - 1.5 * viewportHeight &&
@@ -469,6 +488,14 @@ export function ScrollScrub({
       }
 
       root.style.setProperty("--ss-progress", String(clamp(y / total)));
+      // As the film starts to scroll away, it settles into the page colour
+      // instead of leaving as a hard-edged block.
+      root.style.setProperty(
+        "--ss-end",
+        reduceMotion
+          ? "0"
+          : smoothstep((y - (total - viewportHeight)) / (0.5 * viewportHeight)).toFixed(3)
+      );
     };
 
     const updateVideos = () => {
@@ -484,7 +511,7 @@ export function ScrollScrub({
           continue;
         }
 
-        segment.current += (segment.target - segment.current) * 0.2;
+        segment.current += (segment.target - segment.current) * (isMobile() ? 0.28 : 0.2);
         const targetTime =
           clamp(segment.current, 0, 0.999) * (video.duration || 1);
         const epsilon = isMobile() ? 0.02 : 0.008;

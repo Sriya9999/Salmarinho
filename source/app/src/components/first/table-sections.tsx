@@ -353,7 +353,7 @@ function FireLetters({ text }: { text: string }) {
       <canvas ref={canvas} aria-hidden="true" className="block h-[26vw] max-h-72 min-h-24 w-full" />
       <video
         ref={video}
-        src="/assets/world/leg-3-mobile.mp4"
+        src="/assets/world/leg-3-mobile-v2.mp4"
         muted
         loop
         playsInline
