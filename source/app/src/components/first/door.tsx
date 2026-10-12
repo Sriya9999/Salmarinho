@@ -109,10 +109,10 @@ export function DoorOpening() {
   return (
     <div ref={root} className="sm-door" data-state={state} data-beat={beat} role="dialog" aria-label="Welcome to Sal Marinho">
       <div className="sm-door__half sm-door__half--left" aria-hidden="true">
-        <img src="/assets/art/gate-left.webp" alt="" />
+        <img src="/assets/art/gate-left.webp" alt="" width={640} height={853} fetchPriority="high" />
       </div>
       <div className="sm-door__half sm-door__half--right" aria-hidden="true">
-        <img src="/assets/art/gate-right.webp" alt="" />
+        <img src="/assets/art/gate-right.webp" alt="" width={640} height={853} fetchPriority="high" />
       </div>
       <div className="sm-door__glow" aria-hidden="true" />
       <div className="sm-door__doorway">

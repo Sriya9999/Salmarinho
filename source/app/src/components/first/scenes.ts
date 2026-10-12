@@ -25,8 +25,8 @@ export const firstTheme: ScrollScrubTheme = {
 const leg = (n: number) => ({
   clip: `/assets/world/leg-${n}-v2.mp4`,
   mobileClip: `/assets/world/leg-${n}-mobile-v2.mp4`,
-  poster: `/assets/world/leg-${n}-poster.jpg`,
-  mobilePoster: `/assets/world/leg-${n}-mobile-poster.jpg`,
+  poster: `/assets/world/leg-${n}-poster.webp`,
+  mobilePoster: `/assets/world/leg-${n}-mobile-poster.webp`,
 });
 
 export const firstScenes: ScrollScrubScene[] = [

@@ -24,10 +24,11 @@ export const Route = createFileRoute("/breakfast")({
   loader: () => getHomeData(),
   head: () =>
     pageHead({
-      title: "All-day breakfast in Anjuna: South Indian and Goan",
+      title: "South Indian and Goan breakfast in Anjuna",
       description:
-        "South Indian food and all-day breakfast in Anjuna, Goa: benne dosa, clay pot tatte idli, Ross omelette with poi, choris on toast, Buddha bowls, French toast, coffee and fresh juices.",
+        "All-day breakfast in Anjuna, Goa: benne dosa, clay pot tatte idli, Ross omelette with poi, choris on toast, Buddha bowls, French toast and fresh coffee.",
       path: "/breakfast",
+      crumb: "Breakfast",
       image: "/assets/v2/og/breakfast.jpg",
     }),
   component: Breakfast,

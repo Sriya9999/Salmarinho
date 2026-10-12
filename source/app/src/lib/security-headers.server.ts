@@ -9,7 +9,8 @@ export function applySecurityHeaders(response: Response): Response {
   headers.set(
     "Content-Security-Policy",
     "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline'; " +
+      // Cloudflare Web Analytics: the beacon Cloudflare adds to every page.
+      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; " +
       "style-src 'self' 'unsafe-inline'; " +
       "font-src 'self' data:; " +
       "img-src 'self' data: blob: https:; media-src 'self' blob:; " +

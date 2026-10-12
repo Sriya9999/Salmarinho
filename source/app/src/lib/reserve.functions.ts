@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeader } from "@tanstack/react-start/server";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { getDb, getSettings } from "@/lib/content/db.server";
 import { hashValue } from "@/lib/crypto.server";

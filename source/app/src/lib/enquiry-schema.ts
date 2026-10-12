@@ -1,5 +1,5 @@
 // The event enquiry form, checked the same way in the browser and on the server.
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import { EVENT_TYPES } from "@/lib/site";
 

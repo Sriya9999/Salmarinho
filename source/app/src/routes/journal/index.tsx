@@ -1,18 +1,20 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { StructuredData } from "@/components/StructuredData";
 import { StoryCard } from "@/components/v2/home";
 import { Contours } from "@/components/v2/kit";
 import { getJournal } from "@/lib/content/content.functions";
-import { pageHead } from "@/lib/seo";
+import { blogSchema, jsonLd, pageHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/journal/")({
   loader: () => getJournal(),
   head: () =>
     pageHead({
-      title: "From our kitchen journal",
+      title: "Kitchen journal: food stories from Anjuna",
       description:
-        "Stories from the Sal Marinho kitchen: the art of the dosa, breakfast without a clock, the spice behind South Indian food, and the Portuguese thread in Goan breakfast.",
+        "Stories from the Sal Marinho kitchen in Anjuna: the art of the dosa, breakfast without a clock, southern spice and the Portuguese thread in Goan food.",
       path: "/journal",
+      crumb: "Journal",
       image: "/assets/v2/og/journal.jpg",
     }),
   component: Journal,
@@ -22,6 +24,7 @@ function Journal() {
   const posts = Route.useLoaderData();
   return (
     <main id="main" data-sound="quiet">
+      <StructuredData json={jsonLd(blogSchema(posts))} />
       <header className="relative overflow-hidden">
         <Contours style={{ opacity: 0.1 }} />
         <div className="v-wrap relative pt-40 pb-14 md:pt-48">

@@ -6,8 +6,8 @@ import { useReserve } from "@/components/site/reserve";
 import { StructuredData } from "@/components/StructuredData";
 import { ContourLink } from "@/components/v2/home";
 import { getVisitData } from "@/lib/content/content.functions";
-import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
-import { formatHours } from "@/lib/site";
+import { eventSchema, jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
+import { OPENING_HOURS, formatHours, hoursSentence } from "@/lib/site";
 
 /** Photographs of the restaurant itself, from the team. */
 const GARDEN = [
@@ -20,12 +20,13 @@ const GARDEN = [
 
 export const Route = createFileRoute("/visit")({
   loader: () => getVisitData(),
-  head: () =>
+  head: ({ loaderData }) =>
     pageHead({
-      title: "Visit: come in, stay awhile",
-      description:
-        "Visit Sal Marinho, a restaurant in Anjuna, North Goa, serving South Indian and Goan breakfast all day. Opening hours, map, directions and reservations.",
+      title: "Visit us in Anjuna, Goa: hours and directions",
+      // The hours come from the admin settings, so the description never goes stale.
+      description: `A garden restaurant in Anjuna village, North Goa. ${hoursSentence(loaderData?.settings.hours ?? OPENING_HOURS)} Map, directions and table bookings.`,
       path: "/visit",
+      crumb: "Visit",
       image: "/assets/v2/og/visit.jpg",
     }),
   component: Visit,
@@ -50,6 +51,9 @@ function Visit() {
   return (
     <main id="main" data-sound="restaurant">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
+      {events.map((event) => (
+        <StructuredData key={event.id} json={jsonLd(eventSchema(event))} />
+      ))}
       <PageHero
         kicker="Visit"
         title={

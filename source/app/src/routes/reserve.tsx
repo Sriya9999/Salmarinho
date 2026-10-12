@@ -6,9 +6,10 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/reserve")({
   head: () =>
     pageHead({
-      title: "Reserve your table",
+      title: "Reserve a table in Anjuna, Goa",
       description: "Book a table at Sal Marinho in Anjuna, Goa. Choose a date, time and number of guests, and we will keep a table for you.",
       path: "/reserve",
+      crumb: "Reserve",
       image: "/assets/v2/og/visit.jpg",
     }),
   component: Reserve,

@@ -7,10 +7,11 @@ import { pageHead } from "@/lib/seo";
 export const Route = createFileRoute("/our-story")({
   head: () =>
     pageHead({
-      title: "Our story: the story behind the spice",
+      title: "Our story: a coastal kitchen in Anjuna, Goa",
       description:
         "How the coast, South Indian food, a little Portugal and fire came together at Sal Marinho in Anjuna, and what is quietly growing beside the restaurant.",
       path: "/our-story",
+      crumb: "Our story",
       image: "/assets/v2/og/breakfast.jpg",
     }),
   component: OurStory,

@@ -11,10 +11,11 @@ export const Route = createFileRoute("/the-coast")({
   loader: () => getCrabJourney(),
   head: () =>
     pageHead({
-      title: "The coast and the crab journey",
+      title: "The coast and our crab journey, Anjuna",
       description:
-        "Water, salt, wind and stone: the coast behind Sal Marinho in Anjuna, and our crab cultivation project: cultivate, grow, fatten, harvest, fire, table. Coming soon.",
+        "Water, salt, wind and stone: the coast behind Sal Marinho in Anjuna, Goa, and our crab project, from cultivation to the table. Coming soon.",
       path: "/the-coast",
+      crumb: "The coast",
       image: "/assets/v2/og/crab.jpg",
     }),
   component: TheCoast,

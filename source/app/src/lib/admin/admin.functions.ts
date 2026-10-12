@@ -1,6 +1,6 @@
 // Admin server functions. Every handler checks the session first.
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import {
   deleteRow,

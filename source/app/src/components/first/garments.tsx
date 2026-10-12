@@ -21,7 +21,8 @@ export function WaveArrowLink({ href, children, onClick }: { href: string; child
 /** "Follow the ritual": circular badge, words on a path around a crab glyph; unrolls on hover. */
 export function RitualBadge({ to = "/the-coast", label = "Follow the ritual" }: { to?: string; label?: string }) {
   return (
-    <Link to={to} className="sm-badge" aria-label={label}>
+    <Link to={to} className="sm-badge">
+      <span className="sr-only">{label}</span>
       <svg viewBox="0 0 120 120" aria-hidden="true" className="sm-badge__ring">
         <defs>
           <path id="sm-badge-circle" d="M60 60 m -46 0 a 46 46 0 1 1 92 0 a 46 46 0 1 1 -92 0" />

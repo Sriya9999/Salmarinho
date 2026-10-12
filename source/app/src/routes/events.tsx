@@ -11,10 +11,11 @@ export const Route = createFileRoute("/events")({
   loader: () => getSiteSettings(),
   head: () =>
     pageHead({
-      title: "Sal Marinho Events: private events across Goa",
+      title: "Private events and celebrations across Goa",
       description:
-        "Premium experiences across Goa for villas, yachts, beach and poolside events, birthdays, corporate events and private celebrations, from the Sal Marinho team in Anjuna.",
+        "Villa, yacht, beach and poolside events, birthdays, corporate gatherings and private celebrations across Goa, planned by the Sal Marinho team in Anjuna.",
       path: "/events",
+      crumb: "Events",
       image: "/assets/v2/og/events.jpg",
     }),
   component: Events,

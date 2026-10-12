@@ -78,8 +78,8 @@ export function Hero() {
       <div className="v-hero__shade" aria-hidden="true" />
       <Contours style={{ opacity: 0.1 }} />
       <div className="v-wrap v-hero__copy">
-        <p className="v-kicker">Sal Marinho, Anjuna</p>
-        <h1 id="hero-title" className="v-hero__title mt-6">
+        <h1 id="hero-title" className="v-hero__title">
+          <span className="v-kicker v-hero__kicker">Sal Marinho, Anjuna </span>
           A little coastal magic, <em>all day.</em>
         </h1>
         <p className="v-lede mt-6">

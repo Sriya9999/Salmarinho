@@ -253,6 +253,10 @@ export function ScrollScrub({
     let viewportHeight = window.innerHeight;
     let layoutWidth = window.innerWidth;
     let userReady = false;
+    // Clips wait for the page itself to finish loading.
+    let pageLoaded = document.readyState === "complete";
+    // Clips beyond the next one download only once the film is moving.
+    let moved = false;
 
     // Each clip is downloaded once and kept as a blob URL, so a clip released
     // when it scrolls out of range comes back instantly.
@@ -260,7 +264,9 @@ export function ScrollScrub({
     const clipUrl = (source: string) => {
       let pending = clipUrls.get(source);
       if (!pending) {
-        pending = fetch(source).then(async (response) => {
+        // Low priority: the page's own images (the first thing Google measures)
+        // go first, and the film fills in behind them.
+        pending = fetch(source, { priority: "low" } as RequestInit).then(async (response) => {
           if (!response.ok) {
             throw new Error(`Clip failed: ${response.status}`);
           }
@@ -348,11 +354,25 @@ export function ScrollScrub({
       }
     };
 
+    // Download the next two clips while this one plays, without decoding them.
+    const prefetchAfter = (index: number) => {
+      if (!moved) {
+        return;
+      }
+      for (const next of runtime.slice(index + 1, index + 3)) {
+        const nextSource = sourceFor(next);
+        if (nextSource) {
+          clipUrl(nextSource).catch(() => {});
+        }
+      }
+    };
+
     const loadClip = async (segment: RuntimeSegment) => {
       const source = sourceFor(segment);
       if (
         reduceMotion ||
         destroyed ||
+        !pageLoaded ||
         segment.loading ||
         segment.video ||
         !source ||
@@ -379,14 +399,7 @@ export function ScrollScrub({
         return;
       }
 
-      // Download the next two clips while this one plays, without decoding them.
-      const index = runtime.indexOf(segment);
-      for (const next of runtime.slice(index + 1, index + 3)) {
-        const nextSource = sourceFor(next);
-        if (nextSource) {
-          clipUrl(nextSource).catch(() => {});
-        }
-      }
+      prefetchAfter(runtime.indexOf(segment));
 
       const video = document.createElement("video");
       video.className = "scroll-scrub__video";
@@ -452,6 +465,11 @@ export function ScrollScrub({
     const readScroll = () => {
       const pageY = window.scrollY || window.pageYOffset;
       const y = clamp(pageY - rootTop, 0, total);
+      if (!moved && pageY - rootTop > 0.15 * viewportHeight) {
+        moved = true;
+        const playing = runtime.findIndex((segment) => segment.video);
+        prefetchAfter(Math.max(playing, 0));
+      }
       const crossfade = 0.1 * viewportHeight;
       // Each clip dissolves in over the one before it across this much scroll,
       // centred on their seam, so a clip that is still catching up with the
@@ -603,6 +621,10 @@ export function ScrollScrub({
     const onScroll = () => {
       dirty = true;
     };
+    const onLoad = () => {
+      pageLoaded = true;
+      dirty = true;
+    };
     const onResize = () => {
       if (coarsePointer && window.innerWidth === layoutWidth) {
         return;
@@ -635,6 +657,7 @@ export function ScrollScrub({
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("load", onLoad, { once: true });
     window.addEventListener("resize", onResize);
     window.addEventListener("orientationchange", layout);
     window.addEventListener("pointerdown", onGesture, { passive: true });
@@ -648,6 +671,7 @@ export function ScrollScrub({
       controllerRef.current = null;
       window.cancelAnimationFrame(frame);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("load", onLoad);
       window.removeEventListener("resize", onResize);
       window.removeEventListener("orientationchange", layout);
       window.removeEventListener("pointerdown", onGesture);
@@ -708,8 +732,9 @@ export function ScrollScrub({
                     alt=""
                     className="scroll-scrub__poster"
                     decoding="async"
-                    fetchPriority={index === 0 ? "high" : "auto"}
-                    loading={index === 0 ? "eager" : "lazy"}
+                    // Only the page's opening film (h1) has a still worth hurrying.
+                    fetchPriority={index === 0 && firstHeading === "h1" ? "high" : "low"}
+                    loading={index === 0 && firstHeading === "h1" ? "eager" : "lazy"}
                     src={segment.poster}
                   />
                 </picture>
@@ -762,6 +787,8 @@ export function ScrollScrub({
             return null;
           }
           const Heading = segment.sectionIndex === 0 ? firstHeading : "h2";
+          // The page's h1 carries its kicker (the place name) for search engines.
+          const kickerInHeading = Heading === "h1" && Boolean(scene.kicker);
 
           return (
             <article
@@ -775,10 +802,13 @@ export function ScrollScrub({
             >
               <div className="scroll-scrub__chapter-pin">
                 <div className="scroll-scrub__copy">
-                  {scene.kicker ? (
+                  {scene.kicker && !kickerInHeading ? (
                     <p className="scroll-scrub__kicker">{scene.kicker}</p>
                   ) : null}
                   <Heading className="scroll-scrub__title">
+                    {kickerInHeading ? (
+                      <span className="scroll-scrub__kicker">{scene.kicker} </span>
+                    ) : null}
                     {scene.title}
                   </Heading>
                   <p className="scroll-scrub__body">{scene.body}</p>

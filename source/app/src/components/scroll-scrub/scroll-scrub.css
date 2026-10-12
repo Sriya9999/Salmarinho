@@ -191,6 +191,12 @@
   text-transform: uppercase;
 }
 
+/* A kicker inside the h1 looks exactly like the standalone one. */
+.scroll-scrub__title .scroll-scrub__kicker {
+  display: block;
+  line-height: normal;
+}
+
 .scroll-scrub__title {
   max-width: 13ch;
   margin: 0;

@@ -254,7 +254,7 @@ function FireLetters({ text }: { text: string }) {
     const ctx = cv.getContext("2d");
     if (!ctx) return;
     const poster = new Image();
-    poster.src = "/assets/world/leg-4-mobile-poster.jpg"; // flames around the claypot
+    poster.src = "/assets/world/leg-4-mobile-poster.webp"; // flames around the claypot
     let raf = 0;
     let running = false;
     const reduced = prefersReducedMotion();

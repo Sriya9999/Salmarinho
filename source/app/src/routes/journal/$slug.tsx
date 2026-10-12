@@ -15,7 +15,15 @@ export const Route = createFileRoute("/journal/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) return {};
     const { post } = loaderData;
-    return pageHead({ title: post.title, description: post.excerpt, path: `/journal/${post.slug}`, image: post.cover, type: "article" });
+    return pageHead({
+      title: post.title,
+      description: post.excerpt,
+      path: `/journal/${post.slug}`,
+      image: post.cover,
+      type: "article",
+      crumb: post.title,
+      parents: [{ name: "Journal", path: "/journal" }],
+    });
   },
   component: Article,
 });

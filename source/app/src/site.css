@@ -229,6 +229,7 @@ html.lenis body {
 }
 .scroll-scrub .scroll-scrub__kicker {
   color: var(--color-ember);
+  font-family: var(--font-body);
   font-weight: 500;
   letter-spacing: 0.24em;
 }
@@ -1321,6 +1322,15 @@ select.sm-input option {
   font-size: clamp(3.1rem, 8.4vw, 8.8rem);
   line-height: 0.95;
   letter-spacing: -0.025em;
+}
+/* The place name sits inside the hero h1 but keeps the kicker's look. */
+.v-hero__title .v-hero__kicker {
+  display: flex;
+  width: max-content;
+  margin-bottom: 1.5rem;
+  font-family: var(--font-body);
+  font-style: normal;
+  line-height: normal;
 }
 .v-hero__title em {
   font-style: italic;

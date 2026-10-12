@@ -9,6 +9,16 @@ type StaticMeta = { type: string; hash: string };
 
 // Vite's content-hashed bundles never change under the same name.
 const HASHED_BUNDLE = /^\/assets\/[^/]+-[A-Za-z0-9_-]{8,}\.(js|css)$/;
+// Photos, film and fonts: a changed file always gets a new name, so a month in
+// the browser cache is safe, and revalidating in the background keeps it fresh.
+const MEDIA = /^\/(assets|fonts)\/.+\.(webp|avif|jpe?g|png|svg|mp4|webm|mp3|m4a|ogg|woff2?)$/i;
+
+const cacheControl = (path: string) =>
+  HASHED_BUNDLE.test(path)
+    ? "public, max-age=31536000, immutable"
+    : MEDIA.test(path)
+      ? "public, max-age=2592000, stale-while-revalidate=604800"
+      : "public, max-age=86400";
 
 export async function serveStaticFromKv(request: Request, kv: KVNamespace): Promise<Response | null> {
   if (request.method !== "GET" && request.method !== "HEAD") return null;
@@ -29,7 +39,7 @@ export async function serveStaticFromKv(request: Request, kv: KVNamespace): Prom
     "content-type": metadata.type,
     etag,
     "accept-ranges": "bytes",
-    "cache-control": HASHED_BUNDLE.test(path) ? "public, max-age=31536000, immutable" : "public, max-age=86400",
+    "cache-control": cacheControl(path),
     "x-content-type-options": "nosniff",
   });
   if (request.headers.get("if-none-match") === etag) return new Response(null, { status: 304, headers });

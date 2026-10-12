@@ -1,6 +1,6 @@
 // Public read-only server functions used by route loaders.
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+import { z } from "@/lib/zod";
 
 import {
   getDishBySlug,

@@ -52,6 +52,13 @@ const RETIRED: Record<string, string> = {
   "/the-crab-journey": "/the-coast#something-is-growing",
 };
 
+// Search engines must not index preview copies of the site.
+function noindex(response: Response): Response {
+  const copy = new Response(response.body, response);
+  copy.headers.set("x-robots-tag", "noindex, nofollow");
+  return copy;
+}
+
 function retiredRedirect(url: URL): Response | null {
   const target = RETIRED[url.pathname] ?? (/^\/menu\/[^/.]+$/.test(url.pathname) ? "/menu" : null);
   if (!target) return null;
@@ -60,38 +67,45 @@ function retiredRedirect(url: URL): Response | null {
 
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
-    // One canonical URL per page: /menu/ permanently redirects to /menu.
     const url = new URL(request.url);
-    // One address for the site: www.salmarinho.in permanently redirects to salmarinho.in.
     const canonical = new URL(SITE_URL);
-    if (url.hostname === `www.${canonical.hostname}`) {
-      url.hostname = canonical.hostname;
-      return applySecurityHeaders(Response.redirect(url.toString(), 301));
+    // One address for the site: www.salmarinho.in and the live worker's own
+    // workers.dev address permanently redirect to salmarinho.in. A preview
+    // worker, whose site address is its workers.dev one, stays out of search.
+    const onWorkersDev = url.hostname.endsWith(".workers.dev");
+    if (url.hostname === `www.${canonical.hostname}` || (onWorkersDev && url.hostname !== canonical.hostname)) {
+      return applySecurityHeaders(Response.redirect(new URL(url.pathname + url.search, SITE_URL).toString(), 301));
     }
-    if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
-      url.pathname = url.pathname.replace(/\/+$/, "");
-      return applySecurityHeaders(Response.redirect(url.toString(), 301));
-    }
-    const retired = retiredRedirect(url);
-    if (retired) return applySecurityHeaders(retired);
-    // Self-hosted Cloudflare deploys keep static files in KV (see wrangler.cloudflare.jsonc).
-    const kv = (env as { STATIC?: KVNamespace } | undefined)?.STATIC;
-    if (kv) {
-      const file = await serveStaticFromKv(request, kv);
-      if (file) return file;
-    }
-    try {
-      const handler = await getServerEntry();
-      const response = await handler.fetch(request, env, ctx);
-      return applySecurityHeaders(await normalizeCatastrophicSsrResponse(response));
-    } catch (error) {
-      console.error(error);
-      return applySecurityHeaders(
-        new Response(renderErrorPage(), {
-          status: 500,
-          headers: { "content-type": "text/html; charset=utf-8" },
-        }),
-      );
-    }
+    const response = await respond(request, url, env, ctx);
+    return onWorkersDev ? noindex(response) : response;
   },
 };
+
+async function respond(request: Request, url: URL, env: unknown, ctx: unknown): Promise<Response> {
+  // One canonical URL per page: /menu/ permanently redirects to /menu.
+  if (url.pathname.length > 1 && url.pathname.endsWith("/")) {
+    url.pathname = url.pathname.replace(/\/+$/, "");
+    return applySecurityHeaders(Response.redirect(url.toString(), 301));
+  }
+  const retired = retiredRedirect(url);
+  if (retired) return applySecurityHeaders(retired);
+  // Self-hosted Cloudflare deploys keep static files in KV (see wrangler.cloudflare.jsonc).
+  const kv = (env as { STATIC?: KVNamespace } | undefined)?.STATIC;
+  if (kv) {
+    const file = await serveStaticFromKv(request, kv);
+    if (file) return file;
+  }
+  try {
+    const handler = await getServerEntry();
+    const response = await handler.fetch(request, env, ctx);
+    return applySecurityHeaders(await normalizeCatastrophicSsrResponse(response));
+  } catch (error) {
+    console.error(error);
+    return applySecurityHeaders(
+      new Response(renderErrorPage(), {
+        status: 500,
+        headers: { "content-type": "text/html; charset=utf-8" },
+      }),
+    );
+  }
+}

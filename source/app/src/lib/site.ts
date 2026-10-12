@@ -57,6 +57,15 @@ export const formatHours = (h: Hours) => (isClosedHours(h) ? "Closed" : `${h.ope
 
 const WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+/** "Open Thursday to Tuesday, 8:00 am to 8:00 pm. Closed Wednesday." */
+export function hoursSentence(hours: Hours[]): string {
+  const open = hours.filter((h) => !isClosedHours(h)).map((h) => `${h.days}, ${h.open} to ${h.close}`);
+  const closed = hours.filter(isClosedHours).map((h) => h.days);
+  return [open.length ? `Open ${open.join("; ")}.` : "", closed.length ? `Closed ${closed.join(" and ")}.` : ""]
+    .filter(Boolean)
+    .join(" ");
+}
+
 /** "Thursday to Tuesday", "Mon-Fri", "Every day" or "Wednesday" as a list of day names. */
 export function expandDays(label: string): string[] {
   const s = label.toLowerCase().replace(/\s+/g, "");

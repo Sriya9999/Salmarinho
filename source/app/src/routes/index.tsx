@@ -10,15 +10,15 @@ import { JournalSpread, MenuSlices, PortugueseConnection, ReserveBand } from "@/
 import { EventsTeaser } from "@/components/v2/events";
 import { StructuredData } from "@/components/StructuredData";
 import { getLandingData } from "@/lib/content/content.functions";
-import { jsonLd, pageHead, restaurantSchema } from "@/lib/seo";
+import { jsonLd, pageHead, restaurantSchema, websiteSchema } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: () => getLandingData(),
   head: () =>
     pageHead({
-      title: "Sal Marinho, Anjuna | Crab, fire and claypot, and breakfast all day",
+      title: "Sal Marinho | Restaurant in Anjuna, Goa: all-day breakfast",
       description:
-        "Sal Marinho in Anjuna, Goa: the story of fattened mud crab, live wood fire and claypot cooking, a coastline shaped by Portuguese exchange, and South Indian and Goan breakfast served all day.",
+        "Sal Marinho is a restaurant in Anjuna, North Goa: South Indian and Goan breakfast all day, wood fire and claypot cooking, and a crab project underway.",
       path: "/",
       image: "/assets/og/home.jpg",
     }),
@@ -53,6 +53,7 @@ function Index() {
   const { categories, dishes, posts, settings } = Route.useLoaderData();
   return (
     <main id="main" className="sm-first">
+      <StructuredData json={jsonLd(websiteSchema())} />
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
       <DoorOpening />
       <div data-sound="waves" data-film="journey">

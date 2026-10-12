@@ -14,10 +14,11 @@ export const Route = createFileRoute("/menu/")({
   loader: () => getMenuData(),
   head: () =>
     pageHead({
-      title: "Menu: What's cooking?",
+      title: "Menu: dosa, idli, eggs and coffee in Anjuna",
       description:
-        "The full Sal Marinho menu: South Indian breakfast, Goan breakfast, morning classics, eggs and omelettes, Buddha bowls, French toast, coffee and tea, fresh juices, shakes and smoothies.",
+        "The Sal Marinho menu in Anjuna, Goa: South Indian and Goan breakfast, eggs and omelettes, Buddha bowls, French toast, coffee, juices and smoothies.",
       path: "/menu",
+      crumb: "Menu",
       image: "/assets/v2/og/menu.jpg",
     }),
   component: MenuPage,
