@@ -488,13 +488,13 @@ export function ScrollScrub({
       }
 
       root.style.setProperty("--ss-progress", String(clamp(y / total)));
-      // As the film starts to scroll away, it settles into the page colour
-      // instead of leaving as a hard-edged block.
+      // Once the last frame has landed the stage unpins; as it scrolls away it
+      // settles into the page colour instead of leaving as a hard-edged block.
       root.style.setProperty(
         "--ss-end",
         reduceMotion
           ? "0"
-          : smoothstep((y - (total - viewportHeight)) / (0.5 * viewportHeight)).toFixed(3)
+          : smoothstep((pageY - rootTop - total) / (0.6 * viewportHeight)).toFixed(3)
       );
     };
 
