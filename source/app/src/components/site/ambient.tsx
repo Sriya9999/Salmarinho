@@ -6,6 +6,12 @@ import { prefersReducedMotion } from "@/lib/motion";
 
 let lenisInstance: Lenis | null = null;
 
+/** Moves the page at once, keeping Lenis (desktop smooth scroll) in step. */
+export function jumpScroll(top: number) {
+  if (lenisInstance) lenisInstance.scrollTo(top, { immediate: true, force: true });
+  else window.scrollTo({ top, behavior: "instant" });
+}
+
 /** Lenis smooth scrolling on desktop pointers; native scrolling on touch and under reduced motion. */
 export function SmoothScroll() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

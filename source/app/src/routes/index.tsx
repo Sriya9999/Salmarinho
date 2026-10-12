@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 
 import { ScrollScrub } from "@/components/scroll-scrub/scroll-scrub";
 import { SplitReserve, WaveArrowLink } from "@/components/first/garments";
+import { FilmAutoplay } from "@/components/first/autoplay";
 import { DoorOpening } from "@/components/first/door";
 import { firstScenes, firstTheme } from "@/components/first/scenes";
 import { Atmosphere, ClaypotReveal, CoastPan, ExperienceStrip, FatteningRitual, Philosophy } from "@/components/first/story-sections";
@@ -54,9 +55,10 @@ function Index() {
     <main id="main" className="sm-first">
       <StructuredData json={jsonLd(restaurantSchema(settings))} />
       <DoorOpening />
-      <div data-sound="waves">
+      <div data-sound="waves" data-film="journey">
         <ScrollScrub scenes={journeyScenes} theme={firstTheme} />
       </div>
+      <FilmAutoplay film='[data-film="journey"] .scroll-scrub' />
       <Philosophy />
       <FatteningRitual />
       <CoastPan />

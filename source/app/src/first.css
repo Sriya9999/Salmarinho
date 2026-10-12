@@ -929,3 +929,25 @@ html[data-sm-seen="1"] .sm-door {
     letter-spacing: 0.42em;
   }
 }
+
+/* ---------------------------------------------------------------- film autoplay */
+
+/* Pause / Play, opposite the sound button while the film is on screen. */
+.sm-autoplay {
+  position: fixed;
+  z-index: 95;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  animation: sm-autoplay-in 0.5s var(--ease-tide) both;
+}
+.sm-autoplay__icon {
+  width: 11px;
+  height: 11px;
+  fill: var(--color-ember);
+}
+@keyframes sm-autoplay-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
