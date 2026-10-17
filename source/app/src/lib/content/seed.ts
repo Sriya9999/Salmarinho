@@ -682,15 +682,15 @@ export const DEFAULT_EVENTS: EventsSettings = {
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  address: "",
+  address: "Near Starco Junction, De Mello Vaddo, Anjuna, Goa 403509",
   locality: "Anjuna, Goa",
-  mapsUrl: "",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=Sal%20Marinho%20Anjuna",
   latitude: "",
   longitude: "",
   phone: "",
   whatsapp: "",
   email: "",
-  instagram: "",
+  instagram: "https://www.instagram.com/salmarinhogoa/",
   facebook: "",
   hours: OPENING_HOURS,
   parking: "",

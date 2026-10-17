@@ -76,14 +76,22 @@ export function websiteSchema() {
   };
 }
 
-// Village, region and country are certain; the street address comes from the admin settings.
-const postalAddress = (settings?: SiteSettings) => ({
-  "@type": "PostalAddress",
-  ...(settings?.address ? { streetAddress: settings.address.replace(/\n/g, ", ") } : {}),
-  addressLocality: "Anjuna",
-  addressRegion: "Goa",
-  addressCountry: "IN",
-});
+// Village, region and country are certain; the street address comes from the
+// admin settings, where it is written out in full ("…, Anjuna, Goa 403509"),
+// so the village and PIN code are split off into their own fields.
+export const postalAddress = (settings?: Pick<SiteSettings, "address">) => {
+  const full = settings?.address.replace(/\s*\n\s*/g, ", ").trim() ?? "";
+  const street = full.replace(/,?\s*\b(Anjuna|Bardez|North Goa|Goa|India|\d{6})\b.*$/i, "").trim();
+  const postalCode = full.match(/\b\d{6}\b/)?.[0];
+  return {
+    "@type": "PostalAddress",
+    ...(street ? { streetAddress: street } : {}),
+    addressLocality: "Anjuna",
+    addressRegion: "Goa",
+    ...(postalCode ? { postalCode } : {}),
+    addressCountry: "IN",
+  };
+};
 
 /** Restaurant structured data. Only fields the owner has actually filled are emitted. */
 export function restaurantSchema(settings: SiteSettings) {

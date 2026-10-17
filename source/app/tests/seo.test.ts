@@ -1,7 +1,7 @@
 import { expect, test } from "bun:test";
 
 import { DEFAULT_SETTINGS } from "../src/lib/content/seed";
-import { eventSchema, pageHead, restaurantSchema } from "../src/lib/seo";
+import { eventSchema, pageHead, postalAddress, restaurantSchema } from "../src/lib/seo";
 import { OPENING_HOURS, hoursSentence } from "../src/lib/site";
 
 test("inner pages carry a breadcrumb trail from home", () => {
@@ -33,4 +33,15 @@ test("the restaurant always names its village, even before a street address is s
   const data = restaurantSchema({ ...DEFAULT_SETTINGS, address: "" }) as { address: Record<string, string> };
   expect(data.address.addressLocality).toBe("Anjuna");
   expect(data.address.streetAddress).toBeUndefined();
+});
+
+test("a written-out address is split into street, village and PIN code for Google", () => {
+  expect(postalAddress({ address: "Near Starco Junction, De Mello Vaddo, Anjuna, Goa 403509" })).toEqual({
+    "@type": "PostalAddress",
+    streetAddress: "Near Starco Junction, De Mello Vaddo",
+    addressLocality: "Anjuna",
+    addressRegion: "Goa",
+    postalCode: "403509",
+    addressCountry: "IN",
+  });
 });

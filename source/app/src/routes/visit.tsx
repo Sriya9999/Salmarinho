@@ -41,8 +41,10 @@ function Visit() {
       ? `https://www.google.com/maps/search/?api=1&query=${settings.latitude},${settings.longitude}`
       : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`Sal Marinho ${settings.locality}`)}`);
   const whatsapp = settings.whatsapp.replace(/[^\d]/g, "");
+  // The restaurant's name and village find its Google Maps pin; a written-out
+  // address ("Near Starco Junction, …") does not.
   const mapQuery =
-    settings.latitude && settings.longitude ? `${settings.latitude},${settings.longitude}` : `Sal Marinho, ${settings.address || settings.locality}`;
+    settings.latitude && settings.longitude ? `${settings.latitude},${settings.longitude}` : `Sal Marinho, ${settings.locality}`;
   const photos = [
     ...settings.gallery.map((src) => ({ src, alt: "Inside Sal Marinho, Anjuna" })),
     ...GARDEN,
