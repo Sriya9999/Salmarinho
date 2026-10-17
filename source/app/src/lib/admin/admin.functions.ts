@@ -21,6 +21,14 @@ import {
   upsertPost,
 } from "@/lib/content/db.server";
 import type { Dish, JournalPost } from "@/lib/content/types";
+import {
+  forAdmin,
+  getAlertSettings,
+  getAlertStatus,
+  saveAlertSettings,
+  sendAlert,
+  toWhatsAppNumber,
+} from "@/lib/notify/whatsapp.server";
 import { DIETARY, JOURNAL_CATEGORIES, MOODS } from "@/lib/site";
 import { AdminError, changePassword, isAdmin, login, logout, passwordConfigured, requireAdmin } from "./auth.server";
 
@@ -85,7 +93,7 @@ export const adminChangePassword = createServerFn({ method: "POST" })
 export const adminData = createServerFn({ method: "GET" }).handler(() =>
   run(async () => {
     await requireAdmin();
-    const [dishes, categories, posts, events, settings, reservations, enquiries] = await Promise.all([
+    const [dishes, categories, posts, events, settings, reservations, enquiries, alertSettings, alertStatus] = await Promise.all([
       listDishes({ includeDrafts: true }),
       listCategories(),
       listPosts({ includeDrafts: true }),
@@ -93,8 +101,12 @@ export const adminData = createServerFn({ method: "GET" }).handler(() =>
       getSettings(),
       listReservations(),
       listEnquiries(),
+      getAlertSettings(),
+      getAlertStatus(),
     ]);
-    return { dishes, categories, posts, events, settings, reservations, enquiries };
+    // The access token never leaves the server.
+    const alerts = { ...forAdmin(alertSettings), status: alertStatus };
+    return { dishes, categories, posts, events, settings, reservations, enquiries, alerts };
   }),
 );
 
@@ -319,3 +331,58 @@ export const adminSetReservation = createServerFn({ method: "POST" })
       return null;
     }),
   );
+
+// ---------------------------------------------------------------- WhatsApp alerts
+
+const templateName = z
+  .string()
+  .trim()
+  .regex(/^[a-z0-9_]{1,512}$/, "Template names use lowercase letters, numbers and underscores, as in WhatsApp Manager.");
+
+export const adminSaveAlerts = createServerFn({ method: "POST" })
+  .validator(
+    z.object({
+      bookings: z.boolean(),
+      enquiries: z.boolean(),
+      recipients: z.string().max(400),
+      phoneNumberId: z.string().trim().regex(/^\d{0,30}$/, "The phone number ID is the long number shown in WhatsApp Manager."),
+      // Empty keeps the saved token.
+      token: z.string().trim().max(1000),
+      clearToken: z.boolean(),
+      bookingTemplate: templateName,
+      enquiryTemplate: templateName,
+      language: z.string().trim().regex(/^[a-z]{2,3}(_[A-Z]{2})?$/, "Use the template's language code, for example en or en_US."),
+    }),
+  )
+  .handler(({ data }) =>
+    run(async () => {
+      await requireAdmin({ write: true });
+      const recipients = [...new Set(data.recipients.split(/[,;\n]+/).map(toWhatsAppNumber).filter((n) => n.length >= 8))];
+      if (recipients.some((n) => n.length > 15)) throw new AdminError("A phone number looks too long. Use one number per line, with the country code.");
+      if (recipients.length > 5) throw new AdminError("Up to five phones can receive alerts.");
+      const saved = await getAlertSettings();
+      await saveAlertSettings({
+        bookings: data.bookings,
+        enquiries: data.enquiries,
+        recipients,
+        phoneNumberId: data.phoneNumberId,
+        token: data.clearToken ? "" : data.token || saved.token,
+        bookingTemplate: data.bookingTemplate,
+        enquiryTemplate: data.enquiryTemplate,
+        language: data.language,
+      });
+      return null;
+    }),
+  );
+
+/** Sends a sample booking alert with the saved settings, even while alerts are off. */
+export const adminTestAlert = createServerFn({ method: "POST" }).handler(() =>
+  run(async () => {
+    await requireAdmin({ write: true });
+    const today = new Date().toISOString().slice(0, 10);
+    return sendAlert(
+      { kind: "booking", name: "Test booking", date: today, time: "13:00", guests: 2, phone: "+91 00000 00000", request: "This is a test from the admin panel" },
+      { force: true },
+    );
+  }),
+);

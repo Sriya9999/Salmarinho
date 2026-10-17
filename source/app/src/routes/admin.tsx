@@ -11,12 +11,15 @@ import {
   adminSaveDish,
   adminSaveEvent,
   adminSavePost,
+  adminSaveAlerts,
   adminSaveSettings,
   adminSetEnquiry,
   adminSetReservation,
   adminStatus,
+  adminTestAlert,
 } from "@/lib/admin/admin.functions";
 import type { CrabStage, Dish, EventCategory, EventEnquiry, EventItem, EventPhoto, EventsSettings, JournalPost, MenuCategory, Reservation, SiteSettings } from "@/lib/content/types";
+import { BOOKING_SAMPLES, BOOKING_TEMPLATE, ENQUIRY_SAMPLES, ENQUIRY_TEMPLATE } from "@/lib/notify/templates";
 import { DIETARY, JOURNAL_CATEGORIES, MOODS, formatPrice } from "@/lib/site";
 
 export const Route = createFileRoute("/admin")({
@@ -33,8 +36,20 @@ type Data = {
   settings: SiteSettings;
   reservations: Reservation[];
   enquiries: EventEnquiry[];
+  alerts: AlertsView;
 };
-type Tab = "reservations" | "enquiries" | "dishes" | "courses" | "journal" | "crab" | "eventspage" | "events" | "settings" | "password";
+type AlertsView = {
+  bookings: boolean;
+  enquiries: boolean;
+  recipients: string[];
+  phoneNumberId: string;
+  tokenSaved: boolean;
+  bookingTemplate: string;
+  enquiryTemplate: string;
+  language: string;
+  status: { at: string; ok: boolean; detail: string } | null;
+};
+type Tab = "reservations" | "enquiries" | "dishes" | "courses" | "journal" | "crab" | "eventspage" | "events" | "settings" | "alerts" | "password";
 const TABS: { id: Tab; label: string }[] = [
   { id: "reservations", label: "Reservations" },
   { id: "enquiries", label: "Event enquiries" },
@@ -45,6 +60,7 @@ const TABS: { id: Tab; label: string }[] = [
   { id: "eventspage", label: "Events page" },
   { id: "events", label: "Dated events" },
   { id: "settings", label: "Restaurant details" },
+  { id: "alerts", label: "WhatsApp alerts" },
   { id: "password", label: "Password" },
 ];
 
@@ -176,6 +192,8 @@ function Dashboard({ onSignedOut }: { onSignedOut: () => void }) {
           <Events events={data.events} reload={reload} />
         ) : tab === "settings" ? (
           <Settings settings={data.settings} reload={reload} />
+        ) : tab === "alerts" ? (
+          <Alerts alerts={data.alerts} reload={reload} />
         ) : (
           <Password />
         )}
@@ -1239,6 +1257,170 @@ function Settings({ settings, reload }: { settings: SiteSettings; reload: () => 
         Save details
       </button>
     </form>
+  );
+}
+
+/* ---------------------------------------------------------------- WhatsApp alerts */
+
+function Alerts({ alerts, reload }: { alerts: AlertsView; reload: () => Promise<void> }) {
+  const [a, setA] = useState({ ...alerts, recipients: alerts.recipients.map((n) => `+${n}`).join("\n"), token: "", clearToken: false });
+  const [msg, setMsg] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  const [testing, setTesting] = useState(false);
+  const set = <K extends keyof typeof a>(key: K, value: (typeof a)[K]) => setA((prev) => ({ ...prev, [key]: value }));
+  const status = alerts.status;
+
+  return (
+    <div className="max-w-3xl space-y-10">
+      <form
+        className="space-y-6"
+        onSubmit={async (event) => {
+          event.preventDefault();
+          const res = await adminSaveAlerts({
+            data: {
+              bookings: a.bookings,
+              enquiries: a.enquiries,
+              recipients: a.recipients,
+              phoneNumberId: a.phoneNumberId,
+              token: a.token,
+              clearToken: a.clearToken,
+              bookingTemplate: a.bookingTemplate,
+              enquiryTemplate: a.enquiryTemplate,
+              language: a.language,
+            },
+          });
+          if (res.ok) {
+            setMsg({ kind: "ok", text: "Saved." });
+            set("token", "");
+            await reload();
+          } else setMsg({ kind: "error", text: res.message });
+        }}
+      >
+        <h1 className="font-display text-2xl">WhatsApp alerts</h1>
+        <p className="text-sm text-sand">
+          A WhatsApp message to your phone the moment a guest books a table or sends an event enquiry. It is sent through
+          the official WhatsApp Business Platform, which needs a one-time setup with Meta (the steps are below).
+        </p>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={a.bookings} onChange={(e) => set("bookings", e.target.checked)} />
+            Send an alert for every new table booking
+          </label>
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={a.enquiries} onChange={(e) => set("enquiries", e.target.checked)} />
+            Send an alert for every new event enquiry
+          </label>
+        </div>
+        <div className="grid gap-6 md:grid-cols-2">
+          <Field label="Phones to alert" hint="One per line, with the country code, for example +91 98765 43210. Up to five.">
+            <textarea className="sm-input" rows={3} value={a.recipients} onChange={(e) => set("recipients", e.target.value)} />
+          </Field>
+          <Field label="Phone number ID" hint="WhatsApp Manager, API setup: the long number under your business phone number.">
+            <input className="sm-input" inputMode="numeric" value={a.phoneNumberId} onChange={(e) => set("phoneNumberId", e.target.value)} />
+          </Field>
+          <Field
+            label="Access token"
+            hint={
+              alerts.tokenSaved
+                ? "A token is saved. It is never shown again; paste a new one only to replace it."
+                : "A permanent system user token with the whatsapp_business_messaging permission."
+            }
+          >
+            <input
+              className="sm-input"
+              type="password"
+              autoComplete="off"
+              placeholder={alerts.tokenSaved ? "Saved" : ""}
+              value={a.token}
+              onChange={(e) => set("token", e.target.value)}
+            />
+          </Field>
+          <Field label="Template language" hint="The code WhatsApp Manager shows for the templates: en for English.">
+            <input className="sm-input" value={a.language} onChange={(e) => set("language", e.target.value)} />
+          </Field>
+          <Field label="Booking template name">
+            <input className="sm-input" value={a.bookingTemplate} onChange={(e) => set("bookingTemplate", e.target.value)} />
+          </Field>
+          <Field label="Enquiry template name">
+            <input className="sm-input" value={a.enquiryTemplate} onChange={(e) => set("enquiryTemplate", e.target.value)} />
+          </Field>
+        </div>
+        {alerts.tokenSaved ? (
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={a.clearToken} onChange={(e) => set("clearToken", e.target.checked)} />
+            Remove the saved token
+          </label>
+        ) : null}
+        <Notice message={msg} />
+        <div className="flex flex-wrap items-center gap-4">
+          <button type="submit" className="adm-btn">
+            Save alerts
+          </button>
+          <button
+            type="button"
+            className="text-sm underline underline-offset-4"
+            disabled={testing}
+            onClick={async () => {
+              setTesting(true);
+              const res = await adminTestAlert();
+              setTesting(false);
+              if (res.ok) setMsg({ kind: res.data.ok ? "ok" : "error", text: res.data.ok ? `Test sent. ${res.data.detail}` : res.data.detail });
+              else setMsg({ kind: "error", text: res.message });
+              await reload();
+            }}
+          >
+            {testing ? "Sending a test" : "Send a test message"}
+          </button>
+        </div>
+        {status ? (
+          <p className="text-xs text-sand/80">
+            Last alert, {new Date(status.at).toLocaleString("en-IN")}: {status.ok ? "sent. " : "not sent. "}
+            {status.detail}
+          </p>
+        ) : null}
+      </form>
+
+      <section className="space-y-4 text-sm text-sand">
+        <h2 className="font-display text-xl text-bone">One-time setup with Meta</h2>
+        <ol className="list-decimal space-y-3 pl-5">
+          <li>
+            At developers.facebook.com, create an app of the Business type and add the WhatsApp product. Meta gives you a
+            free test number at once; to send from your own number, add it under WhatsApp, API setup (a number that is not
+            already on the WhatsApp app).
+          </li>
+          <li>
+            With the test number, add each alert phone under "To" in API setup and confirm the code WhatsApp sends to it.
+          </li>
+          <li>
+            In WhatsApp Manager, Message templates, create two templates in the Utility category, language English, with
+            exactly the names and wording below. Meta usually approves them within minutes and at most a day.
+          </li>
+          <li>
+            In Meta Business Settings, Users, System users, add a system user, give it the WhatsApp account, and generate a
+            token that never expires with the whatsapp_business_messaging permission. Paste it above; it is stored on the
+            server and never shown again.
+          </li>
+          <li>Copy the Phone number ID from API setup, add your phones, tick the alerts you want, save, and send a test.</li>
+        </ol>
+        <div className="space-y-2">
+          <p>
+            <span className="text-bone">{a.bookingTemplate || "new_reservation"}</span>
+          </p>
+          <p className="select-all rounded border border-hairline p-3 text-bone">{BOOKING_TEMPLATE}</p>
+          <p className="text-xs">Sample values for Meta, blank by blank: {BOOKING_SAMPLES.join(" · ")}</p>
+        </div>
+        <div className="space-y-2">
+          <p>
+            <span className="text-bone">{a.enquiryTemplate || "new_event_enquiry"}</span>
+          </p>
+          <p className="select-all rounded border border-hairline p-3 text-bone">{ENQUIRY_TEMPLATE}</p>
+          <p className="text-xs">Sample values for Meta, blank by blank: {ENQUIRY_SAMPLES.join(" · ")}</p>
+        </div>
+        <p className="text-xs">
+          WhatsApp charges a small fee for each alert (a utility message), billed by Meta to the card on your WhatsApp
+          account.
+        </p>
+      </section>
+    </div>
   );
 }
 

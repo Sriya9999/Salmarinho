@@ -4,6 +4,7 @@ import { z } from "@/lib/zod";
 
 import { getDb, getSettings } from "@/lib/content/db.server";
 import { hashValue } from "@/lib/crypto.server";
+import { inBackground, sendAlert } from "@/lib/notify/whatsapp.server";
 import { RESERVATION_TIMES, closedDays, weekdayOf } from "@/lib/site";
 
 const reservationSchema = z.object({
@@ -58,6 +59,10 @@ export const submitReservation = createServerFn({ method: "POST" })
         )
         .bind(crypto.randomUUID(), data.date, data.time, data.guests, data.name, data.phone, data.request, ipHash)
         .run();
+      // A WhatsApp alert to the restaurant, when switched on in /admin.
+      await inBackground(
+        sendAlert({ kind: "booking", name: data.name, date: data.date, time: data.time, guests: data.guests, phone: data.phone, request: data.request }),
+      );
     } else if (!settings.reservationUrl && !settings.whatsapp) {
       return { ok: false, message: "Reservations are not open online yet. Please call the restaurant." };
     }

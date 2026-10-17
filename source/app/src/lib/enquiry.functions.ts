@@ -4,6 +4,7 @@ import { getRequestHeader } from "@tanstack/react-start/server";
 import { getDb, getSettings } from "@/lib/content/db.server";
 import { hashValue } from "@/lib/crypto.server";
 import { enquirySchema } from "@/lib/enquiry-schema";
+import { inBackground, sendAlert } from "@/lib/notify/whatsapp.server";
 
 export type EnquiryResult = { ok: true; whatsapp: string | null } | { ok: false; message: string };
 
@@ -44,6 +45,19 @@ export const submitEnquiry = createServerFn({ method: "POST" })
       )
       .bind(crypto.randomUUID(), data.name, data.email, data.phone, data.eventType, data.eventDate, data.location, data.guests, data.message, ipHash)
       .run();
+    // A WhatsApp alert to the restaurant, when switched on in /admin.
+    await inBackground(
+      sendAlert({
+        kind: "enquiry",
+        name: data.name,
+        eventType: data.eventType,
+        eventDate: data.eventDate,
+        location: data.location,
+        guests: data.guests,
+        phone: data.phone,
+        email: data.email,
+      }),
+    );
 
     // Optionally continue the conversation on WhatsApp, prefilled.
     const number = (settings.events.enquiryWhatsapp || settings.whatsapp).replace(/[^\d]/g, "");
